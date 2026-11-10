@@ -28,6 +28,10 @@ export interface LimitOrderModel {
   tokenOut: TokenModel;
   makingAmount: string;
   takingAmount: string;
+  /** Slippage saved with this order, in basis points. */
+  slippageBps: number;
+  /** Owner-net minimum for the full original order, in display units; unchanged by fills or closure. */
+  minimumReceived: string;
   filledInput: string;
   remainingInput: string;
   refundedInput: string;

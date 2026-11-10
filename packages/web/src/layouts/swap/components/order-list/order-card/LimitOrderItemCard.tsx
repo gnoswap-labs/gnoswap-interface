@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
 import { LimitOrderModel } from "@models/order/limit-order-model";
 import {
+  formatBps,
   formatOrderAmount,
   formatOrderDate,
   formatOrderDateTime,
@@ -90,12 +91,24 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
       <OrderMetrics metrics={metrics} />
-      {order.isActive && (
+      <div className="card-order-terms">
         <div className="card-sub-info">
-          <span>{t("Swap:order.expiresAt")}</span>
-          <span className="value">{formatOrderDateTime(order.expiresAt)}</span>
+          <span>{t("Swap:swapInfo.slippageSet")}</span>
+          <span className="value">{formatBps(order.slippageBps)}</span>
         </div>
-      )}
+        <div className="card-sub-info">
+          <span>{t("Swap:swapInfo.minReceived")}</span>
+          <span className="value">
+            {formatOrderFullAmount(order.minimumReceived, tokenOut.decimals)} {tokenOut.displaySymbol}
+          </span>
+        </div>
+        {order.isActive && (
+          <div className="card-sub-info">
+            <span>{t("Swap:order.expiresAt")}</span>
+            <span className="value">{formatOrderDateTime(order.expiresAt)}</span>
+          </div>
+        )}
+      </div>
       {order.canCancel && (
         <OrderStopButton
           text={t(order.isActive ? "Swap:order.cancelOrder" : "Swap:order.refundOrder")}

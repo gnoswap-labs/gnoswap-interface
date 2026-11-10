@@ -196,6 +196,19 @@ describe("order-mapper", () => {
     expect(order.limitPrice).toBe("1.2716");
     expect(order.priceRate).toBe("1.271");
     expect(order.progress).toBeCloseTo(33.333, 2);
+    expect(order.slippageBps).toBe(50);
+    expect(order.minimumReceived).toBe("3.795726");
+    const completed = mapLimitOrderItemToModel(
+      {
+        ...item,
+        status: "COMPLETED",
+        filledInput: item.makingAmount,
+        remainingInput: "0",
+        userOutput: "4000000",
+      },
+      tokens,
+    );
+    expect(completed.minimumReceived).toBe("3.795726");
     expect(mapLimitOrderItemToModel({ ...item, status: "EXPIRED" }, tokens).isActive).toBe(false);
     // An earlier realm's order is still cancelled, in its own realm.
     expect(order.canCancel).toBe(true);

@@ -5,6 +5,7 @@ import { PACKAGE_DCA_ORDER_PATH, PACKAGE_LIMIT_ORDER_PATH } from "@constants/env
 import { TokenModel } from "@models/token/token-model";
 import { DcaExecutionItem, DcaOrderItem, LimitFillItem, LimitOrderItem } from "@repositories/order/response";
 import { isGNOTPath } from "@utils/common";
+import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
 import { makeDisplayTokenAmountString } from "@utils/token-utils";
 
 import { DcaOrderModel } from "../dca-order-model";
@@ -152,6 +153,8 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     tokenOut,
     makingAmount: toDisplayAmount(tokenIn, item.makingAmount),
     takingAmount: toDisplayAmount(tokenOut, item.takingAmount),
+    slippageBps: item.slippageBps,
+    minimumReceived: toDisplayAmount(tokenOut, calculateLimitMinimumReceived(item.takingAmount, item.slippageBps)),
     filledInput: toDisplayAmount(tokenIn, item.filledInput),
     remainingInput: toDisplayAmount(tokenIn, item.remainingInput),
     refundedInput: toDisplayAmount(tokenIn, item.refundedInput),

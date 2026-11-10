@@ -18,6 +18,7 @@ import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
+import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
 import { formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
@@ -25,7 +26,6 @@ import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { getOrderButtonText, useOrderFormCommon } from "./use-order-form-common";
 import {
   applyLimitPricePreset,
-  calculateLimitMinimumReceived,
   calculateTakingAmount,
   calculateUsdValue,
   DEFAULT_MIN_MAKING_AMOUNT,

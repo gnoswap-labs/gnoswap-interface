@@ -19,6 +19,8 @@ const ORDER: LimitOrderModel = {
   tokenOut: STORY_GNOT_TOKEN,
   makingAmount: "100",
   takingAmount: "104",
+  slippageBps: 50,
+  minimumReceived: "103.48",
   filledInput: "35",
   remainingInput: "65",
   refundedInput: "0",

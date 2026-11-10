@@ -47,6 +47,8 @@ const limitOrder: LimitOrderModel = {
   tokenOut: token,
   makingAmount: "2",
   takingAmount: "2.2",
+  slippageBps: 50,
+  minimumReceived: "2.189",
   filledInput: "0",
   remainingInput: "2",
   refundedInput: "0",
