@@ -85,6 +85,7 @@ export enum QUERY_KEY {
 
   // order
   dcaConfig = "dca_config",
+  dcaPair = "dca_pair",
   dcaSchedule = "dca_schedule",
   dcaOrders = "dca_orders",
   dcaOrder = "dca_order",

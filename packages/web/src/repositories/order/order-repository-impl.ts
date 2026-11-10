@@ -20,6 +20,7 @@ import {
   CancelOrderRequest,
   CreateDcaOrderRequest,
   CreateLimitOrderRequest,
+  GetDcaPairRequest,
   GetDcaScheduleRequest,
   GetOrderHistoryRequest,
   GetOrdersRequest,
@@ -29,6 +30,7 @@ import {
   DcaConfigResponse,
   DcaExecutionItem,
   DcaOrderItem,
+  DcaPairResponse,
   DcaScheduleResponse,
   LimitConfigResponse,
   LimitFillItem,
@@ -52,6 +54,15 @@ export class OrderRepositoryImpl implements OrderRepository {
 
   public getDcaConfig = async (): Promise<DcaConfigResponse> => {
     return this.get<DcaConfigResponse>("orders/dca/config");
+  };
+
+  public getDcaPair = async ({ inputToken, outputToken }: GetDcaPairRequest): Promise<DcaPairResponse> => {
+    return this.get<DcaPairResponse>(
+      `orders/dca/pair${makeQueryParameter({
+        inputToken: encodeURIComponent(inputToken),
+        outputToken: encodeURIComponent(outputToken),
+      })}`,
+    );
   };
 
   public getDcaSchedule = async (request: GetDcaScheduleRequest): Promise<DcaScheduleResponse> => {

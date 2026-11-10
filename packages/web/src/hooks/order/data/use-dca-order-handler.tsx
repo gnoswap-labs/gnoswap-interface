@@ -13,7 +13,7 @@ import { toDisplayAmount } from "@models/order/mapper/order-mapper";
 import { SWAP_CARD_TYPE } from "@models/order/order-type";
 import { DcaOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
-import { useGetDcaConfig, useGetDcaSchedule } from "@query/order";
+import { useGetDcaConfig, useGetDcaPair, useGetDcaSchedule } from "@query/order";
 import { useGetPoolList } from "@query/pools";
 import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
@@ -32,13 +32,14 @@ import {
   calculateUsdValue,
   clampExecutionCount,
   DEFAULT_MAX_DCA_EXECUTION_COUNT,
-  DEFAULT_MIN_AMOUNT_PER_EXECUTION,
   getAvailableDcaIntervals,
+  getDcaEffectiveMinAmountPerExecution,
   getDcaMinAmountPerExecution,
   getOrderButtonState,
   hasDirectPoolForPair,
   hasWhitelistedPoolForPair,
   isDcaAmountTooLow,
+  isDcaPairSupported,
   isExecutionCountWithinLimit,
 } from "./use-order-handler.utils";
 import { useOrderTransaction } from "./use-order-transaction";
@@ -57,7 +58,7 @@ const isSameDcaOrder = (a: CreateDcaOrderRequest, b: CreateDcaOrderRequest) =>
   a.amountPerExecution === b.amountPerExecution &&
   a.executionCount === b.executionCount;
 const QUOTE_REFETCH_INTERVAL = 10_000;
-/** The DCA keeper syncs the pool whitelist with the market every minute. */
+/** The DCA keeper syncs the pool whitelist with the market every minute; pair settings follow it. */
 const CONFIG_REFETCH_INTERVAL = 60_000;
 /** The pool list only answers whether a pair has a pool, which rarely changes. */
 const POOL_LIST_STALE_TIME = 60_000;
@@ -105,7 +106,26 @@ export const useDcaOrderHandler = () => {
     }
   }, [interval, intervalOptions, setInterval]);
 
-  const minAmountPerExecution = config?.minAmountPerExecution || DEFAULT_MIN_AMOUNT_PER_EXECUTION;
+  // The pair settings carry the input token's effective minimum and whether the
+  // realm has a price limit for this direction (CreateOrder reverts without one).
+  const pairRequest = useMemo(
+    () =>
+      tokenA && tokenB && !isSameToken
+        ? { inputToken: getSwapTokenPath(tokenA), outputToken: getSwapTokenPath(tokenB) }
+        : null,
+    [isSameToken, tokenA, tokenB],
+  );
+  const {
+    data: pair,
+    isError: isPairError,
+    refetch: refetchPair,
+  } = useGetDcaPair(pairRequest, { refetchInterval: CONFIG_REFETCH_INTERVAL });
+
+  // The global value is only the floor while the pair settings are unknown.
+  const minAmountPerExecution = getDcaEffectiveMinAmountPerExecution(
+    config?.minAmountPerExecution,
+    pair?.minAmountPerExecution,
+  );
   const sellUsd = useMemo(() => calculateUsdValue(sellAmount, getUsdPrice(tokenA)), [getUsdPrice, sellAmount, tokenA]);
   const sellAmountRaw = tokenA ? (makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0") : "0";
 
@@ -192,12 +212,24 @@ export const useDcaOrderHandler = () => {
     if (isLegacyConfig && pools) return hasDirectPoolForPair(pools, inputTokenPath, outputTokenPath);
     return null;
   }, [isLegacyConfig, isSameToken, pools, tokenA, tokenB, whitelistedPools]);
-  const isPoolCheckFailed =
-    hasWhitelistedPool === null &&
-    (isLegacyConfig ? isPoolListError : isConfigError) &&
-    !!tokenA &&
-    !!tokenB &&
-    !isSameToken;
+  // null while the pair settings are unknown. An order-api from before the pair
+  // endpoint answers it with an error; only the pool check then applies.
+  const isPairSupported: boolean | null = useMemo(() => {
+    if (!pairRequest) return null;
+    if (pair) return isDcaPairSupported(pair);
+    if (isLegacyConfig && isPairError) return true;
+    return null;
+  }, [isLegacyConfig, isPairError, pair, pairRequest]);
+  // Orderable only with a whitelisted pool and a price limit; null until both are known.
+  const isPairOrderable: boolean | null =
+    hasWhitelistedPool === false || isPairSupported === false
+      ? false
+      : hasWhitelistedPool === true && isPairSupported === true
+        ? true
+        : null;
+  const isWhitelistCheckFailed = hasWhitelistedPool === null && (isLegacyConfig ? isPoolListError : isConfigError);
+  const isPairCheckFailed = isPairSupported === null && isPairError;
+  const isPoolCheckFailed = isPairOrderable === null && (isWhitelistCheckFailed || isPairCheckFailed) && !!pairRequest;
   // What the owner receives per input: the realm deducts its execution fee from
   // the router output of each execution before crediting the order.
   const executionFeeBps = config?.executionFeeBps ?? 0;
@@ -259,7 +291,8 @@ export const useDcaOrderHandler = () => {
     amount: sellAmount,
     balance: tokenABalance,
     hasLiquidity,
-    hasWhitelistedPool: hasWhitelistedPool !== false,
+    // An unchecked pair shows Place Order but is never submitted (see createRequest).
+    hasWhitelistedPool: isPairOrderable !== false,
     isPoolCheckFailed,
     isAmountTooLow,
   });
@@ -267,8 +300,8 @@ export const useDcaOrderHandler = () => {
   const buttonText = getOrderButtonText(buttonState, t, t("Swap:dca.placeOrder"));
 
   const createRequest: CreateDcaOrderRequest | null = useMemo(() => {
-    // An unchecked pair (whitelist still loading) is never submitted.
-    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule || hasWhitelistedPool !== true) return null;
+    // An unchecked pair (whitelist or pair settings still loading) is never submitted.
+    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !schedule || isPairOrderable !== true) return null;
     if (!isScheduleCurrent) return null;
     if (!isExecutionCountWithinLimit(executionCount, realmMaxExecutionCount)) return null;
     return {
@@ -283,8 +316,8 @@ export const useDcaOrderHandler = () => {
     amountPerExecutionRaw,
     buttonState,
     executionCount,
-    hasWhitelistedPool,
     interval,
+    isPairOrderable,
     isScheduleCurrent,
     realmMaxExecutionCount,
     schedule,
@@ -487,7 +520,8 @@ export const useDcaOrderHandler = () => {
         switchNetwork();
         return;
       case "POOL_CHECK_FAILED":
-        void (isLegacyConfig ? refetchPools() : refetchConfig());
+        if (isWhitelistCheckFailed) void (isLegacyConfig ? refetchPools() : refetchConfig());
+        if (isPairCheckFailed) void refetchPair();
         return;
       case "PLACE_ORDER":
         // Refresh the slot and end date the modal shows.
@@ -500,9 +534,12 @@ export const useDcaOrderHandler = () => {
   }, [
     buttonState,
     isLegacyConfig,
+    isPairCheckFailed,
+    isWhitelistCheckFailed,
     openConnectWallet,
     openModal,
     refetchConfig,
+    refetchPair,
     refetchPools,
     refetchSchedule,
     switchNetwork,
