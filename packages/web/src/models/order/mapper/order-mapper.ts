@@ -115,6 +115,7 @@ export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[])
     claimableAmount: toDisplayAmount(outputToken, item.claimableAmount),
     // Claimed in the order's own realm, an earlier deployment included.
     canClaim: item.status === "COMPLETED" && BigNumber(item.claimableAmount ?? 0).isGreaterThan(0),
+    forceCancelled: item.status === "CANCELLED" && !!item.forceCancelled,
     priceRate: calculatePriceRate(inputToken, outputToken, item.soldAmount, item.purchasedAmount),
     returnRate: parseReturnRate(item.returnRate),
     nextExecutionAt: isActive ? item.nextExecutionAt : null,

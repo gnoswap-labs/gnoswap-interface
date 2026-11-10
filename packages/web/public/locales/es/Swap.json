@@ -87,6 +87,7 @@
     "soldAmount": "Importe vendido",
     "status": {
       "cancelled": "Cancelado",
+      "cancelledByKeeper": "Cancelled by Keeper",
       "completed": "Finalizado",
       "expired": "Caducado",
       "partiallyFilled": "Parcialmente cubierto"

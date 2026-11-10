@@ -87,6 +87,7 @@
     "soldAmount": "Số tiền đã bán",
     "status": {
       "cancelled": "Đã hủy",
+      "cancelledByKeeper": "Cancelled by Keeper",
       "completed": "Đã hoàn thành",
       "expired": "Đã hết hạn",
       "partiallyFilled": "Đã điền một phần"

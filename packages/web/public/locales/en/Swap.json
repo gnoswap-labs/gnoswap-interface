@@ -87,6 +87,7 @@
     "soldAmount": "Sold Amount",
     "status": {
       "cancelled": "Cancelled",
+      "cancelledByKeeper": "Cancelled by Keeper",
       "completed": "Completed",
       "expired": "Expired",
       "partiallyFilled": "Partially Filled"

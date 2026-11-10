@@ -87,6 +87,7 @@
     "soldAmount": "Проданная сумма",
     "status": {
       "cancelled": "Отменено",
+      "cancelledByKeeper": "Cancelled by Keeper",
       "completed": "Завершено",
       "expired": "Срок действия истек",
       "partiallyFilled": "Частично заполнен"

@@ -72,6 +72,11 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         />
         {order.isActive ? (
           <span className="card-status ongoing">{t("Swap:order.ongoing")}</span>
+        ) : order.forceCancelled ? (
+          // A keeper closed it because it blocked its group; refunded and claimed as a normal cancel.
+          <span className="card-status">
+            {`${t("Swap:order.status.cancelledByKeeper")} · ${formatOrderDate(order.closedAt)}`}
+          </span>
         ) : (
           <span className="card-status">{formatOrderDate(order.closedAt)}</span>
         )}
