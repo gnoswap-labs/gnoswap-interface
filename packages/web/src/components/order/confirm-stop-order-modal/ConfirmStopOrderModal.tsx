@@ -59,7 +59,7 @@ const ConfirmStopOrderModal: React.FC<ConfirmStopOrderModalProps> = ({
       },
       {
         key: "rate",
-        label: t("Swap:order.priceRate"),
+        label: isDca ? t("Swap:order.priceRateAvg") : t("Swap:order.priceRate"),
         value: (
           <TokenAmount token={inputToken}>
             {`1 ${inputToken.displaySymbol} = ${summary.priceRate} ${outputToken.displaySymbol}`}
@@ -74,7 +74,7 @@ const ConfirmStopOrderModal: React.FC<ConfirmStopOrderModalProps> = ({
         subValue: summary.remainingAmountUsd,
       },
     ],
-    [inputToken, outputToken, summary, t],
+    [inputToken, isDca, outputToken, summary, t],
   );
 
   return (

@@ -45,7 +45,7 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         value: `${formatOrderAmount(order.purchasedAmount)} ${outputToken.displaySymbol}`,
         roi,
       },
-      { key: "rate", label: t("Swap:order.priceRate"), value: formatOrderRate(order.priceRate) },
+      { key: "rate", label: t("Swap:order.priceRateAvg"), value: formatOrderRate(order.priceRate) },
     ],
     [inputToken.displaySymbol, order, outputToken.displaySymbol, roi, t],
   );
