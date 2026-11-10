@@ -8,15 +8,23 @@
     "title": "Xác nhận hoán đổi"
   },
   "dca": {
-    "amountPerOrder": "Số tiền cho mỗi đơn hàng",
     "estimatedEndDate": "Ngày kết thúc dự kiến",
     "every": "Mỗi",
     "everyTooltip": "Thời gian ước tính sẽ trôi qua giữa mỗi giao dịch trong lệnh của bạn. Thời gian thực tế có thể thay đổi tùy thuộc vào thời gian khối.",
     "executionFee": "Phí thực hiện",
     "executionFeeTooltip": "Phí mà lệnh DCA khấu trừ từ số tiền thu được từ mỗi giao dịch đã thực hiện. Tỷ lệ được hiển thị là sau khi đã trừ phí này.",
+    "intervalPhrase": {
+      "day": "1 ngày",
+      "hour": "1 giờ",
+      "minute": "1 phút",
+      "month": "1 tháng",
+      "week": "1 tuần"
+    },
+    "marketPrice": "Giá thị trường",
     "minTrading": "Số lượng tối thiểu {{amount}} {{symbol}} cho mỗi đơn hàng",
     "noWhitelistedPool": "Cặp này không được hỗ trợ",
     "orders": "Đơn hàng",
+    "orderSentence": "Bạn đang bán <sell/> để mua <buy/> theo giá thị trường sau mỗi <hl>{{interval}}</hl> trong <hl>{{rounds}} vòng</hl>.",
     "over": "Hết",
     "overTooltip": "Số lượng các giao dịch riêng lẻ sẽ được thực hiện trong khuôn khổ lệnh của bạn.",
     "placeOrder": "Đặt hàng",

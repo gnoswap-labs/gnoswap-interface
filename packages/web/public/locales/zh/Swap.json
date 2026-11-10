@@ -8,15 +8,23 @@
     "title": "确认交换"
   },
   "dca": {
-    "amountPerOrder": "每笔订单金额",
     "estimatedEndDate": "预计结束日期",
     "every": "每个",
     "everyTooltip": "您订单中每次交易之间预计间隔的时间。实际时间可能会因区块时间而有所不同。",
     "executionFee": "执行费",
     "executionFeeTooltip": "DCA指令从每笔已成交交易的收益中扣除的费用。所示费率已扣除该费用。",
+    "intervalPhrase": {
+      "day": "1天",
+      "hour": "1小时",
+      "minute": "1分钟",
+      "month": "1个月",
+      "week": "1周"
+    },
+    "marketPrice": "市场价格",
     "minTrading": "每笔订单的最低金额为{{amount}} ，{{symbol}} ",
     "noWhitelistedPool": "该货币对不支持",
     "orders": "订单",
+    "orderSentence": "您将每隔 <hl>{{interval}}</hl> 按市价卖出 <sell/>，买入 <buy/>，共进行 <hl>{{rounds}} 轮</hl>。",
     "over": "结束",
     "overTooltip": "作为您的订单的一部分，将被触发的单笔交易数量。",
     "placeOrder": "下单",

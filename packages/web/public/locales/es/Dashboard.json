@@ -22,7 +22,6 @@
       "tooltip": "Importe total de xGNS emitidos actualmente por GNS staking."
     }
   },
-  "noTokensfound\n": "No se han encontrado actividades",
   "onchainActi": {
     "col": {
       "acc": "Cuenta",

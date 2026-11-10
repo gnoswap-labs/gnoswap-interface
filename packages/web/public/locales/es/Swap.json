@@ -8,15 +8,23 @@
     "title": "Confirmar intercambio"
   },
   "dca": {
-    "amountPerOrder": "Importe por pedido",
     "estimatedEndDate": "Fecha prevista de finalización",
     "every": "Cada",
     "everyTooltip": "El tiempo estimado que transcurrirá entre cada operación de tu orden. El tiempo real puede variar en función del tiempo de bloque.",
     "executionFee": "Comisión de ejecución",
     "executionFeeTooltip": "La comisión que la orden DCA deduce del importe de cada operación ejecutada. La tasa que se muestra es la resultante tras aplicar esta comisión.",
+    "intervalPhrase": {
+      "day": "1 día",
+      "hour": "1 hora",
+      "minute": "1 minuto",
+      "month": "1 mes",
+      "week": "1 semana"
+    },
+    "marketPrice": "Precio de mercado",
     "minTrading": "{{amount}} o mínimo de {{symbol}} por pedido",
     "noWhitelistedPool": "Par no compatible",
     "orders": "Pedidos",
+    "orderSentence": "Estás vendiendo <sell/> para comprar <buy/> al precio de mercado cada <hl>{{interval}}</hl> durante <hl>{{rounds}} rondas</hl>.",
     "over": "Más de",
     "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",
     "placeOrder": "Realizar pedido",

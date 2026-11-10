@@ -8,15 +8,23 @@
     "title": "Confirm Swap"
   },
   "dca": {
-    "amountPerOrder": "Amount per Order",
     "estimatedEndDate": "Estimated End Date",
     "every": "Every",
     "everyTooltip": "The estimated time that will elapse between each trade in your order. The actual time may vary depending on the block time.",
     "executionFee": "Execution Fee",
     "executionFeeTooltip": "The fee the DCA order deducts from the output of each executed trade. The rate shown is after this fee.",
+    "intervalPhrase": {
+      "day": "1 day",
+      "hour": "1 hour",
+      "minute": "1 minute",
+      "month": "1 month",
+      "week": "1 week"
+    },
+    "marketPrice": "Market price",
     "minTrading": "Minimum {{amount}} {{symbol}} per order",
     "noWhitelistedPool": "Pair Not Supported",
     "orders": "Orders",
+    "orderSentence": "You’re selling <sell/> to buy <buy/> at market price every <hl>{{interval}}</hl> for <hl>{{rounds}} rounds</hl>.",
     "over": "Over",
     "overTooltip": "The number of individual trades that will be triggered as part of your order.",
     "placeOrder": "Place Order",

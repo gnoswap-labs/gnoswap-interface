@@ -22,7 +22,6 @@
       "tooltip": "Montant total des xGNS actuellement émis par le piquetage GNS."
     }
   },
-  "noTokensfound\n": "Aucune activité trouvée",
   "onchainActi": {
     "col": {
       "acc": "Compte",

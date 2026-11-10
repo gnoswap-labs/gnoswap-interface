@@ -8,15 +8,23 @@
     "title": "Confirmer l'échange"
   },
   "dca": {
-    "amountPerOrder": "Montant par commande",
     "estimatedEndDate": "Date de fin prévue",
     "every": "Chaque",
     "everyTooltip": "Le délai estimé entre chaque transaction de votre ordre. Le délai réel peut varier en fonction de la durée du bloc.",
     "executionFee": "Frais d'exécution",
     "executionFeeTooltip": "Les frais que l'ordre DCA prélève sur le produit de chaque transaction exécutée. Le taux indiqué s'entend après déduction de ces frais.",
+    "intervalPhrase": {
+      "day": "1 jour",
+      "hour": "1 heure",
+      "minute": "1 minute",
+      "month": "1 mois",
+      "week": "1 semaine"
+    },
+    "marketPrice": "Prix du marché",
     "minTrading": "{{amount}} s minimales : {{symbol}} par commande",
     "noWhitelistedPool": "Paire non prise en charge",
     "orders": "Commandes",
+    "orderSentence": "Vous vendez <sell/> pour acheter <buy/> au prix du marché toutes les <hl>{{interval}}</hl> pendant <hl>{{rounds}} rounds</hl>.",
     "over": "Plus de",
     "overTooltip": "Le nombre de transactions individuelles qui seront exécutées dans le cadre de votre ordre.",
     "placeOrder": "Passer une commande",

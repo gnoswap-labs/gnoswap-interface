@@ -22,7 +22,6 @@
       "tooltip": "目前通过 GNS 桩签发的 xGNS 总量。"
     }
   },
-  "noTokensfound\n": "未找到活动",
   "onchainActi": {
     "col": {
       "acc": "帐户",

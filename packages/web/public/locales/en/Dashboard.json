@@ -22,7 +22,6 @@
       "tooltip": "Total amount of xGNS currently issued by GNS staking."
     }
   },
-  "noTokensfound\n": "No activities found",
   "onchainActi": {
     "col": {
       "acc": "Account",
