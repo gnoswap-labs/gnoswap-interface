@@ -102,6 +102,10 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
             {formatOrderFullAmount(order.minimumReceived, tokenOut.decimals)} {tokenOut.displaySymbol}
           </span>
         </div>
+        <div className="card-sub-info">
+          <span>{t("Swap:dca.executionFee")}</span>
+          <span className="value">{formatBps(order.executionFeeRate)}</span>
+        </div>
         {order.isActive && (
           <div className="card-sub-info">
             <span>{t("Swap:order.expiresAt")}</span>

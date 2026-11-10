@@ -155,6 +155,7 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     takingAmount: toDisplayAmount(tokenOut, item.takingAmount),
     slippageBps: item.slippageBps,
     minimumReceived: toDisplayAmount(tokenOut, calculateLimitMinimumReceived(item.takingAmount, item.slippageBps)),
+    executionFeeRate: item.executionFeeRate,
     filledInput: toDisplayAmount(tokenIn, item.filledInput),
     remainingInput: toDisplayAmount(tokenIn, item.remainingInput),
     refundedInput: toDisplayAmount(tokenIn, item.refundedInput),

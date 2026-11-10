@@ -21,6 +21,7 @@ const ORDER: LimitOrderModel = {
   takingAmount: "104",
   slippageBps: 50,
   minimumReceived: "103.48",
+  executionFeeRate: 15,
   filledInput: "35",
   remainingInput: "65",
   refundedInput: "0",
