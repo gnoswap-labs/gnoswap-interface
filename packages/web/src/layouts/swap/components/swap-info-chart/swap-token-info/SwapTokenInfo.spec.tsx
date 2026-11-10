@@ -25,7 +25,10 @@ jest.mock("@hooks/common/use-gnoscan-url", () => ({
   }),
 }));
 
-const mockUseGetTokenPrices = jest.fn((_path: string) => ({
+const mockUseGetTokenPrices = jest.fn<
+  { data: { usd: string; priceGradeType: string; last7d: never[] }; isLoading: boolean; isFetched: boolean },
+  [string]
+>(() => ({
   data: { usd: "0.19", priceGradeType: "NONE", last7d: [] },
   isLoading: false,
   isFetched: true,
