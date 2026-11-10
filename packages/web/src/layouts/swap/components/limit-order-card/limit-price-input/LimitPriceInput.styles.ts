@@ -106,10 +106,13 @@ export const LimitPricePresets = styled.div`
   gap: 8px;
 
   .market-price {
-    ${fonts.p6};
+    ${fonts.p4};
     color: ${({ theme }) => theme.color.text04};
     max-width: 100%;
     overflow-wrap: anywhere;
+    ${media.mobile} {
+      ${fonts.p6};
+    }
   }
 
   .preset-buttons {
