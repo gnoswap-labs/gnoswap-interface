@@ -13,6 +13,8 @@ interface OrderPairLabelProps {
   outputToken: TokenModel;
   /** Formatted input amount shown before the input symbol. */
   inputAmount?: string;
+  /** Formatted expected output before slippage, when known. */
+  outputAmount?: string;
   /** Gnoscan link of the order, shown as an external link icon. */
   linkUrl?: string;
   logoSize?: number;
@@ -23,18 +25,29 @@ const OrderPairLabel: React.FC<OrderPairLabelProps> = ({
   inputToken,
   outputToken,
   inputAmount,
+  outputAmount,
   linkUrl,
   logoSize = 20,
 }) => {
   const inputSymbol = inputToken.displaySymbol || inputToken.symbol;
+  const outputSymbol = outputToken.displaySymbol || outputToken.symbol;
 
   return (
     <OrderPairLabelWrapper>
       <MissingLogo symbol={inputToken.symbol} url={inputToken.logoURI} width={logoSize} mobileWidth={16} />
       <span className="pair-symbols">
-        {inputAmount ? `${inputAmount} ${inputSymbol}` : inputSymbol}
+        <span className="pair-token">
+          <span className="pair-token-text">{inputAmount ? `${inputAmount} ${inputSymbol}` : inputSymbol}</span>
+        </span>
         <IconRightArrow className="pair-arrow" />
-        {outputToken.displaySymbol || outputToken.symbol}
+        <span className="pair-token">
+          {outputAmount !== undefined && (
+            <MissingLogo symbol={outputToken.symbol} url={outputToken.logoURI} width={logoSize} mobileWidth={16} />
+          )}
+          <span className="pair-token-text">
+            {outputAmount !== undefined ? `${outputAmount} ${outputSymbol}` : outputSymbol}
+          </span>
+        </span>
       </span>
       {linkUrl && (
         <Link className="pair-link" href={linkUrl} target="_blank" aria-label="Order transaction link">

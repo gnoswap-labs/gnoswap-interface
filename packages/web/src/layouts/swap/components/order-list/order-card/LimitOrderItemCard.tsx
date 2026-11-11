@@ -8,14 +8,13 @@ import { LimitOrderModel } from "@models/order/limit-order-model";
 import {
   formatBps,
   formatOrderAmount,
-  formatOrderDate,
   formatOrderDateTime,
   formatOrderFullAmount,
   formatOrderRate,
 } from "@utils/order-format-utils";
 
 import OrderProgressBar from "../order-progress-bar/OrderProgressBar";
-import { OrderItemCardWrapper } from "./OrderItemCard.styles";
+import { LimitOrderItemCardWrapper } from "./LimitOrderItemCard.styles";
 import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "./OrderItemCardParts";
 
 export interface LimitOrderItemCardProps {
@@ -90,14 +89,20 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   }, [order, t, tokenIn, tokenOut]);
 
   return (
-    <OrderItemCardWrapper className={cx({ active: order.isActive })}>
+    <LimitOrderItemCardWrapper className={cx({ active: order.isActive })}>
       <div className="card-header">
-        <OrderPairLabel inputToken={tokenIn} outputToken={tokenOut} linkUrl={txUrl} />
+        <OrderPairLabel
+          inputToken={tokenIn}
+          outputToken={tokenOut}
+          inputAmount={formatOrderFullAmount(order.makingAmount, tokenIn.decimals)}
+          outputAmount={formatOrderFullAmount(order.takingAmount, tokenOut.decimals)}
+          linkUrl={txUrl}
+        />
         {order.isActive ? (
           <span className="card-status ongoing">{t(STATUS_LABEL_KEY[order.status])}</span>
         ) : (
           <span className="card-status">
-            {`${t(STATUS_LABEL_KEY[order.status])} · ${formatOrderDate(order.closedAt ?? order.expiresAt)}`}
+            {`${t(STATUS_LABEL_KEY[order.status])} · ${formatOrderDateTime(order.closedAt)}`}
           </span>
         )}
       </div>
@@ -135,7 +140,7 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         visible={BigNumber(order.filledInput).isGreaterThan(0)}
         renderHistory={() => renderHistory(order)}
       />
-    </OrderItemCardWrapper>
+    </LimitOrderItemCardWrapper>
   );
 };
 

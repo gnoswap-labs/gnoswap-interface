@@ -16,7 +16,20 @@ export const OrderPairLabelWrapper = styled.div`
   .pair-symbols {
     ${mixins.flexbox("row", "center", "flex-start")};
     gap: 4px;
-    white-space: nowrap;
+    min-width: 0;
+    flex-wrap: wrap;
+  }
+
+  .pair-token {
+    ${mixins.flexbox("row", "center", "flex-start")};
+    min-width: 0;
+    max-width: 100%;
+    gap: 4px;
+  }
+
+  .pair-token-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .pair-arrow {
