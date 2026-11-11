@@ -19,6 +19,7 @@ interface SwapCardHeaderProps {
   changeSlippage?: (value: number) => void;
   /** Highest tolerance (percent) the settings editor accepts. Defaults to the swap maximum. */
   maxSlippage?: number;
+  defaultSlippage?: number;
   themeKey: "dark" | "light";
   /** Shows the Swap | Limit | DCA tabs in place of the title when given. */
   swapType?: SwapCardType;
@@ -32,6 +33,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
   slippage,
   changeSlippage,
   maxSlippage,
+  defaultSlippage,
   themeKey,
   swapType,
   changeSwapType,
@@ -94,6 +96,7 @@ const SwapCardHeader: React.FC<SwapCardHeaderProps> = ({
                 slippage={slippage}
                 changeSlippage={changeSlippage}
                 maxSlippage={maxSlippage}
+                defaultSlippage={defaultSlippage}
                 close={closeSetting}
               />
             )}

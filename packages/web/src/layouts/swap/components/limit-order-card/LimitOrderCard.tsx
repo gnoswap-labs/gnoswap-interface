@@ -178,6 +178,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
         slippage={slippage}
         changeSlippage={changeSlippage}
         maxSlippage={maxSlippage}
+        defaultSlippage={0}
         themeKey={themeKey}
         swapType={swapType}
         changeSwapType={changeSwapType}

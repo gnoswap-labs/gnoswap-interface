@@ -32,4 +32,7 @@ export const limitPricePairKey = atom<string | null>(null);
 /** Seconds until the order expires. */
 export const limitExpiry = atom<number>(DEFAULT_LIMIT_EXPIRY);
 
+/** Limit-only tolerance in percent; never inherits the swap setting. */
+export const limitSlippage = atom<number>(0);
+
 export const orderListTab = atom<OrderListTab>("active");

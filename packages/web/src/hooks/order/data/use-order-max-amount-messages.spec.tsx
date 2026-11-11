@@ -21,7 +21,6 @@ jest.mock("@hooks/common/use-gnoswap-context", () => ({
     },
   }),
 }));
-jest.mock("@hooks/common/use-slippage", () => ({ useSlippage: () => ({ slippage: 0.5, changeSlippage: jest.fn() }) }));
 jest.mock("@hooks/wallet/ui/use-connect-wallet-modal", () => ({
   useConnectWalletModal: () => ({ openModal: jest.fn() }),
 }));

@@ -5,9 +5,8 @@ import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
 interface UseSlippageOptions {
   /**
-   * Resets the shared setting to the default when the consumer mounts. The
-   * Swap, DCA and Limit forms share one selection across their tabs and opt
-   * out, so switching modes keeps the user's tolerance.
+   * Resets the shared swap/liquidity setting to the default when the consumer
+   * mounts. Swap opts out so switching tabs preserves its selection.
    */
   resetOnMount?: boolean;
 }
