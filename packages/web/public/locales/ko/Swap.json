@@ -44,7 +44,6 @@
     "belowMarketWarning": "트리거 가격이 시장가보다 낮으므로, 귀하의 주문이 즉시 체결될 수 있습니다.",
     "executionFeeTooltip": "각 체결의 수령 수량에서 차감되는 수수료입니다. 최소 수령량은 이 수수료를 차감한 후의 수량입니다.",
     "expiresIn": "만료까지 남은 기간:",
-    "expiry": "만료일",
     "expiryOption": {
       "oneDay": "1일",
       "oneHour": "1시간",
@@ -58,19 +57,21 @@
     "minimumReceivedTooltip": "지정가 및 선택한 슬리피지를 기준으로, 실행 수수료를 차감한 후 받게 되는 최소 수익액입니다. 이 수치는 전량 체결된 경우를 기준으로 표시되며, 부분 체결의 경우 동일한 비율을 적용하고 체결 건당 올림 처리됩니다.",
     "minTrading": "최소 {{amount}} {{symbol}}",
     "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도",
-    "slippage": "최대 슬리피지",
     "startToOrder": "주문 시작하기"
   },
   "order": {
     "active": "진행 중인 주문",
     "cancelOrder": "주문 취소",
     "claimOrder": "주장",
+    "closedAt": "주문 종료 시간",
     "connectWallet": "주문을 확인하시려면 지갑을 연결해 주세요.",
     "expiresAt": "만료일",
+    "minimumRemaining": "최소 잔여량",
     "nextTrade": "다음 거래",
     "noOrders": "주문이 없습니다.",
     "ongoing": "진행 중",
     "order": "주문",
+    "orderAmount": "주문 금액",
     "orderHistory": "주문 내역",
     "overview": "개요",
     "past": "이전 주문 내역",
@@ -125,7 +126,6 @@
     "wrap": "래핑"
   },
   "swapInfo": {
-    "gasFee": "네트워크 가스 수수료",
     "maxSent": "최대 수량",
     "minReceived": "최소 획득 수량",
     "priceImpact": "프라이스 임팩트",

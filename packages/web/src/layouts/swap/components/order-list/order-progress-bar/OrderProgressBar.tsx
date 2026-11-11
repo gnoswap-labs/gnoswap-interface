@@ -17,7 +17,7 @@ interface OrderProgressBarProps {
   overview?: OrderOverviewRow[];
 }
 
-/** Progress of an order. Active orders show an Overview tooltip on hover, or on tap on touch devices. */
+/** Progress of an order. Given Overview rows, it shows them in a tooltip on hover, or on tap on touch devices. */
 const OrderProgressBar: React.FC<OrderProgressBarProps> = ({ progress, overview }) => {
   const { t } = useTranslation();
   const clamped = Math.min(100, Math.max(0, progress));

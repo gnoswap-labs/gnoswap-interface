@@ -32,6 +32,11 @@ export interface LimitOrderModel {
   slippageBps: number;
   /** Owner-net minimum for the full original order, in display units; unchanged by fills or closure. */
   minimumReceived: string;
+  /**
+   * Owner-net minimum for the input still unfilled, in display units. Worked out from the order's raw terms and
+   * rounded up, so it is not `minimumReceived` scaled by a ratio. Zero when nothing remains.
+   */
+  minimumRemainingReceived: string;
   /** Execution fee saved with this order, in basis points. */
   executionFeeRate: number;
   filledInput: string;

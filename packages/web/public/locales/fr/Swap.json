@@ -44,7 +44,6 @@
     "belowMarketWarning": "Le cours de déclenchement est inférieur au cours du marché et votre ordre pourrait être exécuté immédiatement.",
     "executionFeeTooltip": "Les frais sont prélevés sur le montant de chaque transaction exécutée. Le montant minimum perçu est indiqué après déduction de ces frais.",
     "expiresIn": "Expire dans",
-    "expiry": "Date d'expiration",
     "expiryOption": {
       "oneDay": "1 jour",
       "oneHour": "1 heure",
@@ -58,19 +57,21 @@
     "minimumReceivedTooltip": "Montant minimum que vous recevez après déduction des frais d'exécution, calculé en fonction de votre cours limite et du glissement sélectionné. Ce montant s'applique à une exécution complète ; en cas d'exécution partielle, le même ratio est appliqué et le montant est arrondi à l'unité supérieure pour chaque exécution partielle.",
     "minTrading": "{{amount}} minimale {{symbol}}",
     "sellWhen": "Vendre quand 1 {{symbol}} atteint",
-    "slippage": "Glissement maximal",
     "startToOrder": "Commencer la commande"
   },
   "order": {
     "active": "Commandes en cours",
     "cancelOrder": "Annuler la commande",
     "claimOrder": "Allégation",
+    "closedAt": "Heure de fin de la commande",
     "connectWallet": "Veuillez connecter votre portefeuille pour consulter votre commande.",
     "expiresAt": "Date d'expiration :",
+    "minimumRemaining": "Solde minimum restant",
     "nextTrade": "Prochaine transaction",
     "noOrders": "Aucune commande trouvée.",
     "ongoing": "En cours",
     "order": "Commande",
+    "orderAmount": "Montant de la commande",
     "orderHistory": "Historique des commandes",
     "overview": "Présentation générale",
     "past": "Commandes précédentes",
@@ -125,7 +126,6 @@
     "wrap": "Enveloppe"
   },
   "swapInfo": {
-    "gasFee": "Taxe sur le gaz de réseau",
     "maxSent": "Env. Max",
     "minReceived": "Reçu min.\n",
     "priceImpact": "Impact sur les prix",

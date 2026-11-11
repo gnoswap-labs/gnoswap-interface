@@ -60,22 +60,34 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     [order, t, tokenIn.displaySymbol, tokenOut.displaySymbol],
   );
 
-  const overview = useMemo(
-    () =>
-      order.isActive
-        ? [
-            {
-              label: t("Swap:order.soldAmount"),
-              value: `${formatOrderFullAmount(order.filledInput, tokenIn.decimals)} / ${formatOrderFullAmount(
-                order.makingAmount,
-                tokenIn.decimals,
-              )} ${tokenIn.displaySymbol} (${formatOrderAmount(order.progress)}%)`,
-            },
-            { label: t("Swap:order.expiresAt"), value: formatOrderDateTime(order.expiresAt) },
-          ]
-        : undefined,
-    [order.expiresAt, order.filledInput, order.isActive, order.makingAmount, order.progress, t, tokenIn],
-  );
+  const overview = useMemo(() => {
+    const inputAmount = (amount: string) =>
+      `${formatOrderFullAmount(amount, tokenIn.decimals)} ${tokenIn.displaySymbol}`;
+    const outputAmount = (amount: string) =>
+      `${formatOrderFullAmount(amount, tokenOut.decimals)} ${tokenOut.displaySymbol}`;
+
+    if (order.isActive) {
+      const sold = formatOrderFullAmount(order.filledInput, tokenIn.decimals);
+      return [
+        {
+          label: t("Swap:order.soldAmount"),
+          value: `${sold} / ${inputAmount(order.makingAmount)} (${formatOrderAmount(order.progress)}%)`,
+        },
+        { label: t("Swap:order.remainingAmount"), value: inputAmount(order.remainingInput) },
+        { label: t("Swap:order.minimumRemaining"), value: outputAmount(order.minimumRemainingReceived) },
+        { label: t("Swap:order.expiresAt"), value: formatOrderDateTime(order.expiresAt) },
+      ];
+    }
+
+    // A closed order only reports what happened, so no remaining amounts.
+    return [
+      { label: t("Swap:order.orderAmount"), value: inputAmount(order.makingAmount) },
+      { label: t("Swap:order.soldAmount"), value: inputAmount(order.filledInput) },
+      { label: t("Swap:order.purchasedAmount"), value: outputAmount(order.userOutput) },
+      // The close time the order-api reports. Expiry is no stand-in: an expired order may not be closed yet.
+      { label: t("Swap:order.closedAt"), value: formatOrderDateTime(order.closedAt) },
+    ];
+  }, [order, t, tokenIn, tokenOut]);
 
   return (
     <OrderItemCardWrapper className={cx({ active: order.isActive })}>

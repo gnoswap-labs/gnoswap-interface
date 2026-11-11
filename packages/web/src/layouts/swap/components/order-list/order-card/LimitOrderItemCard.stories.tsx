@@ -21,6 +21,7 @@ const ORDER: LimitOrderModel = {
   takingAmount: "104",
   slippageBps: 50,
   minimumReceived: "103.48",
+  minimumRemainingReceived: "67.262",
   executionFeeRate: 15,
   filledInput: "35",
   remainingInput: "65",
@@ -55,7 +56,7 @@ const meta = {
       }, []);
       return (
         <I18nextProvider i18n={i18n}>
-          <div style={{ width: 500, maxWidth: "100%", padding: 24, paddingTop: 160 }}>
+          <div style={{ width: 500, maxWidth: "100%", padding: 24, paddingTop: 240 }}>
             <Story />
           </div>
         </I18nextProvider>
@@ -76,6 +77,7 @@ export const Unfilled: Story = {
       status: "OPEN",
       filledInput: "0",
       remainingInput: "100",
+      minimumRemainingReceived: "103.48",
       userOutput: "0",
       priceRate: null,
       progress: 0,
@@ -89,8 +91,58 @@ export const SmallFill: Story = {
       ...ORDER,
       filledInput: "0.000001",
       remainingInput: "99.999999",
+      minimumRemainingReceived: "103.479999",
       userOutput: "0.00000104",
       progress: 0.000001,
+    },
+  },
+};
+
+export const Completed: Story = {
+  args: {
+    order: {
+      ...ORDER,
+      status: "COMPLETED",
+      isActive: false,
+      filledInput: "100",
+      remainingInput: "0",
+      minimumRemainingReceived: "0",
+      userOutput: "103.844",
+      priceRate: "1.03844",
+      progress: 100,
+      closedAt: Date.UTC(2026, 10, 5, 8, 30) / 1000,
+    },
+  },
+};
+
+export const CancelledAfterFill: Story = {
+  args: {
+    order: {
+      ...ORDER,
+      status: "CANCELLED",
+      isActive: false,
+      remainingInput: "0",
+      minimumRemainingReceived: "0",
+      refundedInput: "65",
+      closedAt: Date.UTC(2026, 10, 5, 12) / 1000,
+    },
+  },
+};
+
+/** Expired, but the input stays escrowed until it is refunded: closed, so no remaining amounts and no close time. */
+export const ExpiredAwaitingRefund: Story = {
+  args: {
+    order: {
+      ...ORDER,
+      status: "EXPIRED",
+      isActive: false,
+      filledInput: "0",
+      remainingInput: "100",
+      minimumRemainingReceived: "103.48",
+      userOutput: "0",
+      canCancel: true,
+      priceRate: null,
+      progress: 0,
     },
   },
 };

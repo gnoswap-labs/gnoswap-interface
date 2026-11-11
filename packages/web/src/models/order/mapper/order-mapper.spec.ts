@@ -231,4 +231,84 @@ describe("order-mapper", () => {
     expect(canCancelLimitOrder({ ...base, status: "CANCELLED" })).toBe(false);
     expect(canCancelLimitOrder({ status: "COMPLETED", remainingInput: "0", refundedInput: "0" })).toBe(false);
   });
+
+  describe("limit order minimum for the unfilled input", () => {
+    const item: LimitOrderItem = {
+      orderId: "9",
+      owner: "g1",
+      status: "PARTIALLY_FILLED",
+      tokenIn: "gno.land/r/gnoland/wugnot",
+      tokenOut: "gno.land/r/gnoswap/gns",
+      makingAmount: "100000000",
+      takingAmount: "12430800",
+      slippageBps: 50,
+      executionFeeRate: 15,
+      filledInput: "35000000",
+      remainingInput: "65000000",
+      refundedInput: "0",
+      userOutput: "4373420",
+      createdAt: 1,
+      expiresAt: 2,
+      createdTxHash: "tx",
+      closedAt: null,
+      closedTxHash: null,
+    };
+
+    it("covers only the unfilled input and leaves the original minimum alone", () => {
+      const order = mapLimitOrderItemToModel(item, tokens);
+
+      expect(order.minimumRemainingReceived).toBe("8.03962");
+      expect(order.minimumReceived).toBe("12.368646");
+    });
+
+    it("is the original minimum before any fill and zero once nothing remains", () => {
+      const unfilled = mapLimitOrderItemToModel(
+        { ...item, status: "OPEN", filledInput: "0", remainingInput: item.makingAmount, userOutput: "0" },
+        tokens,
+      );
+      expect(unfilled.minimumRemainingReceived).toBe("12.368646");
+      expect(unfilled.minimumReceived).toBe("12.368646");
+
+      const completed = mapLimitOrderItemToModel(
+        { ...item, status: "COMPLETED", filledInput: item.makingAmount, remainingInput: "0", userOutput: "12495486" },
+        tokens,
+      );
+      expect(completed.minimumRemainingReceived).toBe("0");
+      expect(completed.minimumReceived).toBe("12.368646");
+
+      const cancelled = mapLimitOrderItemToModel(
+        { ...item, status: "CANCELLED", remainingInput: "0", refundedInput: "65000000" },
+        tokens,
+      );
+      expect(cancelled.minimumRemainingReceived).toBe("0");
+    });
+
+    it("rounds up from the raw terms, not from the rounded display amounts", () => {
+      // Scaling the rounded original minimum (3.316667) by the unfilled share rounds up to 3.316667 again.
+      const order = mapLimitOrderItemToModel(
+        { ...item, makingAmount: "7000000", takingAmount: "3333333", filledInput: "1", remainingInput: "6999999" },
+        tokens,
+      );
+
+      expect(order.minimumReceived).toBe("3.316667");
+      expect(order.minimumRemainingReceived).toBe("3.316666");
+    });
+
+    it("applies the output token's decimals", () => {
+      // 1 of 3 input tokens (6 decimals) against 1 output token (8 decimals): 33166666.67 raw rounds up.
+      const order = mapLimitOrderItemToModel(
+        {
+          ...item,
+          tokenOut: eightDecimals.path,
+          makingAmount: "3000000",
+          takingAmount: "100000000",
+          remainingInput: "1000000",
+        },
+        tokens,
+      );
+
+      expect(order.minimumRemainingReceived).toBe("0.33166667");
+      expect(order.minimumReceived).toBe("0.995");
+    });
+  });
 });
