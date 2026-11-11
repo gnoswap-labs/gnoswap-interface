@@ -18,8 +18,6 @@ interface SettingMenuModalProps {
   className?: string;
   /** Highest tolerance (percent) the editor accepts; values above it are saved as it. */
   maxSlippage?: number;
-  /** Tolerance restored by Auto. Defaults to the swap tolerance. */
-  defaultSlippage?: number;
 }
 
 const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
@@ -28,7 +26,6 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   close,
   className,
   maxSlippage = MAX_SLIPPAGE,
-  defaultSlippage = DEFAULT_SLIPPAGE,
 }) => {
   const [tmpSlippage, setTmpSlippage] = useState<string>(slippage.toString());
   const settingMenuRef = useRef<HTMLDivElement | null>(null);
@@ -75,8 +72,8 @@ const SettingMenuModal: React.FC<SettingMenuModalProps> = ({
   );
 
   const onClickReset = useCallback(() => {
-    setTmpSlippage(defaultSlippage.toString());
-  }, [defaultSlippage]);
+    setTmpSlippage(DEFAULT_SLIPPAGE.toString());
+  }, [setTmpSlippage]);
 
   const handleEnterKey = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {

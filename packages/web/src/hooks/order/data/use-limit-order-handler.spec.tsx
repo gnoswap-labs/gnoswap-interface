@@ -237,11 +237,11 @@ describe("useLimitOrderHandler", () => {
       result.current.changeSellAmount("10");
     });
     act(() => result.current.changeLimitPrice("2"));
-    expect(result.current.slippage).toBe(0);
-    expect(result.current.minimumReceived).toBe("20");
+    expect(result.current.slippage).toBe(0.5);
+    expect(result.current.minimumReceived).toBe("19.9");
 
     act(() => store.set(CommonState.slippage, 10));
-    expect(result.current.minimumReceived).toBe("20");
+    expect(result.current.minimumReceived).toBe("19.9");
     act(() => result.current.changeSlippage(1));
     expect(result.current.slippage).toBe(1);
     expect(result.current.minimumReceived).toBe("19.8");

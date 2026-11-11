@@ -35,21 +35,4 @@ describe("SettingMenuModal Component", () => {
 
     expect(changeSlippage).toHaveBeenLastCalledWith(10);
   });
-
-  it("restores zero with Auto for Limit instead of the shared swap tolerance", () => {
-    const changeSlippage = jest.fn();
-    render(
-      <JotaiProvider>
-        <GnoswapThemeProvider>
-          <SettingMenuModal slippage={1} defaultSlippage={0} changeSlippage={changeSlippage} close={() => null} />
-        </GnoswapThemeProvider>
-      </JotaiProvider>,
-    );
-
-    const input = screen.getByPlaceholderText("0");
-    fireEvent.click(screen.getByRole("button"));
-    expect(input).toHaveValue("0");
-    fireEvent.keyDown(input, { key: "Enter" });
-    expect(changeSlippage).toHaveBeenLastCalledWith(0);
-  });
 });
