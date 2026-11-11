@@ -10,7 +10,7 @@ import { formatOrderPriceDeviation, formatOrderRelativeDuration } from "@utils/o
 import { OrderModalWrapper } from "../common/OrderModal.styles";
 import { TokenBadge } from "../confirm-dca-order-modal/ConfirmDcaOrderModal";
 import OrderInfoRows, { OrderInfoRow } from "../order-info-rows/OrderInfoRows";
-import { ValueAnnotation } from "./ConfirmLimitOrderModal.styles";
+import { ValueAnnotation } from "../common/OrderValueAnnotation.styles";
 
 export interface ConfirmLimitOrderModalProps {
   summary: LimitOrderSummary;

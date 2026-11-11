@@ -1,4 +1,5 @@
 import {
+  calculateDcaOrderEndAt,
   calculatePriceDeviation,
   formatBps,
   formatOrderAmount,
@@ -6,9 +7,16 @@ import {
   formatOrderPriceDeviation,
   formatOrderRate,
   formatOrderRelativeDuration,
+  formatOrderRemainingTime,
   formatOrderRoi,
+  formatOrderTimeUntil,
   trimFractionZeros,
 } from "./order-format-utils";
+
+const NOW = 1_794_000_000;
+const MINUTE = 60;
+const HOUR = 3_600;
+const DAY = 86_400;
 
 describe("order-format-utils", () => {
   it("trims fraction zeros and keeps suffixes", () => {
@@ -118,5 +126,100 @@ describe("order-format-utils", () => {
 
   it.each([0, -3_600, 90.5, Number.NaN, Number.POSITIVE_INFINITY])("has no duration text for %s", durationSec => {
     expect(formatOrderRelativeDuration(durationSec, "en")).toBeNull();
+  });
+
+  describe("DCA order end", () => {
+    it("is the next execution when no round follows it", () => {
+      expect(calculateDcaOrderEndAt({ nextExecutionAt: 1_000, interval: 60, remainingCount: 1 })).toBe(1_000);
+    });
+
+    it("adds one interval for each round after the next execution", () => {
+      expect(calculateDcaOrderEndAt({ nextExecutionAt: 1_000, interval: 3_600, remainingCount: 4 })).toBe(11_800);
+    });
+
+    it.each<[string, Parameters<typeof calculateDcaOrderEndAt>[0]]>([
+      ["no next execution is known", { nextExecutionAt: null, interval: 60, remainingCount: 3 }],
+      ["the next execution is zero", { nextExecutionAt: 0, interval: 60, remainingCount: 3 }],
+      ["no round is left", { nextExecutionAt: 1_000, interval: 60, remainingCount: 0 }],
+      ["the rounds left are not a whole number", { nextExecutionAt: 1_000, interval: 60, remainingCount: 2.5 }],
+      ["the interval is zero", { nextExecutionAt: 1_000, interval: 0, remainingCount: 3 }],
+      ["a value is not a number", { nextExecutionAt: Number.NaN, interval: 60, remainingCount: 3 }],
+    ])("has no end when %s", (_, order) => {
+      expect(calculateDcaOrderEndAt(order)).toBeNull();
+    });
+  });
+
+  describe("remaining time", () => {
+    it.each([
+      [2 * DAY + 3 * HOUR + 15 * MINUTE, "2d 3h 15m"],
+      // A unit that is zero is left out.
+      [2 * DAY + 15 * MINUTE, "2d 15m"],
+      [HOUR, "1h"],
+      // A started minute counts as a whole one: never `0m` with time left.
+      [1, "1m"],
+      [MINUTE, "1m"],
+      [MINUTE + 1, "2m"],
+      [HOUR + 1, "1h 1m"],
+      // A month has no fixed length, so 30 days stays in days.
+      [30 * DAY, "30d"],
+    ])("counts down %i seconds as %s", (seconds, expected) => {
+      expect(formatOrderRemainingTime(NOW + seconds, "en", NOW)).toBe(expected);
+    });
+
+    it("counts down in the locale", () => {
+      expect(formatOrderRemainingTime(NOW + 2 * DAY + 3 * HOUR + 15 * MINUTE, "ko", NOW)).toBe("2일 3시간 15분");
+    });
+
+    it.each([null, undefined, NOW, NOW - HOUR, Number.NaN, Number.POSITIVE_INFINITY])(
+      "has no countdown to an end of %s",
+      endAt => {
+        expect(formatOrderRemainingTime(endAt, "en", NOW)).toBeNull();
+      },
+    );
+  });
+
+  describe("time until", () => {
+    it.each([
+      [1, "in 1 minute"],
+      [89, "in 1 minute"],
+      [90, "in 2 minutes"],
+      [59 * MINUTE + 29, "in 59 minutes"],
+      // Rounded in minutes these would read `in 60 minutes` and `in 24 hours`, so the larger unit takes over.
+      [59 * MINUTE + 30, "in 1 hour"],
+      [HOUR + 29 * MINUTE + 59, "in 1 hour"],
+      [HOUR + 30 * MINUTE, "in 2 hours"],
+      [23 * HOUR + 29 * MINUTE + 59, "in 23 hours"],
+      [23 * HOUR + 30 * MINUTE, "in 1 day"],
+      [DAY, "in 1 day"],
+      [DAY + 12 * HOUR - 1, "in 1 day"],
+      [DAY + 12 * HOUR, "in 2 days"],
+      // A month has no fixed length, so 30 days stays in days.
+      [30 * DAY, "in 30 days"],
+    ])("describes %i seconds ahead as %s", (seconds, expected) => {
+      expect(formatOrderTimeUntil(NOW + seconds, "en", NOW)).toBe(expected);
+    });
+
+    it("describes the distance in the locale", () => {
+      expect(formatOrderTimeUntil(NOW + DAY, "ko", NOW)).toBe("1일 후");
+      expect(formatOrderTimeUntil(NOW + 30 * DAY, "fr", NOW)).toBe("dans 30 jours");
+    });
+
+    it.each([null, undefined, NOW, NOW - HOUR, Number.NaN, Number.POSITIVE_INFINITY])(
+      "has no distance to an end of %s",
+      endAt => {
+        expect(formatOrderTimeUntil(endAt, "en", NOW)).toBeNull();
+      },
+    );
+  });
+
+  it("counts from the current time unless one is given", () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(NOW * 1000);
+    try {
+      expect(formatOrderRemainingTime(NOW + HOUR, "en")).toBe("1h");
+      expect(formatOrderTimeUntil(NOW + DAY, "en")).toBe("in 1 day");
+    } finally {
+      jest.useRealTimers();
+    }
   });
 });

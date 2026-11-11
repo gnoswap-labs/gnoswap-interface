@@ -1,6 +1,8 @@
 import BigNumber from "bignumber.js";
 import dayjs from "dayjs";
 
+import { DcaOrderModel } from "@models/order/dca-order-model";
+
 import { formatTokenAmount } from "./new-number-utils";
 
 const ORDER_DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss";
@@ -125,4 +127,93 @@ export function formatOrderRelativeDuration(durationSec: number, locale?: string
     }
   }
   return null;
+}
+
+const SECONDS_PER_MINUTE = 60;
+const SECONDS_PER_HOUR = 3_600;
+const SECONDS_PER_DAY = 86_400;
+
+/**
+ * When an open DCA order places its last round: its next execution, plus one interval for each round after it.
+ * Null unless the order has a real schedule (a next execution, a positive interval and a round left), so no end is
+ * ever guessed for one that has none.
+ */
+export function calculateDcaOrderEndAt({
+  nextExecutionAt,
+  interval,
+  remainingCount,
+}: Pick<DcaOrderModel, "nextExecutionAt" | "interval" | "remainingCount">): number | null {
+  if (nextExecutionAt === null || !Number.isFinite(nextExecutionAt) || nextExecutionAt <= 0) return null;
+  if (!Number.isFinite(interval) || interval <= 0) return null;
+  if (!Number.isInteger(remainingCount) || remainingCount < 1) return null;
+
+  return nextExecutionAt + interval * (remainingCount - 1);
+}
+
+/** Seconds from `nowUnixSeconds` until `endAt`. Null when `endAt` is unknown or not a number, or no longer ahead. */
+function secondsUntil(endAt: number | null | undefined, nowUnixSeconds: number): number | null {
+  if (endAt === null || endAt === undefined) return null;
+
+  const seconds = endAt - nowUnixSeconds;
+  return Number.isFinite(seconds) && seconds > 0 ? seconds : null;
+}
+
+/** Calendar-free units of a countdown, largest first: a month has no fixed length, so 30 days is `30d`. */
+const COUNTDOWN_UNITS = [
+  ["day", SECONDS_PER_DAY],
+  ["hour", SECONDS_PER_HOUR],
+  ["minute", SECONDS_PER_MINUTE],
+] as const;
+
+/**
+ * The time left until `endAt` as compact `locale` text down to the minute: `2d 3h 15m`, `1h`, `45m`. A started
+ * minute counts as a whole one, so it never reads `0m` while time is left. Null once `endAt` is unknown or not ahead.
+ */
+export function formatOrderRemainingTime(
+  endAt: number | null | undefined,
+  locale?: string,
+  nowUnixSeconds = Date.now() / 1000,
+): string | null {
+  const seconds = secondsUntil(endAt, nowUnixSeconds);
+  if (seconds === null) return null;
+
+  let remaining = Math.ceil(seconds / SECONDS_PER_MINUTE) * SECONDS_PER_MINUTE;
+  const parts: string[] = [];
+  for (const [unit, unitSeconds] of COUNTDOWN_UNITS) {
+    const count = Math.floor(remaining / unitSeconds);
+    remaining -= count * unitSeconds;
+    if (count > 0) {
+      parts.push(new Intl.NumberFormat(locale, { style: "unit", unit, unitDisplay: "narrow" }).format(count));
+    }
+  }
+
+  return new Intl.ListFormat(locale, { type: "unit", style: "narrow" }).format(parts);
+}
+
+/**
+ * The unit an approximate time is told in. A larger unit takes over once the smaller one would round up to a whole
+ * one of it: 59.5 minutes is `in 1 hour`, not `in 60 minutes`, and 23.5 hours is `in 1 day`, not `in 24 hours`.
+ */
+function pickApproximateUnit(seconds: number): readonly [Intl.RelativeTimeFormatUnit, number] {
+  if (seconds >= SECONDS_PER_DAY - SECONDS_PER_HOUR / 2) return ["day", SECONDS_PER_DAY];
+  if (seconds >= SECONDS_PER_HOUR - SECONDS_PER_MINUTE / 2) return ["hour", SECONDS_PER_HOUR];
+  return ["minute", SECONDS_PER_MINUTE];
+}
+
+/**
+ * How far off `endAt` is as approximate `locale` text, rounded to the nearest whole day, hour or minute:
+ * `in 1 day`, `in 3 hours`, `in 25 minutes`. A month has no fixed length, so 30 days stays `in 30 days`.
+ * Null once `endAt` is unknown or not ahead.
+ */
+export function formatOrderTimeUntil(
+  endAt: number | null | undefined,
+  locale?: string,
+  nowUnixSeconds = Date.now() / 1000,
+): string | null {
+  const seconds = secondsUntil(endAt, nowUnixSeconds);
+  if (seconds === null) return null;
+
+  const [unit, unitSeconds] = pickApproximateUnit(seconds);
+  const count = Math.max(1, Math.round(seconds / unitSeconds));
+  return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(count, unit);
 }
