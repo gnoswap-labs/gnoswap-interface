@@ -75,6 +75,8 @@
     "overview": "Resumen",
     "past": "Pedidos anteriores",
     "paused": "Pedido en espera",
+    "withdrawalsPaused": "Retiros de Limit en pausa",
+    "withdrawalsPausedDescription": "Las cancelaciones y los reembolsos de órdenes Limit no están disponibles temporalmente mientras los retiros están en pausa.",
     "priceRate": "Tarifa",
     "priceRateAvg": "Precio medio",
     "purchased": "Comprado",

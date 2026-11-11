@@ -15,11 +15,15 @@ const mockTranslate = (key: string) => key;
 const mockOrderRepository = {};
 const mockSubmit = jest.fn();
 let mockTokenPrices: Record<string, { usd: string | undefined }>;
+let mockLimitWithdrawHalted = false;
 jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: mockTranslate }) }));
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
   useGnoswapContext: () => ({ orderRepository: mockOrderRepository }),
 }));
-jest.mock("@query/order", () => ({ useGetDcaOrder: () => ({ data: undefined, isFetching: false }) }));
+jest.mock("@query/order", () => ({
+  useGetDcaOrder: () => ({ data: undefined, isFetching: false }),
+  useGetLimitConfig: () => ({ data: { halted: { withdraw: mockLimitWithdrawHalted } } }),
+}));
 jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: mockSubmit }) }));
 jest.mock("@hooks/token/data/use-token-data", () => ({
   useTokenData: () => ({ tokenPrices: mockTokenPrices }),
@@ -96,7 +100,7 @@ const dcaOrder: DcaOrderModel = {
 
 type Flow = "cancel" | "refund" | "stop";
 const Preview = ({ flow }: { flow: Flow }) => {
-  const { openCancelLimitOrder, openStopDcaOrder } = useStopOrderHandler();
+  const { openCancelLimitOrder, openStopDcaOrder } = useStopOrderHandler(flow === "stop" ? "dca" : "limit");
   const content = useAtomValue(CommonState.modalContent);
   return (
     <>
@@ -113,6 +117,48 @@ const Preview = ({ flow }: { flow: Flow }) => {
     </>
   );
 };
+
+beforeEach(() => {
+  mockLimitWithdrawHalted = false;
+  mockSubmit.mockClear();
+  mockTokenPrices = {};
+});
+
+describe("Limit withdrawal halt", () => {
+  const wrapper = ({ children }: { children: React.ReactNode }) => (
+    <Provider>
+      <ThemeProvider theme={getTheme("dark")}>{children}</ThemeProvider>
+    </Provider>
+  );
+
+  it("does not open cancellation when withdrawals are already halted", () => {
+    mockLimitWithdrawHalted = true;
+    render(<Preview flow="cancel" />, { wrapper });
+    fireEvent.click(screen.getByText("Preview"));
+    expect(screen.queryByRole("button", { name: "Modal:confirmStopOrder.cancelTitle" })).not.toBeInTheDocument();
+    expect(mockSubmit).not.toHaveBeenCalled();
+  });
+
+  it("blocks an open confirmation during a halt and allows cancellation after resume", () => {
+    const { rerender } = render(<Preview flow="cancel" />, { wrapper });
+    fireEvent.click(screen.getByText("Preview"));
+    expect(screen.getByRole("button", { name: "Modal:confirmStopOrder.cancelTitle" })).toBeEnabled();
+
+    mockLimitWithdrawHalted = true;
+    rerender(<Preview flow="cancel" />);
+    const confirm = screen.getByRole("button", { name: "Modal:confirmStopOrder.cancelTitle" });
+    expect(confirm).toBeDisabled();
+    expect(screen.getByRole("status")).toHaveTextContent("Swap:order.withdrawalsPausedDescription");
+    fireEvent.click(confirm);
+    expect(mockSubmit).not.toHaveBeenCalled();
+
+    mockLimitWithdrawHalted = false;
+    rerender(<Preview flow="cancel" />);
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Modal:confirmStopOrder.cancelTitle" }));
+    expect(mockSubmit).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe.each<Flow>(["cancel", "refund", "stop"])("%s confirmation USD amounts", flow => {
   it.each([

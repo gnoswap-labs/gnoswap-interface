@@ -75,6 +75,8 @@
     "overview": "Tổng quan",
     "past": "Các đơn hàng trước đây",
     "paused": "Đơn hàng đang bị tạm dừng",
+    "withdrawalsPaused": "Tạm dừng rút tiền Limit",
+    "withdrawalsPausedDescription": "Tạm thời không thể hủy lệnh Limit hoặc nhận hoàn tiền khi việc rút tiền đang bị tạm dừng.",
     "priceRate": "Mức giá",
     "priceRateAvg": "Mức giá (trung bình)",
     "purchased": "Đã mua",

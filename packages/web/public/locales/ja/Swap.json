@@ -75,6 +75,8 @@
     "overview": "概要",
     "past": "過去の注文",
     "paused": "注文が一時停止されました",
+    "withdrawalsPaused": "Limitの出金は一時停止中です",
+    "withdrawalsPausedDescription": "出金が一時停止されているため、Limit注文のキャンセルと払い戻しは一時的にご利用いただけません。",
     "priceRate": "価格・料金",
     "priceRateAvg": "価格（平均）",
     "purchased": "購入済み",

@@ -94,3 +94,10 @@ export const SmallFill: Story = {
     },
   },
 };
+
+export const WithdrawalsPaused: Story = {
+  args: {
+    order: { ...ORDER, canCancel: true },
+    withdrawHalted: true,
+  },
+};

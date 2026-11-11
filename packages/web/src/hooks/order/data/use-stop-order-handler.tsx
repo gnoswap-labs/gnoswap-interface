@@ -8,8 +8,9 @@ import { useTokenData } from "@hooks/token/data/use-token-data";
 import { DcaOrderModel } from "@models/order/dca-order-model";
 import { LimitOrderModel } from "@models/order/limit-order-model";
 import { StopOrderSummary } from "@models/order/order-summary";
+import { OrderKind } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
-import { useGetDcaOrder } from "@query/order";
+import { useGetDcaOrder, useGetLimitConfig } from "@query/order";
 import { DexEvent } from "@repositories/common";
 import { checkGnotPath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
@@ -26,12 +27,18 @@ const LIMIT_STATUS_LABEL_KEY: Partial<Record<LimitOrderModel["status"], string>>
 type SelectedOrder = { kind: "dca"; order: DcaOrderModel } | { kind: "limit"; order: LimitOrderModel };
 
 /** Opens the Confirm Stop Order modal for a DCA order, or its cancel variant for a limit order, and sends it. */
-export const useStopOrderHandler = () => {
+export const useStopOrderHandler = (kind: OrderKind) => {
   const { t } = useTranslation();
   const { orderRepository } = useGnoswapContext();
   const { tokenPrices } = useTokenData(true);
   const { submit } = useOrderTransaction();
   const [selected, setSelected] = useState<SelectedOrder | null>(null);
+  const { data: limitConfig } = useGetLimitConfig({
+    enabled: kind === "limit",
+    refetchOnMount: "always",
+    refetchInterval: 60_000,
+  });
+  const limitWithdrawHalted = !!limitConfig?.halted?.withdraw;
 
   // The modal reads the order again so the refund it shows is current.
   const { data: latestDcaOrder, isFetching: isFetchingDcaOrder } = useGetDcaOrder(
@@ -95,6 +102,7 @@ export const useStopOrderHandler = () => {
 
   const sendStop = useCallback(() => {
     if (!selected || !summary) return;
+    if (selected.kind === "limit" && limitWithdrawHalted) return;
 
     const messageData = {
       tokenASymbol: summary.inputToken.displaySymbol,
@@ -118,7 +126,7 @@ export const useStopOrderHandler = () => {
       messageData,
       send: () => orderRepository.sendCancelLimitOrder({ orderId, packagePath }),
     });
-  }, [orderRepository, selected, submit, summary]);
+  }, [limitWithdrawHalted, orderRepository, selected, submit, summary]);
 
   const closeModalRef = useRef<() => void>(() => undefined);
 
@@ -128,7 +136,9 @@ export const useStopOrderHandler = () => {
         <ConfirmStopOrderModal
           summary={summary}
           isLoading={isFetchingDcaOrder}
+          withdrawHalted={selected?.kind === "limit" && limitWithdrawHalted}
           confirm={() => {
+            if (selected?.kind === "limit" && limitWithdrawHalted) return;
             closeModalRef.current();
             sendStop();
           }}
@@ -137,7 +147,7 @@ export const useStopOrderHandler = () => {
       ) : (
         <></>
       ),
-    [isFetchingDcaOrder, sendStop, summary],
+    [isFetchingDcaOrder, limitWithdrawHalted, selected?.kind, sendStop, summary],
   );
 
   const { openModal, closeModal } = useConfirmOrderModal(renderModal);
@@ -164,11 +174,11 @@ export const useStopOrderHandler = () => {
 
   const openCancelLimitOrder = useCallback(
     (order: LimitOrderModel) => {
-      if (!order.canCancel) return;
+      if (!order.canCancel || limitWithdrawHalted) return;
       pendingOpen.current = true;
       setSelected({ kind: "limit", order });
     },
-    [],
+    [limitWithdrawHalted],
   );
 
   /** Pays a completed DCA order's unclaimed output; the realm finalizes the order in the same call. */
@@ -190,5 +200,5 @@ export const useStopOrderHandler = () => {
     [orderRepository, submit],
   );
 
-  return { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder };
+  return { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder, limitWithdrawHalted };
 };

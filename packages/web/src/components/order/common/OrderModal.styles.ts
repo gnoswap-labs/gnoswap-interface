@@ -21,6 +21,12 @@ export const OrderModalWrapper = styled.div`
     gap: 12px;
   }
 
+  .withdrawals-paused {
+    ${fonts.p2};
+    margin: 0;
+    color: ${({ theme }) => theme.color.text02};
+  }
+
   .modal-header {
     ${mixins.flexbox("row", "center", "space-between")};
     width: 100%;

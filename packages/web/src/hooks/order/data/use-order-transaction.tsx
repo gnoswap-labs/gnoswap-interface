@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
-import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
+import { BROADCAST_ERROR_VALUE, getLimitCancelBroadcastError } from "@common/errors/broadcast/broadcast-error";
 import { useBroadcastHandler } from "@hooks/common/use-broadcast-handler";
 import { useMessage } from "@hooks/common/use-message";
 import { useTransactionConfirmModal } from "@hooks/common/use-transaction-confirm-modal";
@@ -92,13 +92,21 @@ export const useOrderTransaction = () => {
           if (response?.code === ERROR_VALUE.TRANSACTION_REJECTED.status) {
             broadcastRejected(getMessage(action, "error", messageData));
           } else {
-            broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+            broadcastError(
+              action === DexEvent.LIMIT_CANCEL
+                ? getLimitCancelBroadcastError(response?.message)
+                : BROADCAST_ERROR_VALUE.DEFAULT,
+            );
           }
           openTransactionConfirmModal();
         })
         .catch(error => {
           console.error(`Failed to broadcast ${action}`, error);
-          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
+          broadcastError(
+            action === DexEvent.LIMIT_CANCEL
+              ? getLimitCancelBroadcastError(error instanceof Error ? error.message : null)
+              : BROADCAST_ERROR_VALUE.DEFAULT,
+          );
           openTransactionConfirmModal();
         });
     },

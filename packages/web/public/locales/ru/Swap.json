@@ -75,6 +75,8 @@
     "overview": "Обзор",
     "past": "Предыдущие заказы",
     "paused": "Заказ приостановлен",
+    "withdrawalsPaused": "Вывод средств Limit приостановлен",
+    "withdrawalsPausedDescription": "Отмена и возврат средств по ордерам Limit временно недоступны, пока вывод средств приостановлен.",
     "priceRate": "Цена Ставка",
     "priceRateAvg": "Средняя цена",
     "purchased": "Куплено",

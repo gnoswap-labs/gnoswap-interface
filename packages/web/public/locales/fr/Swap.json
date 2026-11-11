@@ -75,6 +75,8 @@
     "overview": "Présentation générale",
     "past": "Commandes précédentes",
     "paused": "Commande en attente",
+    "withdrawalsPaused": "Retraits Limit suspendus",
+    "withdrawalsPausedDescription": "Les annulations et les remboursements des ordres Limit sont temporairement indisponibles pendant la suspension des retraits.",
     "priceRate": "Tarif",
     "priceRateAvg": "Prix moyen",
     "purchased": "Acheté",

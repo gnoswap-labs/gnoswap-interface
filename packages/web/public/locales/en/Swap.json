@@ -75,6 +75,8 @@
     "overview": "Overview",
     "past": "Past Orders",
     "paused": "Order Paused",
+    "withdrawalsPaused": "Limit Withdrawals Paused",
+    "withdrawalsPausedDescription": "Limit order cancellations and refunds are temporarily unavailable while withdrawals are paused.",
     "priceRate": "Price Rate",
     "priceRateAvg": "Price Rate (Avg)",
     "purchased": "Purchased",

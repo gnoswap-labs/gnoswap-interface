@@ -133,6 +133,12 @@ export const OrderItemCardWrapper = styled.div`
     }
   }
 
+  .withdrawals-paused {
+    ${fonts.p2};
+    margin: 0;
+    color: ${({ theme }) => theme.color.text02};
+  }
+
   .button-stop {
     height: 33px;
     span {

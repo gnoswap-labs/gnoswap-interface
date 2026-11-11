@@ -75,6 +75,8 @@
     "overview": "概述",
     "past": "历史订单",
     "paused": "订单已暂停",
+    "withdrawalsPaused": "Limit 提款已暂停",
+    "withdrawalsPausedDescription": "提款暂停期间，暂时无法取消 Limit 订单或申请退款。",
     "priceRate": "价格费率",
     "priceRateAvg": "价格（平均）",
     "purchased": "已购买",

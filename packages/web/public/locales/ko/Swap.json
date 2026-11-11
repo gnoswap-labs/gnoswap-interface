@@ -75,6 +75,8 @@
     "overview": "개요",
     "past": "이전 주문 내역",
     "paused": "주문 일시 중지됨",
+    "withdrawalsPaused": "Limit 출금 일시 중지",
+    "withdrawalsPausedDescription": "출금이 일시 중지되어 Limit 주문을 취소하거나 환불받을 수 없습니다.",
     "priceRate": "가격 요율",
     "priceRateAvg": "가격 (평균)",
     "purchased": "구매함",

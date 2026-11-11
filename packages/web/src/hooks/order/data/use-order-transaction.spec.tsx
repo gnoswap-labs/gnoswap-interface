@@ -2,11 +2,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
 
+import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
 import { DexEvent, DexEventType } from "@repositories/common";
 
 import { useOrderTransaction } from "./use-order-transaction";
 
 const mockEnqueueEvent = jest.fn();
+const mockBroadcastError = jest.fn();
 
 jest.mock("@hooks/common/use-transaction-event-store", () => ({
   useTransactionEventStore: () => ({ enqueueEvent: mockEnqueueEvent }),
@@ -19,7 +21,7 @@ jest.mock("@hooks/common/use-broadcast-handler", () => ({
   useBroadcastHandler: () => ({
     broadcastLoading: jest.fn(),
     broadcastSuccess: jest.fn(),
-    broadcastError: jest.fn(),
+    broadcastError: mockBroadcastError,
     broadcastRejected: jest.fn(),
   }),
 }));
@@ -61,4 +63,25 @@ describe("useOrderTransaction", () => {
       expect((await submitAndCapture(action)).checkWugnotTransfer).toBe(false);
     },
   );
+
+  it("explains a Limit withdrawal halt returned after the config was read", async () => {
+    mockBroadcastError.mockClear();
+    const { result } = renderHook(() => useOrderTransaction(), { wrapper });
+    act(() => {
+      result.current.submit({
+        action: DexEvent.LIMIT_CANCEL,
+        messageData: { tokenASymbol: "GNOT", tokenBSymbol: "GNS", tokenAAmount: "1" },
+        send: async () => ({
+          code: 1,
+          type: "",
+          status: "error",
+          message: "panic: [GNOSWAP-ORDER-LIMIT-022] operation halted || operation(withdraw)",
+          data: { hash: "" },
+        }),
+      });
+    });
+    await waitFor(() =>
+      expect(mockBroadcastError).toHaveBeenCalledWith(BROADCAST_ERROR_VALUE.LIMIT_WITHDRAWALS_PAUSED),
+    );
+  });
 });

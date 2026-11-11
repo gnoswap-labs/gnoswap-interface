@@ -18,6 +18,7 @@ import { ImportantNoteContent, StopOrderContent } from "./ConfirmStopOrderModal.
 export interface ConfirmStopOrderModalProps {
   summary: StopOrderSummary;
   isLoading?: boolean;
+  withdrawHalted?: boolean;
   confirm: () => void;
   close: () => void;
 }
@@ -33,6 +34,7 @@ const TokenAmount: React.FC<{ token: TokenModel; children: React.ReactNode }> = 
 const ConfirmStopOrderModal: React.FC<ConfirmStopOrderModalProps> = ({
   summary,
   isLoading = false,
+  withdrawHalted = false,
   confirm,
   close,
 }) => {
@@ -117,12 +119,18 @@ const ConfirmStopOrderModal: React.FC<ConfirmStopOrderModalProps> = ({
         }
       />
 
+      {withdrawHalted && (
+        <p className="withdrawals-paused" role="status">
+          {t("Swap:order.withdrawalsPausedDescription")}
+        </p>
+      )}
+
       <Button
         text={isDca ? t("Modal:confirmStopOrder.title") : t("Modal:confirmStopOrder.cancelTitle")}
         style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
         className="button-confirm"
         onClick={confirm}
-        disabled={isLoading}
+        disabled={isLoading || withdrawHalted}
       />
     </OrderModalWrapper>
   );

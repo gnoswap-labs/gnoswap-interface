@@ -87,7 +87,7 @@ interface OrderListPagesProps {
 const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, connected, address }) => {
   const { isMobile } = useWindowSize();
   const { getTxUrl } = useGnoscanUrl();
-  const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder } = useStopOrderHandler();
+  const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder, limitWithdrawHalted } = useStopOrderHandler(kind);
   const [page, setPage] = useState(1);
 
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
@@ -136,6 +136,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
         order={order}
         txUrl={getTxUrl(order.createdTxHash)}
         onClickCancel={openCancelLimitOrder}
+        withdrawHalted={limitWithdrawHalted}
         renderHistory={item => <LimitOrderHistoryContainer order={item} />}
       />
     ));
