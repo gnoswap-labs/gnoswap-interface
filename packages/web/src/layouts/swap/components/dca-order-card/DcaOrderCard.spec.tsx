@@ -52,6 +52,7 @@ const summary: DcaOrderSummary = {
   rateUsd: "$1.04",
   amountPerOrder: "750",
   estimatedEndDate: "2026-11-03 20:35:36",
+  estimatedEndAt: null,
   executionFee: "0.1%",
 };
 

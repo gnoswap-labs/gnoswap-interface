@@ -1,9 +1,13 @@
 import { GNOT_TOKEN, GNS_TOKEN } from "@common/values/token-constant";
 import { DcaOrderSummary, LimitOrderSummary, StopOrderSummary } from "@models/order/order-summary";
+import { formatOrderDateTime } from "@utils/order-format-utils";
 
 /** Shared fixtures for the order stories. */
 export const STORY_GNS_TOKEN = { ...GNS_TOKEN, path: "gno.land/r/gnoswap/gns", priceID: "gno.land/r/gnoswap/gns" };
 export const STORY_GNOT_TOKEN = GNOT_TOKEN;
+
+/** A day after the stories load, so the relative note beside the end date always has a future to describe. */
+const STORY_DCA_ESTIMATED_END_AT = Math.floor(Date.now() / 1000) + 86_400;
 
 export const STORY_DCA_ORDER_SUMMARY: DcaOrderSummary = {
   inputToken: STORY_GNS_TOKEN,
@@ -16,7 +20,8 @@ export const STORY_DCA_ORDER_SUMMARY: DcaOrderSummary = {
   rate: "1 GNS = 1.04 GNOT",
   rateUsd: "$1.04",
   amountPerOrder: "1,200",
-  estimatedEndDate: "2026-11-03 20:35:36",
+  estimatedEndDate: formatOrderDateTime(STORY_DCA_ESTIMATED_END_AT),
+  estimatedEndAt: STORY_DCA_ESTIMATED_END_AT,
   executionFee: "0.15%",
 };
 
