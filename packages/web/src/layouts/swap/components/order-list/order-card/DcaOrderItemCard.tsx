@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
-import { DcaOrderModel } from "@models/order/dca-order-model";
+import { DcaOrderModel, getDcaIntervalUnit } from "@models/order/dca-order-model";
 import {
   calculateDcaOrderEndAt,
   formatOrderAmount,
@@ -73,7 +73,8 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   onClickClaim,
   renderHistory,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   const { inputToken, outputToken } = order;
 
   const metrics: OrderMetric[] = useMemo(
@@ -105,6 +106,14 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
     [order.isActive, order.nextExecutionAt, order.remainingCount, t],
   );
 
+  // The terms the order was placed with, not what is left of them. An interval that is none of the allowed units
+  // is told in plain seconds.
+  const intervalUnit = getDcaIntervalUnit(order.interval);
+  const every = intervalUnit
+    ? t(`Swap:dca.intervalPhrase.${intervalUnit}`)
+    : new Intl.NumberFormat(locale, { style: "unit", unit: "second", unitDisplay: "long" }).format(order.interval);
+  const over = `${order.executionCount.toLocaleString(locale)} ${t("Swap:dca.orders")}`;
+
   return (
     <DcaOrderItemCardWrapper className={cx({ active: order.isActive })}>
       <div className="card-header">
@@ -126,6 +135,16 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
       <OrderMetrics metrics={metrics} />
+      <div className="card-order-terms">
+        <div className="card-sub-info">
+          <span>{t("Swap:dca.every")}</span>
+          <span className="value">{every}</span>
+        </div>
+        <div className="card-sub-info">
+          <span>{t("Swap:dca.over")}</span>
+          <span className="value">{over}</span>
+        </div>
+      </div>
       {order.isActive && (
         <OrderStopButton
           text={t("Swap:order.stopOrder")}
