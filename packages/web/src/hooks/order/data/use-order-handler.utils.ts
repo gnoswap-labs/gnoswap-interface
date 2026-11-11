@@ -235,7 +235,7 @@ export function isLimitAmountTooLow(
   );
 }
 
-/** The swap slippage setting (percent) as basis points, capped to what the limit realm accepts. */
+/** Limit tolerance (percent) as basis points, capped to what the limit realm accepts. */
 export function toLimitSlippageBps(slippagePercent: number, maxSlippageBps = MAX_LIMIT_SLIPPAGE_BPS): number {
   if (!Number.isFinite(slippagePercent) || slippagePercent <= 0) return 0;
   return Math.min(maxSlippageBps, Math.round(slippagePercent * 100));

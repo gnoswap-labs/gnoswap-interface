@@ -5,17 +5,13 @@ import React from "react";
 
 import type { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
-import { SwapState } from "@states/index";
+import { CommonState, SwapState } from "@states/index";
 
 import { useLimitOrderHandler } from "./use-limit-order-handler";
 
 jest.mock("react-i18next", () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock("@hooks/common/use-debounce", () => ({ __esModule: true, default: <T,>(value: T) => value }));
 jest.mock("@hooks/common/use-gnoswap-context", () => ({ useGnoswapContext: () => ({ orderRepository: {} }) }));
-let mockSlippage = 0.5;
-jest.mock("@hooks/common/use-slippage", () => ({
-  useSlippage: () => ({ slippage: mockSlippage, changeSlippage: jest.fn() }),
-}));
 jest.mock("@hooks/wallet/ui/use-connect-wallet-modal", () => ({
   useConnectWalletModal: () => ({ openModal: jest.fn() }),
 }));
@@ -79,7 +75,6 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>
 
 describe("useLimitOrderHandler", () => {
   beforeEach(() => {
-    mockSlippage = 0.5;
     mockLimitConfig = undefined;
     mockGetUsdPrice.mockReset().mockReturnValue(null);
     jest.mocked(useGetRoutes).mockImplementation(request => {
@@ -220,13 +215,42 @@ describe("useLimitOrderHandler", () => {
     await waitFor(() => expect(result.current.limitPrice).toBe("22"));
   });
 
-  it("shows the tolerance capped to the realm maximum, the one confirmed and sent", () => {
-    mockSlippage = 30;
-    mockLimitConfig = { maxSlippageBps: 1000 };
+  it("caps the Limit tolerance to the configured realm maximum", () => {
+    mockLimitConfig = { maxSlippageBps: 250 };
     const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeSlippage(30));
 
-    expect(result.current.slippage).toBe(10);
-    expect(result.current.maxSlippage).toBe(10);
+    expect(result.current.slippage).toBe(2.5);
+    expect(result.current.maxSlippage).toBe(2.5);
+  });
+
+  it("keeps Limit tolerance and minimum received independent of Swap across tab remounts", () => {
+    const store = createStore();
+    store.set(CommonState.slippage, 5);
+    const storeWrapper = ({ children }: { children: React.ReactNode }) => (
+      <JotaiProvider store={store}>{children}</JotaiProvider>
+    );
+    const { result, unmount } = renderHook(() => useLimitOrderHandler(), { wrapper: storeWrapper });
+    act(() => {
+      result.current.changeTokenA(tokenA);
+      result.current.changeTokenB(tokenB);
+      result.current.changeSellAmount("10");
+    });
+    act(() => result.current.changeLimitPrice("2"));
+    expect(result.current.slippage).toBe(0.5);
+    expect(result.current.minimumReceived).toBe("19.9");
+
+    act(() => store.set(CommonState.slippage, 10));
+    expect(result.current.minimumReceived).toBe("19.9");
+    act(() => result.current.changeSlippage(1));
+    expect(result.current.slippage).toBe(1);
+    expect(result.current.minimumReceived).toBe("19.8");
+    expect(store.get(CommonState.slippage)).toBe(10);
+
+    unmount();
+    const remounted = renderHook(() => useLimitOrderHandler(), { wrapper: storeWrapper });
+    expect(remounted.result.current.slippage).toBe(1);
+    expect(remounted.result.current.minimumReceived).toBe("19.8");
   });
 
   describe("a price kept while the form is not mounted", () => {
