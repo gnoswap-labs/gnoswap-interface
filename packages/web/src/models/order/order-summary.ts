@@ -22,7 +22,10 @@ export interface DcaOrderSummary {
   executionFee: string;
 }
 
-/** Everything the limit confirm modal shows, already formatted. */
+/**
+ * Everything the limit confirm modal shows, already formatted, plus the two raw values it formats
+ * for the current language (`limitPriceDeviation`, `expiryDurationSec`).
+ */
 export interface LimitOrderSummary {
   tokenIn: TokenModel;
   tokenOut: TokenModel;
@@ -33,7 +36,14 @@ export interface LimitOrderSummary {
   /** The least output the owner receives after execution fees at the selected slippage, for a full fill. */
   minimumReceived: string;
   limitPrice: string;
+  /**
+   * How far `limitPrice` sits from the market price quoted when this summary was built, as a signed
+   * fraction: `0.1` is 10% above market, `-0.05` is 5% below. Null without a positive market quote.
+   */
+  limitPriceDeviation: number | null;
   expiresAt: string;
+  /** The selected expiry in seconds, the distance from now to `expiresAt`. */
+  expiryDurationSec: number;
   slippage: string;
   executionFee: string;
 }

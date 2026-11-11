@@ -72,3 +72,57 @@ export function formatBps(bps: number | null | undefined): string {
   if (bps === null || bps === undefined || !Number.isFinite(bps)) return "-";
   return `${trimFractionZeros(BigNumber(bps).dividedBy(100).toFixed(2))}%`;
 }
+
+/**
+ * How far `price` sits from `referencePrice` as a signed fraction: `1.1` against `1` is `0.1`, `0.95` is `-0.05`.
+ * Null unless both are positive numbers, so a missing quote never becomes NaN or Infinity.
+ */
+export function calculatePriceDeviation(
+  price: BigNumber.Value | null | undefined,
+  referencePrice: BigNumber.Value | null | undefined,
+): number | null {
+  const value = BigNumber(price ?? "");
+  const reference = BigNumber(referencePrice ?? "");
+  if (!value.isFinite() || !reference.isFinite() || value.lte(0) || reference.lte(0)) return null;
+
+  const deviation = value.dividedBy(reference).minus(1).toNumber();
+  return Number.isFinite(deviation) ? deviation : null;
+}
+
+/**
+ * A deviation fraction as a signed percentage in `locale`: `0.1` → `+10%`, `-0.0525` → `-5.25%`.
+ * Up to two decimals, and no sign once it rounds to `0%`. Null when there is no deviation.
+ */
+export function formatOrderPriceDeviation(deviation: number | null | undefined, locale?: string): string | null {
+  if (deviation === null || deviation === undefined || !Number.isFinite(deviation)) return null;
+
+  return new Intl.NumberFormat(locale, {
+    style: "percent",
+    signDisplay: "exceptZero",
+    maximumFractionDigits: 2,
+  }).format(deviation);
+}
+
+/** Calendar-free units, largest first: a month or a year has no fixed length, so 30 days stays `30 days`. */
+const RELATIVE_DURATION_UNITS: readonly (readonly [Intl.RelativeTimeFormatUnit, number])[] = [
+  ["week", 604_800],
+  ["day", 86_400],
+  ["hour", 3_600],
+  ["minute", 60],
+  ["second", 1],
+];
+
+/**
+ * A future duration in seconds as `locale` text, in the largest whole unit that holds it exactly:
+ * `3600` → `in 1 hour`, `604800` → `in 1 week`, `2592000` → `in 30 days`. Null for a non-positive or fractional span.
+ */
+export function formatOrderRelativeDuration(durationSec: number, locale?: string): string | null {
+  if (!Number.isFinite(durationSec) || durationSec <= 0) return null;
+
+  for (const [unit, unitSec] of RELATIVE_DURATION_UNITS) {
+    if (durationSec % unitSec === 0) {
+      return new Intl.RelativeTimeFormat(locale, { numeric: "always" }).format(durationSec / unitSec, unit);
+    }
+  }
+  return null;
+}

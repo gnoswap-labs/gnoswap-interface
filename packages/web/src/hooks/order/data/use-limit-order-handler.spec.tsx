@@ -3,6 +3,7 @@ import BigNumber from "bignumber.js";
 import { createStore, Provider as JotaiProvider } from "jotai";
 import React from "react";
 
+import type { LimitOrderSummary } from "@models/order/order-summary";
 import type { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
 import { CommonState, SwapState } from "@states/index";
@@ -19,8 +20,12 @@ jest.mock("@components/order/confirm-limit-order-modal/ConfirmLimitOrderModal", 
   __esModule: true,
   default: () => null,
 }));
+let mockRenderConfirmModal: (() => JSX.Element) | undefined;
 jest.mock("../ui/use-confirm-order-modal", () => ({
-  useConfirmOrderModal: () => ({ openModal: jest.fn(), closeModal: jest.fn() }),
+  useConfirmOrderModal: (renderContent: () => JSX.Element) => {
+    mockRenderConfirmModal = renderContent;
+    return { openModal: jest.fn(), closeModal: jest.fn() };
+  },
 }));
 jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: jest.fn() }) }));
 const mockGetUsdPrice = jest.fn<string | null, [TokenModel | null]>(() => null);
@@ -76,6 +81,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>
 describe("useLimitOrderHandler", () => {
   beforeEach(() => {
     mockLimitConfig = undefined;
+    mockRenderConfirmModal = undefined;
     mockGetUsdPrice.mockReset().mockReturnValue(null);
     jest.mocked(useGetRoutes).mockImplementation(request => {
       if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
@@ -355,6 +361,67 @@ describe("useLimitOrderHandler", () => {
       act(() => result.current.changeSellAmount("100.1234567"));
       await waitFor(() => expect(result.current.sellAmount).toBe("100.123456"));
       expect(result.current.buttonState).toBe("PLACE_ORDER");
+    });
+  });
+
+  describe("the confirmation summary", () => {
+    /** What the confirm modal is given, from the latest render. */
+    const summary = () => (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+
+    const renderWithPair = async () => {
+      const hook = renderHook(() => useLimitOrderHandler(), { wrapper });
+      act(() => hook.result.current.changeTokenA(tokenA));
+      act(() => hook.result.current.changeTokenB(tokenB));
+      // The +10% preset on a market price of 10.
+      await waitFor(() => expect(hook.result.current.limitPrice).toBe("11"));
+      return hook;
+    };
+
+    it("reports how far the limit price sits from the quoted market price", async () => {
+      const { result } = await renderWithPair();
+      expect(summary().limitPriceDeviation).toBe(0.1);
+
+      act(() => result.current.changeLimitPrice("9.5"));
+      expect(summary().limitPriceDeviation).toBe(-0.05);
+
+      act(() => result.current.applyPreset(0));
+      expect(summary().limitPriceDeviation).toBe(0);
+
+      act(() => result.current.changeLimitPrice("12.5"));
+      expect(summary().limitPriceDeviation).toBe(0.25);
+    });
+
+    it("compares with the market price quoted for the amount being sold", async () => {
+      jest.mocked(useGetRoutes).mockImplementation(request => {
+        if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
+          return { data: undefined } as ReturnType<typeof useGetRoutes>;
+        }
+        const rate = BigNumber(request.tokenAmount).isGreaterThan(10) ? "8" : "10";
+        const amount = BigNumber(request.tokenAmount).multipliedBy(rate).shiftedBy(6).toFixed(0);
+        return { data: { status: "SUCCESS", amount } } as unknown as ReturnType<typeof useGetRoutes>;
+      });
+      const { result } = await renderWithPair();
+      act(() => result.current.changeLimitPrice("12"));
+      expect(summary().limitPriceDeviation).toBe(0.2);
+
+      // A larger order is quoted at a worse price, which moves the reference.
+      act(() => result.current.changeSellAmount("20"));
+      await waitFor(() => expect(result.current.marketPrice).toBe("8"));
+      expect(summary().limitPriceDeviation).toBe(0.5);
+    });
+
+    it.each([
+      ["has no quote yet", undefined],
+      ["has no liquidity", { status: "NO_LIQUIDITY" }],
+    ])("has no deviation while the router %s", (_, data) => {
+      jest.mocked(useGetRoutes).mockImplementation(() => ({ data }) as unknown as ReturnType<typeof useGetRoutes>);
+      const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+      act(() => result.current.changeTokenA(tokenA));
+      act(() => result.current.changeTokenB(tokenB));
+      act(() => result.current.changeLimitPrice("12"));
+
+      expect(result.current.marketPrice).toBeNull();
+      expect(summary().limitPriceDeviation).toBeNull();
     });
   });
 });

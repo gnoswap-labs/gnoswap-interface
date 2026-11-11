@@ -18,7 +18,7 @@ import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
 import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
-import { formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
+import { calculatePriceDeviation, formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
@@ -273,7 +273,9 @@ export const useLimitOrderHandler = () => {
       buyAmountUsd: formatUsd(buyUsd),
       minimumReceived,
       limitPrice: formatRate(isValidPrice ? limitPrice : null).text,
+      limitPriceDeviation: calculatePriceDeviation(limitPrice, marketPrice),
       expiresAt: formatOrderDateTime(Math.floor(Date.now() / 1000) + expiry),
+      expiryDurationSec: expiry,
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
       executionFee,
     };
@@ -285,6 +287,7 @@ export const useLimitOrderHandler = () => {
     formatUsd,
     isValidPrice,
     limitPrice,
+    marketPrice,
     minimumReceived,
     sellUsd,
     sentSellAmount,
