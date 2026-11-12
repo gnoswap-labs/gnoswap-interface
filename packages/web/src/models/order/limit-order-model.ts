@@ -39,6 +39,11 @@ export interface LimitOrderModel {
   minimumRemainingReceived: string;
   /** Execution fee saved with this order, in basis points. */
   executionFeeRate: number;
+  /**
+   * Execution fee actually charged so far, in output-token display units. Null when the order-api does not report
+   * it, so an unknown fee is never shown as zero.
+   */
+  cumulativeExecutionFee: string | null;
   filledInput: string;
   remainingInput: string;
   refundedInput: string;

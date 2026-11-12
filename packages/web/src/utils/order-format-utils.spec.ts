@@ -3,6 +3,8 @@ import {
   calculatePriceDeviation,
   formatBps,
   formatOrderAmount,
+  formatOrderFee,
+  formatOrderFeeUsd,
   formatOrderFullAmount,
   formatOrderPriceDeviation,
   formatOrderRate,
@@ -39,6 +41,21 @@ describe("order-format-utils", () => {
     expect(formatOrderFullAmount("106208.255", 6)).toBe("106,208.255");
     expect(formatOrderFullAmount("1.1234567", 6)).toBe("1.123456");
     expect(formatOrderFullAmount("0", 6)).toBe("0");
+  });
+
+  it("shows a charged fee to the last token decimal, and an unknown fee as a dash", () => {
+    expect(formatOrderFee("0.018771", 6)).toBe("0.018771");
+    expect(formatOrderFee("0.000001", 6)).toBe("0.000001");
+    expect(formatOrderFee("0", 6)).toBe("0");
+    expect(formatOrderFee(null, 6)).toBe("-");
+  });
+
+  it("values a fee at the current USD price only when there is both a fee and a price", () => {
+    expect(formatOrderFeeUsd("2", "1.5")).toBe("≈$3");
+    expect(formatOrderFeeUsd("0.000001", "1.5")).toBe("<$0.01");
+    expect(formatOrderFeeUsd("0", "1.5")).toBeNull();
+    expect(formatOrderFeeUsd(null, "1.5")).toBeNull();
+    expect(formatOrderFeeUsd("2", null)).toBeNull();
   });
 
   it("formats rates", () => {

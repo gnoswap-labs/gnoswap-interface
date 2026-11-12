@@ -72,6 +72,30 @@ export const OrderHistoryTableWrapper = styled.div`
     }
   }
 
+  /* A fill's fee sits on its own line under the row, so the four columns never squeeze to fit a fifth. */
+  .fee-row {
+    ${mixins.flexbox("row", "center", "space-between")};
+    grid-column: 1 / -1;
+    min-width: 0;
+    gap: 8px;
+    color: ${({ theme }) => theme.color.text04};
+    white-space: nowrap;
+  }
+
+  .fee-value {
+    ${mixins.flexbox("row", "center", "flex-end")};
+    min-width: 0;
+    gap: 4px;
+    color: ${({ theme }) => theme.color.text02};
+    span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fee-usd {
+      color: ${({ theme }) => theme.color.text04};
+    }
+  }
+
   .pagination {
     ${mixins.flexbox("row", "center", "center")};
     width: 100%;

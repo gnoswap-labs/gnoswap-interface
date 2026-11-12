@@ -51,6 +51,7 @@ const limitOrder: LimitOrderModel = {
   minimumReceived: "2.189",
   minimumRemainingReceived: "2.189",
   executionFeeRate: 15,
+  cumulativeExecutionFee: "0",
   filledInput: "0",
   remainingInput: "2",
   refundedInput: "0",

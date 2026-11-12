@@ -11,7 +11,7 @@ import Pagination from "@components/common/pagination/Pagination";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { OrderHistoryModel } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
-import { formatOrderAmount } from "@utils/order-format-utils";
+import { formatOrderAmount, formatOrderFee, formatOrderFeeUsd } from "@utils/order-format-utils";
 
 import { OrderHistoryTableWrapper } from "./OrderHistoryTable.styles";
 
@@ -27,12 +27,39 @@ export interface OrderHistoryTableProps {
   changePage: (page: number) => void;
   isPreviousData?: boolean;
   compact?: boolean;
+  /** Limit fills only: adds each fill's execution fee under its row. DCA executions charge no per-row fee. */
+  showExecutionFee?: boolean;
+  /** Current USD price of the output token, to value each fee. Null while unknown. */
+  outputUsdPrice?: string | null;
 }
 
 /** `1s ago` at the earliest and `>1y ago` at the latest, one unit only. */
 export function formatHistoryTime(time: number, now: number): string {
   return formatDisplayTime(getTimeDiffInSeconds(now, time * 1000), { capAtYear: true, minOneSecond: true });
 }
+
+/** The execution fee one fill was charged, in the output token, with its approximate current USD value. */
+const OrderHistoryFee: React.FC<{
+  fee: string | null | undefined;
+  token: TokenModel;
+  usdPrice: string | null;
+  logoWidth: number;
+}> = ({ fee, token, usdPrice, logoWidth }) => {
+  const { t } = useTranslation();
+  const usd = formatOrderFeeUsd(fee, usdPrice);
+  const isKnown = fee !== null && fee !== undefined;
+
+  return (
+    <span className="fee-row">
+      <span className="fee-label">{t("Swap:dca.executionFee")}</span>
+      <span className="fee-value">
+        <span>{formatOrderFee(fee, token.decimals)}</span>
+        {isKnown && <MissingLogo symbol={token.symbol} url={token.logoURI} width={logoWidth} />}
+        {usd && <span className="fee-usd">{`(${usd})`}</span>}
+      </span>
+    </span>
+  );
+};
 
 /** Executions (DCA) or fills (limit) of an order, ten per page. Rows added while open are highlighted. */
 const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
@@ -44,6 +71,8 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   changePage,
   isPreviousData = false,
   compact = false,
+  showExecutionFee = false,
+  outputUsdPrice = null,
 }) => {
   const { t } = useTranslation();
   const { getTxUrl } = useGnoscanUrl();
@@ -106,6 +135,14 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
             <span>{formatOrderAmount(item.purchasedAmount)}</span>
             <MissingLogo symbol={outputToken.symbol} url={outputToken.logoURI} width={compact ? 12 : 14} />
           </span>
+          {showExecutionFee && (
+            <OrderHistoryFee
+              fee={item.executionFee}
+              token={outputToken}
+              usdPrice={outputUsdPrice}
+              logoWidth={compact ? 12 : 14}
+            />
+          )}
         </div>
       ))}
       {totalPages > 1 && (

@@ -6,6 +6,7 @@ import { SWAP_HISTORY_REFETCH_INTERVAL } from "@constants/swap.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
 import { useWindowSize } from "@hooks/common/use-window-size";
+import { useOrderTokenUsdPrice } from "@hooks/order/data/use-order-token-usd-price";
 import { useStopOrderHandler } from "@hooks/order/data/use-stop-order-handler";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { OrderKind, OrderListTab, SWAP_CARD_TYPE, SwapCardType, toEnabledSwapCardType } from "@models/order/order-type";
@@ -88,6 +89,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
   const { isMobile } = useWindowSize();
   const { getTxUrl } = useGnoscanUrl();
   const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder } = useStopOrderHandler();
+  const getUsdPrice = useOrderTokenUsdPrice();
   const [page, setPage] = useState(1);
 
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
@@ -134,6 +136,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
       <LimitOrderItemCard
         key={`${order.packagePath}:${order.orderId}`}
         order={order}
+        tokenOutUsdPrice={getUsdPrice(order.tokenOut)}
         txUrl={getTxUrl(order.createdTxHash)}
         onClickCancel={openCancelLimitOrder}
         renderHistory={item => <LimitOrderHistoryContainer order={item} />}

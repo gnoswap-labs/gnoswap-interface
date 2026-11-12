@@ -23,6 +23,7 @@ const ORDER: LimitOrderModel = {
   minimumReceived: "103.48",
   minimumRemainingReceived: "67.262",
   executionFeeRate: 15,
+  cumulativeExecutionFee: "0.054682",
   filledInput: "35",
   remainingInput: "65",
   refundedInput: "0",
@@ -44,6 +45,7 @@ const meta = {
   args: {
     order: ORDER,
     txUrl: "",
+    tokenOutUsdPrice: "1.2",
     onClickCancel: () => undefined,
     renderHistory: () => null,
   },
@@ -79,6 +81,7 @@ export const Unfilled: Story = {
       remainingInput: "100",
       minimumRemainingReceived: "103.48",
       userOutput: "0",
+      cumulativeExecutionFee: "0",
       priceRate: null,
       progress: 0,
     },
@@ -92,6 +95,7 @@ export const SmallFill: Story = {
       filledInput: "0.000001",
       remainingInput: "99.999999",
       minimumRemainingReceived: "103.479999",
+      cumulativeExecutionFee: "0",
       userOutput: "0.00000104",
       progress: 0.000001,
     },
@@ -108,6 +112,7 @@ export const Completed: Story = {
       remainingInput: "0",
       minimumRemainingReceived: "0",
       userOutput: "103.844",
+      cumulativeExecutionFee: "0.156",
       priceRate: "1.03844",
       progress: 100,
       closedAt: Date.UTC(2026, 10, 5, 8, 30) / 1000,
@@ -140,9 +145,20 @@ export const ExpiredAwaitingRefund: Story = {
       remainingInput: "100",
       minimumRemainingReceived: "103.48",
       userOutput: "0",
+      cumulativeExecutionFee: "0",
       canCancel: true,
       priceRate: null,
       progress: 0,
     },
   },
+};
+
+/** The order-api does not report the fee yet: a dash, never a zero. */
+export const FeeUnknown: Story = {
+  args: { order: { ...ORDER, cumulativeExecutionFee: null } },
+};
+
+/** A fee of a single token unit, shown to the token's last decimal. */
+export const TinyFee: Story = {
+  args: { order: { ...ORDER, cumulativeExecutionFee: "0.000001" } },
 };

@@ -39,6 +39,7 @@ const partiallyFilled: LimitOrderModel = {
   minimumReceived: "12.368646",
   minimumRemainingReceived: "8.03962",
   executionFeeRate: 15,
+  cumulativeExecutionFee: "0.018771",
   filledInput: "35",
   remainingInput: "65",
   refundedInput: "0",
@@ -140,5 +141,41 @@ describe("LimitOrderItemCard overview", () => {
       ["Swap:order.purchasedAmount", "0 GNS"],
       ["Swap:order.closedAt", "-"],
     ]);
+  });
+});
+
+describe("LimitOrderItemCard execution fee", () => {
+  const renderFee = (order: LimitOrderModel, tokenOutUsdPrice: string | null = null) => {
+    render(
+      <GnoswapThemeProvider>
+        <LimitOrderItemCard
+          order={order}
+          tokenOutUsdPrice={tokenOutUsdPrice}
+          txUrl=""
+          onClickCancel={jest.fn()}
+          renderHistory={() => null}
+        />
+      </GnoswapThemeProvider>,
+    );
+    const row = screen.getByText("Swap:dca.executionFee (0.15%)").closest(".card-sub-info");
+    return row?.querySelector(".value")?.textContent;
+  };
+
+  it("shows the saved rate and the fee actually charged, valued at the current price", () => {
+    expect(renderFee(partiallyFilled, "1.2")).toBe("0.018771 GNS (≈$0.0225)");
+  });
+
+  it("shows a known zero fee as zero, for an order that closed unfilled", () => {
+    const unfilled = closed("EXPIRED", { filledInput: "0", userOutput: "0", cumulativeExecutionFee: "0" });
+
+    expect(renderFee(unfilled, "1.2")).toBe("0 GNS");
+  });
+
+  it("shows a dash, not a zero, when the order-api does not report the fee", () => {
+    expect(renderFee({ ...partiallyFilled, cumulativeExecutionFee: null }, "1.2")).toBe("-");
+  });
+
+  it("shows the fee without a USD value while the price is unknown", () => {
+    expect(renderFee(closed("COMPLETED", { cumulativeExecutionFee: "0.018771" }))).toBe("0.018771 GNS");
   });
 });

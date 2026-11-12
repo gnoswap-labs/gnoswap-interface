@@ -85,6 +85,33 @@ describe("OrderHistoryTable", () => {
     expect(hrefs).toEqual(["https://gnoscan.io/tx/tx1", "https://gnoscan.io/tx/tx2"]);
   });
 
+  it("lists each limit fill's own fee, with a dash for an unreported one, and none for DCA", () => {
+    const items = [row(1, { executionFee: "0.018771" }), row(2, { executionFee: "0" }), row(3, { executionFee: null })];
+    const { container, rerender } = renderTable({ items, showExecutionFee: true, outputUsdPrice: "1.2" });
+
+    expect(Array.from(container.querySelectorAll(".fee-value"), fee => fee.firstElementChild?.textContent)).toEqual([
+      "0.018771",
+      "0",
+      "-",
+    ]);
+    // Only a charged fee is valued; a zero or unknown one has no USD value.
+    expect(Array.from(container.querySelectorAll(".fee-usd"), usd => usd.textContent)).toEqual(["(≈$0.0225)"]);
+
+    rerender(
+      <GnoswapThemeProvider>
+        <OrderHistoryTable
+          items={items}
+          inputToken={token("GNS")}
+          outputToken={token("GNOT")}
+          currentPage={1}
+          totalPages={1}
+          changePage={jest.fn()}
+        />
+      </GnoswapThemeProvider>,
+    );
+    expect(container.querySelector(".fee-row")).toBeNull();
+  });
+
   it("paginates only when there is more than one page", () => {
     const changePage = jest.fn();
     const { rerender } = renderTable({ totalPages: 1, changePage });

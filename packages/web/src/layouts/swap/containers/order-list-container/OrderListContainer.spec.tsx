@@ -13,6 +13,7 @@ jest.mock("@hooks/common/use-window-size", () => ({
   useWindowSize: () => ({ isMobile: false, handleBreakpoint: jest.fn() }),
 }));
 jest.mock("@hooks/common/use-gnoscan-url", () => ({ useGnoscanUrl: () => ({ getTxUrl: (hash: string) => hash }) }));
+jest.mock("@hooks/order/data/use-order-token-usd-price", () => ({ useOrderTokenUsdPrice: () => () => null }));
 jest.mock("@hooks/order/data/use-stop-order-handler", () => ({
   useStopOrderHandler: () => ({ openStopDcaOrder: jest.fn(), openCancelLimitOrder: jest.fn(), claimDcaOrder: jest.fn() }),
 }));
