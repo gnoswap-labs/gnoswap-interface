@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import { useWindowSize } from "@hooks/common/use-window-size";
-import { useOrderTokenUsdPrice } from "@hooks/order/data/use-order-token-usd-price";
 import { DcaOrderModel } from "@models/order/dca-order-model";
 import { LimitOrderModel } from "@models/order/limit-order-model";
 import { useGetDcaExecutions, useGetLimitOrderFills } from "@query/order";
@@ -42,7 +41,6 @@ export const DcaOrderHistoryContainer: React.FC<{ order: DcaOrderModel }> = ({ o
 /** Fills of a limit order. Mounted only while its history is open. */
 export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = ({ order }) => {
   const { isMobile } = useWindowSize();
-  const getUsdPrice = useOrderTokenUsdPrice();
   const [page, setPage] = useState(1);
   const { data, isPreviousData } = useGetLimitOrderFills({
     orderId: order.orderId,
@@ -66,7 +64,6 @@ export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = 
       isPreviousData={isPreviousData}
       compact={isMobile}
       showExecutionFee
-      outputUsdPrice={getUsdPrice(order.tokenOut)}
     />
   );
 };

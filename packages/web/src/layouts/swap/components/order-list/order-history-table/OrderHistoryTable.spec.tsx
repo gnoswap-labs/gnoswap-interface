@@ -87,15 +87,11 @@ describe("OrderHistoryTable", () => {
 
   it("lists each limit fill's own fee, with a dash for an unreported one, and none for DCA", () => {
     const items = [row(1, { executionFee: "0.018771" }), row(2, { executionFee: "0" }), row(3, { executionFee: null })];
-    const { container, rerender } = renderTable({ items, showExecutionFee: true, outputUsdPrice: "1.2" });
+    const { rerender } = renderTable({ items, showExecutionFee: true });
 
-    expect(Array.from(container.querySelectorAll(".fee-value"), fee => fee.firstElementChild?.textContent)).toEqual([
-      "0.018771",
-      "0",
-      "-",
-    ]);
-    // Only a charged fee is valued; a zero or unknown one has no USD value.
-    expect(Array.from(container.querySelectorAll(".fee-usd"), usd => usd.textContent)).toEqual(["(≈$0.0225)"]);
+    expect(screen.getByText("0.018771")).toBeInTheDocument();
+    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(screen.getByText("-")).toBeInTheDocument();
 
     rerender(
       <GnoswapThemeProvider>
@@ -109,7 +105,7 @@ describe("OrderHistoryTable", () => {
         />
       </GnoswapThemeProvider>,
     );
-    expect(container.querySelector(".fee-row")).toBeNull();
+    expect(screen.queryByText("0.018771")).not.toBeInTheDocument();
   });
 
   it("paginates only when there is more than one page", () => {
