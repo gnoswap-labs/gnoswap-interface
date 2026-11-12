@@ -42,3 +42,16 @@ export const WithRemainder: Story = {
     summary: { ...STORY_DCA_ORDER_SUMMARY, sellAmount: "1000", executionCount: 3, actualSellAmount: "999.999999" },
   },
 };
+
+export const LongValues: Story = {
+  ...Default,
+  args: {
+    ...Default.args,
+    summary: {
+      ...STORY_DCA_ORDER_SUMMARY,
+      sellAmount: "123,456,789.123456",
+      intervalUnit: "day",
+      executionCount: 1000,
+    },
+  },
+};

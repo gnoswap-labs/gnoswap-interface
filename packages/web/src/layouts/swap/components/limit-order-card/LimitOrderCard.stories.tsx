@@ -7,11 +7,11 @@ import React from "react";
 import { STORY_GNOT_TOKEN, STORY_GNS_TOKEN } from "@components/order/common/order-story-fixtures";
 import {
   applyLimitPricePreset,
-  calculateLimitMinimumReceived,
   calculateTakingAmount,
   stepLimitPrice,
   toLimitSlippageBps,
 } from "@hooks/order/data/use-order-handler.utils";
+import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
 import { formatPrice } from "@utils/new-number-utils";
 import globalStyle from "@styles/globalStyle";
 import { getTheme } from "@utils/theme-utils";

@@ -5,6 +5,7 @@ import { PACKAGE_DCA_ORDER_PATH, PACKAGE_LIMIT_ORDER_PATH } from "@constants/env
 import { TokenModel } from "@models/token/token-model";
 import { DcaExecutionItem, DcaOrderItem, LimitFillItem, LimitOrderItem } from "@repositories/order/response";
 import { isGNOTPath } from "@utils/common";
+import { calculateLimitMinimumReceived, calculateLimitMinimumRemainingReceived } from "@utils/order-amount-utils";
 import { makeDisplayTokenAmountString } from "@utils/token-utils";
 
 import { DcaOrderModel } from "../dca-order-model";
@@ -153,6 +154,12 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     tokenOut,
     makingAmount: toDisplayAmount(tokenIn, item.makingAmount),
     takingAmount: toDisplayAmount(tokenOut, item.takingAmount),
+    slippageBps: item.slippageBps,
+    minimumReceived: toDisplayAmount(tokenOut, calculateLimitMinimumReceived(item.takingAmount, item.slippageBps)),
+    minimumRemainingReceived: toDisplayAmount(tokenOut, calculateLimitMinimumRemainingReceived(item)),
+    executionFeeRate: item.executionFeeRate,
+    // Null, not "0", when the order-api does not report it.
+    cumulativeExecutionFee: makeDisplayTokenAmountString(tokenOut, item.cumulativeExecutionFee),
     filledInput: toDisplayAmount(tokenIn, item.filledInput),
     remainingInput: toDisplayAmount(tokenIn, item.remainingInput),
     refundedInput: toDisplayAmount(tokenIn, item.refundedInput),
@@ -198,5 +205,6 @@ export function mapLimitFillToHistory(
     rate: calculatePriceRate(tokenIn, tokenOut, item.amountIn, item.userOutput),
     soldAmount: toDisplayAmount(tokenIn, item.amountIn),
     purchasedAmount: toDisplayAmount(tokenOut, item.userOutput),
+    executionFee: makeDisplayTokenAmountString(tokenOut, item.executionFee),
   };
 }

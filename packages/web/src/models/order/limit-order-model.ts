@@ -28,6 +28,22 @@ export interface LimitOrderModel {
   tokenOut: TokenModel;
   makingAmount: string;
   takingAmount: string;
+  /** Slippage saved with this order, in basis points. */
+  slippageBps: number;
+  /** Owner-net minimum for the full original order, in display units; unchanged by fills or closure. */
+  minimumReceived: string;
+  /**
+   * Owner-net minimum for the input still unfilled, in display units. Worked out from the order's raw terms and
+   * rounded up, so it is not `minimumReceived` scaled by a ratio. Zero when nothing remains.
+   */
+  minimumRemainingReceived: string;
+  /** Execution fee saved with this order, in basis points. */
+  executionFeeRate: number;
+  /**
+   * Execution fee actually charged so far, in output-token display units. Null when the order-api does not report
+   * it, so an unknown fee is never shown as zero.
+   */
+  cumulativeExecutionFee: string | null;
   filledInput: string;
   remainingInput: string;
   refundedInput: string;

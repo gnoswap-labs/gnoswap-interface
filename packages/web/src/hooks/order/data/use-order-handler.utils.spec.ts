@@ -1,7 +1,8 @@
+import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
+
 import {
   applyLimitPricePreset,
   calculateAmountPerExecution,
-  calculateLimitMinimumReceived,
   calculateMaxExecutionCount,
   calculateTakingAmount,
   clampExecutionCount,

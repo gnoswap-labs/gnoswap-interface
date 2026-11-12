@@ -7,7 +7,6 @@ import { MIN_GNOT_DEPOSIT_AMOUNT } from "@common/clients/wallet-client/transacti
 import ConfirmLimitOrderModal from "@components/order/confirm-limit-order-modal/ConfirmLimitOrderModal";
 import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useSlippage } from "@hooks/common/use-slippage";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { LIMIT_EXPIRY_OPTIONS } from "@models/order/limit-order-model";
 import { SWAP_CARD_TYPE } from "@models/order/order-type";
@@ -18,14 +17,14 @@ import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
-import { formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
+import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
+import { calculatePriceDeviation, formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { getOrderButtonText, useOrderFormCommon } from "./use-order-form-common";
 import {
   applyLimitPricePreset,
-  calculateLimitMinimumReceived,
   calculateTakingAmount,
   calculateUsdValue,
   DEFAULT_MIN_MAKING_AMOUNT,
@@ -59,7 +58,7 @@ function truncateToDecimals(value: string, decimals: number): string {
 export const useLimitOrderHandler = () => {
   const { t } = useTranslation();
   const { orderRepository } = useGnoswapContext();
-  const { slippage, changeSlippage } = useSlippage({ resetOnMount: false });
+  const [slippage, changeSlippage] = useAtom(OrderState.limitSlippage);
   const { openModal: openConnectWallet } = useConnectWalletModal();
   const { submit } = useOrderTransaction();
 
@@ -274,7 +273,9 @@ export const useLimitOrderHandler = () => {
       buyAmountUsd: formatUsd(buyUsd),
       minimumReceived,
       limitPrice: formatRate(isValidPrice ? limitPrice : null).text,
+      limitPriceDeviation: calculatePriceDeviation(limitPrice, marketPrice),
       expiresAt: formatOrderDateTime(Math.floor(Date.now() / 1000) + expiry),
+      expiryDurationSec: expiry,
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
       executionFee,
     };
@@ -286,6 +287,7 @@ export const useLimitOrderHandler = () => {
     formatUsd,
     isValidPrice,
     limitPrice,
+    marketPrice,
     minimumReceived,
     sellUsd,
     sentSellAmount,

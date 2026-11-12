@@ -44,7 +44,6 @@
     "belowMarketWarning": "トリガー価格は市場価格を下回っているため、注文が即座に約定する可能性があります。",
     "executionFeeTooltip": "この手数料は、約定した各取引の収益から差し引かれます。この手数料を差し引いた後の最低受取額が表示されます。",
     "expiresIn": "残り",
-    "expiry": "有効期限",
     "expiryOption": {
       "oneDay": "1日",
       "oneHour": "1時間",
@@ -58,14 +57,16 @@
     "minimumReceivedTooltip": "指値価格および選択したスリッページに基づいて、執行手数料を差し引いた後に受け取る最低の売却額です。これは全量約定の場合の表示です。一部約定の場合は、同じ比率を適用し、約定ごとに切り上げられます。",
     "minTrading": "{{amount}} 以上{{symbol}}",
     "sellWhen": "1 {{symbol}} が次の価格に達したら売却",
-    "slippage": "最大スリッページ",
     "startToOrder": "注文を開始する"
   },
   "order": {
     "active": "未決済注文",
     "cancelOrder": "注文をキャンセルする",
+    "cancelledAt": "キャンセル日時",
     "claimOrder": "主張",
+    "completedAt": "完了日時",
     "connectWallet": "ご注文内容を確認するには、ウォレットを接続してください。",
+    "expiredAt": "失効日時",
     "expiresAt": "有効期限",
     "nextTrade": "次の取引",
     "noOrders": "注文が見つかりませんでした。",
@@ -126,7 +127,6 @@
     "wrap": "ラップ"
   },
   "swapInfo": {
-    "gasFee": "ネットワークガス料金",
     "maxSent": "送信最大数",
     "minReceived": "最小受信",
     "priceImpact": "価格への影響",

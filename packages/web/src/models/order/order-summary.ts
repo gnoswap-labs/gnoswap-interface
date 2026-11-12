@@ -2,7 +2,10 @@ import { TokenModel } from "@models/token/token-model";
 
 import { DcaIntervalUnit } from "./dca-order-model";
 
-/** Everything the DCA detail panel and confirm modal show, already formatted. */
+/**
+ * Everything the DCA detail panel and confirm modal show, already formatted, plus the raw schedule
+ * end (`estimatedEndAt`) they describe relative to now in the current language.
+ */
 export interface DcaOrderSummary {
   inputToken: TokenModel;
   outputToken: TokenModel;
@@ -18,11 +21,16 @@ export interface DcaOrderSummary {
   rateUsd: string;
   amountPerOrder: string;
   estimatedEndDate: string;
+  /** The end of the schedule behind `estimatedEndDate`, in Unix seconds. Null until the schedule is known. */
+  estimatedEndAt: number | null;
   /** The DCA realm's fee on each execution's output; `rate` is already net of it. */
   executionFee: string;
 }
 
-/** Everything the limit confirm modal shows, already formatted. */
+/**
+ * Everything the limit confirm modal shows, already formatted, plus the two raw values it formats
+ * for the current language (`limitPriceDeviation`, `expiryDurationSec`).
+ */
 export interface LimitOrderSummary {
   tokenIn: TokenModel;
   tokenOut: TokenModel;
@@ -33,7 +41,14 @@ export interface LimitOrderSummary {
   /** The least output the owner receives after execution fees at the selected slippage, for a full fill. */
   minimumReceived: string;
   limitPrice: string;
+  /**
+   * How far `limitPrice` sits from the market price quoted when this summary was built, as a signed
+   * fraction: `0.1` is 10% above market, `-0.05` is 5% below. Null without a positive market quote.
+   */
+  limitPriceDeviation: number | null;
   expiresAt: string;
+  /** The selected expiry in seconds, the distance from now to `expiresAt`. */
+  expiryDurationSec: number;
   slippage: string;
   executionFee: string;
 }

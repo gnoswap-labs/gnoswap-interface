@@ -13,6 +13,11 @@ export interface LimitOrderItem {
   takingAmount: string;
   slippageBps: number;
   executionFeeRate: number;
+  /**
+   * Execution fee charged so far, summed over the order's fills, in output-token raw units. Absent from an
+   * order-api that predates it, which is not the same as a fee of "0".
+   */
+  cumulativeExecutionFee?: string;
   filledInput: string;
   remainingInput: string;
   refundedInput: string;

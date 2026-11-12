@@ -44,7 +44,6 @@
     "belowMarketWarning": "触发价低于市场价，您的订单可能会立即成交。",
     "executionFeeTooltip": "该费用将从每笔成交交易的收益中扣除。扣除该费用后的最低到手金额将显示在此处。",
     "expiresIn": "到期时间：",
-    "expiry": "到期日",
     "expiryOption": {
       "oneDay": "1天",
       "oneHour": "1 小时",
@@ -58,14 +57,16 @@
     "minimumReceivedTooltip": "扣除交易手续费后您能获得的最低收益，该金额基于您的限价和所选滑点。此处显示的是全额成交的情况；部分成交时，将采用相同的比率，并按每笔成交向上取整。",
     "minTrading": "{{amount}} 以上{{symbol}}",
     "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出",
-    "slippage": "最大滑点",
     "startToOrder": "开始下单"
   },
   "order": {
     "active": "未结订单",
     "cancelOrder": "取消订单",
+    "cancelledAt": "已取消于",
     "claimOrder": "主张",
+    "completedAt": "完成于",
     "connectWallet": "请将您的钱包连接到本平台，以便查看您的订单。",
+    "expiredAt": "到期时间：",
     "expiresAt": "到期时间",
     "nextTrade": "下一笔交易",
     "noOrders": "未找到任何订单。",
@@ -126,7 +127,6 @@
     "wrap": "包装"
   },
   "swapInfo": {
-    "gasFee": "网络燃气费",
     "maxSent": "最大发送量",
     "minReceived": "最小收到",
     "priceImpact": "价格影响",

@@ -45,7 +45,7 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   isPreviousData = false,
   compact = false,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("Swap");
   const { getTxUrl } = useGnoscanUrl();
   const [now, setNow] = useState(() => Date.now());
   const [highlighted, setHighlighted] = useState<Set<string>>(new Set());

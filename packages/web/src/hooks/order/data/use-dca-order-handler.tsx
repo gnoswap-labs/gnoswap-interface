@@ -374,6 +374,7 @@ export const useDcaOrderHandler = () => {
       rateUsd: formattedRate.usd,
       amountPerOrder: trimFractionZeros(BigNumber(amountPerExecution).toFormat(tokenA.decimals, BigNumber.ROUND_DOWN)),
       estimatedEndDate: formatOrderDateTime(schedule?.estimatedEndAt),
+      estimatedEndAt: schedule?.estimatedEndAt ?? null,
       executionFee: formatBps(config?.executionFeeBps),
     };
   }, [

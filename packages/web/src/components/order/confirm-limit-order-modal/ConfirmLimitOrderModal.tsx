@@ -5,10 +5,12 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { LimitOrderSummary } from "@models/order/order-summary";
+import { formatOrderPriceDeviation, formatOrderRelativeDuration } from "@utils/order-format-utils";
 
 import { OrderModalWrapper } from "../common/OrderModal.styles";
 import { TokenBadge } from "../confirm-dca-order-modal/ConfirmDcaOrderModal";
 import OrderInfoRows, { OrderInfoRow } from "../order-info-rows/OrderInfoRows";
+import { ValueAnnotation } from "../common/OrderValueAnnotation.styles";
 
 export interface ConfirmLimitOrderModalProps {
   summary: LimitOrderSummary;
@@ -17,6 +19,16 @@ export interface ConfirmLimitOrderModalProps {
   close: () => void;
 }
 
+/** A row value followed by a note: `1 GNS = 1.27 GNOT (≈ +10%)`. Without a note it is the plain value. */
+const AnnotatedValue: React.FC<{ annotation: string | null; children: string }> = ({ annotation, children }) =>
+  annotation ? (
+    <span>
+      {children} <ValueAnnotation>{annotation}</ValueAnnotation>
+    </span>
+  ) : (
+    <>{children}</>
+  );
+
 /** No Figma design exists; it reuses the DCA confirm layout as agreed. */
 const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
   summary,
@@ -24,16 +36,26 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
   confirm,
   close,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   const { tokenIn, tokenOut } = summary;
 
-  const rows: OrderInfoRow[] = useMemo(
-    () => [
-      { key: "limitPrice", label: t("Swap:limit.limitPrice"), value: summary.limitPrice },
+  const rows: OrderInfoRow[] = useMemo(() => {
+    const deviation = formatOrderPriceDeviation(summary.limitPriceDeviation, locale);
+    const expiresIn = formatOrderRelativeDuration(summary.expiryDurationSec, locale);
+    const priceNote = deviation ? `(≈ ${deviation})` : null;
+    const expiryNote = expiresIn ? `(${expiresIn})` : null;
+
+    return [
+      {
+        key: "limitPrice",
+        label: t("Swap:limit.limitPrice"),
+        value: <AnnotatedValue annotation={priceNote}>{summary.limitPrice}</AnnotatedValue>,
+      },
       {
         key: "expiresAt",
         label: t("Swap:order.expiresAt"),
-        value: summary.expiresAt,
+        value: <AnnotatedValue annotation={expiryNote}>{summary.expiresAt}</AnnotatedValue>,
       },
       { key: "slippage", label: t("Swap:swapInfo.slippageSet"), value: summary.slippage },
       {
@@ -48,9 +70,8 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
         tooltip: t("Swap:limit.executionFeeTooltip"),
         value: summary.executionFee,
       },
-    ],
-    [summary, t, tokenOut.displaySymbol],
-  );
+    ];
+  }, [locale, summary, t, tokenOut.displaySymbol]);
 
   return (
     <OrderModalWrapper>

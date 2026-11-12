@@ -1,5 +1,6 @@
 import { atom } from "jotai";
 
+import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 import { DCA_INTERVAL } from "@models/order/dca-order-model";
 import { DEFAULT_LIMIT_EXPIRY } from "@models/order/limit-order-model";
 import { OrderListTab } from "@models/order/order-type";
@@ -31,5 +32,8 @@ export const limitPricePairKey = atom<string | null>(null);
 
 /** Seconds until the order expires. */
 export const limitExpiry = atom<number>(DEFAULT_LIMIT_EXPIRY);
+
+/** Limit-only tolerance in percent; never inherits the swap setting. */
+export const limitSlippage = atom<number>(DEFAULT_SLIPPAGE);
 
 export const orderListTab = atom<OrderListTab>("active");

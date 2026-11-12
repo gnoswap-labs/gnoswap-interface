@@ -60,4 +60,9 @@ export interface OrderHistoryModel {
   soldAmount: string;
   /** Display amount of the output token. */
   purchasedAmount: string;
+  /**
+   * Execution fee charged by this fill, in display units of the output token. Limit fills only; null when the
+   * order-api does not report it.
+   */
+  executionFee?: string | null;
 }

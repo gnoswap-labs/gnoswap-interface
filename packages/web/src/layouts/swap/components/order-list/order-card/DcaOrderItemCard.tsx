@@ -2,12 +2,20 @@ import { cx } from "@emotion/css";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import IconOutlineClock from "@components/common/icons/IconOutlineClock";
 import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
-import { DcaOrderModel } from "@models/order/dca-order-model";
-import { formatOrderAmount, formatOrderDate, formatOrderDateTime, formatOrderRate } from "@utils/order-format-utils";
+import { useOrderClock } from "@hooks/order/ui/use-order-clock";
+import { DcaOrderModel, getDcaIntervalUnit } from "@models/order/dca-order-model";
+import {
+  calculateDcaOrderEndAt,
+  formatOrderAmount,
+  formatOrderDateTime,
+  formatOrderRate,
+  formatOrderRemainingTime,
+} from "@utils/order-format-utils";
 
 import OrderProgressBar from "../order-progress-bar/OrderProgressBar";
-import { OrderItemCardWrapper } from "./OrderItemCard.styles";
+import { DcaOrderItemCardWrapper } from "./DcaOrderItemCard.styles";
 import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "./OrderItemCardParts";
 
 export interface DcaOrderItemCardProps {
@@ -21,6 +29,42 @@ export interface DcaOrderItemCardProps {
   renderHistory: (order: DcaOrderModel) => React.ReactNode;
 }
 
+const STATUS_LABEL_KEY: Record<DcaOrderModel["status"], string> = {
+  ACTIVE: "Swap:order.ongoing",
+  COMPLETED: "Swap:order.status.completed",
+  CANCELLED: "Swap:order.status.cancelled",
+};
+
+/**
+ * The status of an open order with the time left until its last trade. It owns the minute clock, so a closed card,
+ * which counts nothing down, never re-renders for it.
+ */
+const ActiveDcaOrderStatus: React.FC<{ order: DcaOrderModel }> = ({ order }) => {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
+  const nowUnixSeconds = useOrderClock();
+  const { interval, nextExecutionAt, remainingCount } = order;
+
+  // The end follows from the order's real schedule: without one, or once it has passed, no time is shown.
+  const remainingTime = formatOrderRemainingTime(
+    calculateDcaOrderEndAt({ nextExecutionAt, interval, remainingCount }),
+    locale,
+    nowUnixSeconds,
+  );
+
+  return (
+    <div className="card-status-group">
+      <span className="card-status ongoing">{t(STATUS_LABEL_KEY[order.status])}</span>
+      {remainingTime && (
+        <span className="card-status-time">
+          <IconOutlineClock className="icon-clock" />
+          {remainingTime}
+        </span>
+      )}
+    </div>
+  );
+};
+
 const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   order,
   roi,
@@ -29,7 +73,8 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   onClickClaim,
   renderHistory,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
   const { inputToken, outputToken } = order;
 
   const metrics: OrderMetric[] = useMemo(
@@ -61,8 +106,16 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
     [order.isActive, order.nextExecutionAt, order.remainingCount, t],
   );
 
+  // The terms the order was placed with, not what is left of them. An interval that is none of the allowed units
+  // is told in plain seconds.
+  const intervalUnit = getDcaIntervalUnit(order.interval);
+  const every = intervalUnit
+    ? t(`Swap:dca.intervalPhrase.${intervalUnit}`)
+    : new Intl.NumberFormat(locale, { style: "unit", unit: "second", unitDisplay: "long" }).format(order.interval);
+  const over = `${order.executionCount.toLocaleString(locale)} ${t("Swap:dca.orders")}`;
+
   return (
-    <OrderItemCardWrapper className={cx({ active: order.isActive })}>
+    <DcaOrderItemCardWrapper className={cx({ active: order.isActive })}>
       <div className="card-header">
         <OrderPairLabel
           inputToken={inputToken}
@@ -71,18 +124,30 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
           linkUrl={txUrl}
         />
         {order.isActive ? (
-          <span className="card-status ongoing">{t("Swap:order.ongoing")}</span>
-        ) : order.forceCancelled ? (
-          // A keeper closed it because it blocked its group; refunded and claimed as a normal cancel.
-          <span className="card-status">
-            {`${t("Swap:order.status.cancelledByKeeper")} · ${formatOrderDate(order.closedAt)}`}
-          </span>
+          <ActiveDcaOrderStatus order={order} />
         ) : (
-          <span className="card-status">{formatOrderDate(order.closedAt)}</span>
+          <div className="card-status-group">
+            <span className="card-status">
+              {/* A keeper closed it because it blocked its group; refunded and claimed as a normal cancel. */}
+              {t(order.forceCancelled ? "Swap:order.status.cancelledByKeeper" : STATUS_LABEL_KEY[order.status])}
+            </span>
+            {/* The close time the order-api reports: unknown stays `-` instead of borrowing another time. */}
+            <span className="card-status-time">{formatOrderDateTime(order.closedAt)}</span>
+          </div>
         )}
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
       <OrderMetrics metrics={metrics} />
+      <div className="card-order-terms">
+        <div className="card-sub-info">
+          <span>{t("Swap:dca.every")}</span>
+          <span className="value">{every}</span>
+        </div>
+        <div className="card-sub-info">
+          <span>{t("Swap:dca.over")}</span>
+          <span className="value">{over}</span>
+        </div>
+      </div>
       {order.isActive && (
         <OrderStopButton
           text={t("Swap:order.stopOrder")}
@@ -97,7 +162,7 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         />
       )}
       <OrderHistoryToggle visible={order.executedCount > 0} renderHistory={() => renderHistory(order)} />
-    </OrderItemCardWrapper>
+    </DcaOrderItemCardWrapper>
   );
 };
 

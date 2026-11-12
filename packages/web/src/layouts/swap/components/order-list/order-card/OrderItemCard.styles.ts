@@ -112,6 +112,27 @@ export const OrderItemCardWrapper = styled.div`
     }
   }
 
+  .card-order-terms {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    width: 100%;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid ${({ theme }) => theme.color.border02};
+    .card-sub-info {
+      gap: 12px;
+      align-items: flex-start;
+      > span:first-child {
+        min-width: 0;
+      }
+      .value {
+        min-width: 0;
+        max-width: 60%;
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+    }
+  }
+
   .button-stop {
     height: 33px;
     span {

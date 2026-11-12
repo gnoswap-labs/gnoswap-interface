@@ -21,8 +21,8 @@ jest.mock("@hooks/common/use-gnoswap-context", () => ({
 }));
 jest.mock("@query/order", () => ({ useGetDcaOrder: () => ({ data: undefined, isFetching: false }) }));
 jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: mockSubmit }) }));
-jest.mock("@hooks/token/data/use-token-data", () => ({
-  useTokenData: () => ({ tokenPrices: mockTokenPrices }),
+jest.mock("@query/token", () => ({
+  useGetAllTokenPrices: () => ({ data: mockTokenPrices }),
 }));
 
 const token: TokenModel = {
@@ -47,6 +47,11 @@ const limitOrder: LimitOrderModel = {
   tokenOut: token,
   makingAmount: "2",
   takingAmount: "2.2",
+  slippageBps: 50,
+  minimumReceived: "2.189",
+  minimumRemainingReceived: "2.189",
+  executionFeeRate: 15,
+  cumulativeExecutionFee: "0",
   filledInput: "0",
   remainingInput: "2",
   refundedInput: "0",

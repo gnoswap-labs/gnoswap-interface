@@ -44,7 +44,6 @@
     "belowMarketWarning": "El precio de activación está por debajo del precio de mercado y es posible que tu orden se ejecute al instante.",
     "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada. El importe mínimo recibido se indica tras deducir dicha comisión.",
     "expiresIn": "Caduca en",
-    "expiry": "Caducidad",
     "expiryOption": {
       "oneDay": "1 día",
       "oneHour": "1 hora",
@@ -58,14 +57,16 @@
     "minimumReceivedTooltip": "Importe mínimo que recibirás tras deducir las comisiones de ejecución, en función de tu precio límite y del deslizamiento seleccionado. Se muestra para una ejecución completa; en las ejecuciones parciales se aplica la misma proporción y se redondea al alza por cada ejecución.",
     "minTrading": "{{amount}} mínimo {{symbol}}",
     "sellWhen": "Vender cuando 1 {{symbol}} alcance",
-    "slippage": "Deslizamiento máximo",
     "startToOrder": "Empezar a hacer el pedido"
   },
   "order": {
     "active": "Pedidos pendientes",
     "cancelOrder": "Cancelar pedido",
+    "cancelledAt": "Cancelado el",
     "claimOrder": "Reclamación",
+    "completedAt": "Finalizado el",
     "connectWallet": "Conecta tu monedero para ver tu pedido.",
+    "expiredAt": "Caducado el",
     "expiresAt": "Vence el",
     "nextTrade": "Próxima operación",
     "noOrders": "No se han encontrado pedidos.",
@@ -126,7 +127,6 @@
     "wrap": "Envolver"
   },
   "swapInfo": {
-    "gasFee": "Tasa del gas de red",
     "maxSent": "Envío máx.",
     "minReceived": "Mín. Recibido\n",
     "priceImpact": "Impacto del precio",

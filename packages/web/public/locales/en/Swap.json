@@ -44,7 +44,6 @@
     "belowMarketWarning": "Trigger price is below market and your order may instantly fill.",
     "executionFeeTooltip": "The fee deducted from the output of each filled trade. Minimum received is shown after this fee.",
     "expiresIn": "Expires in",
-    "expiry": "Expiry",
     "expiryOption": {
       "oneDay": "1 Day",
       "oneHour": "1 Hour",
@@ -58,14 +57,16 @@
     "minimumReceivedTooltip": "Minimum output you receive after execution fees, based on your limit price and selected slippage. Shown for a full fill; partial fills use the same ratio and round up per fill.",
     "minTrading": "Minimum {{amount}} {{symbol}}",
     "sellWhen": "Sell when 1 {{symbol}} reaches",
-    "slippage": "Max. Slippage",
     "startToOrder": "Start to Order"
   },
   "order": {
     "active": "Open Orders",
     "cancelOrder": "Cancel Order",
+    "cancelledAt": "Cancelled At",
     "claimOrder": "Claim",
+    "completedAt": "Completed At",
     "connectWallet": "Please connect your wallet to view your order.",
+    "expiredAt": "Expired At",
     "expiresAt": "Expires At",
     "nextTrade": "Next Trade",
     "noOrders": "No orders found.",
@@ -126,7 +127,6 @@
     "wrap": "Wrap"
   },
   "swapInfo": {
-    "gasFee": "Network Gas Fee\n",
     "maxSent": "Max. Sent",
     "minReceived": "Min. Received\n",
     "priceImpact": "Price Impact",

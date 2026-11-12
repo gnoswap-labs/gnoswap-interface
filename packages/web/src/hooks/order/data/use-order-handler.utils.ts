@@ -261,7 +261,7 @@ export function isLimitAmountTooLow(
   );
 }
 
-/** The swap slippage setting (percent) as basis points, capped to what the limit realm accepts. */
+/** Limit tolerance (percent) as basis points, capped to what the limit realm accepts. */
 export function toLimitSlippageBps(slippagePercent: number, maxSlippageBps = MAX_LIMIT_SLIPPAGE_BPS): number {
   if (!Number.isFinite(slippagePercent) || slippagePercent <= 0) return 0;
   return Math.min(maxSlippageBps, Math.round(slippagePercent * 100));
@@ -280,14 +280,6 @@ export function calculateTakingAmount(
     .shiftedBy(tokenOut.decimals);
   if (!taking.isFinite() || taking.isLessThanOrEqualTo(0)) return "0";
   return taking.toFixed(0, BigNumber.ROUND_FLOOR);
-}
-
-/** Owner-net minimum for a full Limit fill, rounded up in raw output units as the realm does. */
-export function calculateLimitMinimumReceived(rawTakingAmount: string, slippageBps: number): string {
-  return BigNumber(rawTakingAmount || 0)
-    .multipliedBy(10_000 - slippageBps)
-    .dividedBy(10_000)
-    .toFixed(0, BigNumber.ROUND_CEIL);
 }
 
 /** Trims a price to a few significant digits for the limit price field. */
