@@ -71,27 +71,29 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     const outputAmount = (amount: string) =>
       `${formatOrderFullAmount(amount, tokenOut.decimals)} ${tokenOut.displaySymbol}`;
 
-    if (order.isActive) {
-      const sold = formatOrderFullAmount(order.filledInput, tokenIn.decimals);
-      return [
-        {
-          label: t("Swap:order.soldAmount"),
-          value: `${sold} / ${inputAmount(order.makingAmount)} (${formatOrderAmount(order.progress)}%)`,
-        },
-        { label: t("Swap:order.remainingAmount"), value: inputAmount(order.remainingInput) },
-        { label: t("Swap:order.minimumRemaining"), value: outputAmount(order.minimumRemainingReceived) },
-        { label: t("Swap:order.expiresAt"), value: formatOrderDateTime(order.expiresAt) },
-      ];
-    }
-
-    // A closed order only reports what happened, so no remaining amounts.
-    return [
-      { label: t("Swap:order.orderAmount"), value: inputAmount(order.makingAmount) },
-      { label: t("Swap:order.soldAmount"), value: inputAmount(order.filledInput) },
+    const sold = formatOrderFullAmount(order.filledInput, tokenIn.decimals);
+    const rows = [
+      {
+        label: t("Swap:order.soldAmount"),
+        value: `${sold} / ${inputAmount(order.makingAmount)} (${formatOrderAmount(order.progress)}%)`,
+      },
+      { label: t("Swap:order.remainingAmount"), value: inputAmount(order.remainingInput) },
       { label: t("Swap:order.purchasedAmount"), value: outputAmount(order.userOutput) },
-      // The close time the order-api reports. Expiry is no stand-in: an expired order may not be closed yet.
-      { label: t("Swap:order.closedAt"), value: formatOrderDateTime(order.closedAt) },
     ];
+
+    if (!order.isActive) {
+      const label =
+        order.status === "EXPIRED"
+          ? t("Swap:order.expiredAt")
+          : order.status === "CANCELLED"
+          ? t("Swap:order.cancelledAt")
+          : t("Swap:order.completedAt");
+      rows.push({
+        label,
+        value: formatOrderDateTime(order.status === "EXPIRED" ? order.expiresAt : order.closedAt),
+      });
+    }
+    return rows;
   }, [order, t, tokenIn, tokenOut]);
 
   return (

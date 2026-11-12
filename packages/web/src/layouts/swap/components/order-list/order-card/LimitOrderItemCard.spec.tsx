@@ -65,7 +65,7 @@ const closed = (status: LimitOrderModel["status"], overrides: Partial<LimitOrder
   ...overrides,
 });
 
-/** Hovers the progress bar and reads the Overview tooltip as `[label, value]` rows. */
+/** Hovers the progress bar and reads the amounts and timestamps shown in Overview. */
 const readOverview = async (order: LimitOrderModel) => {
   render(
     <GnoswapThemeProvider>
@@ -75,73 +75,77 @@ const readOverview = async (order: LimitOrderModel) => {
 
   await userEvent.hover(screen.getByRole("progressbar"));
   const tooltip = await screen.findByRole("tooltip");
-  return Array.from(tooltip.querySelectorAll(".overview-row"), row => [
-    row.querySelector(".label")?.textContent,
-    row.querySelector(".value")?.textContent,
-  ]);
+  return Array.from(tooltip.querySelectorAll(".overview-row"), row => row.querySelector(".value")?.textContent);
 };
 
 describe("LimitOrderItemCard overview", () => {
-  it("lists the sold, remaining and minimum remaining amounts, then the expiry, while an order is open", async () => {
-    expect(await readOverview(partiallyFilled)).toEqual([
-      ["Swap:order.soldAmount", "35 / 100 GNOT (35%)"],
-      ["Swap:order.remainingAmount", "65 GNOT"],
-      ["Swap:order.minimumRemaining", "8.03962 GNS"],
-      ["Swap:order.expiresAt", formatOrderDateTime(EXPIRES_AT)],
-    ]);
+  it("shows the filled share, remaining input and purchased output while open", async () => {
+    expect(await readOverview(partiallyFilled)).toEqual(["35 / 100 GNOT (35%)", "65 GNOT", "4.37342 GNS"]);
   });
 
-  it("covers the whole order before anything is sold", async () => {
+  it("shows zero purchased and the whole input remaining before the first fill", async () => {
     const unfilled: LimitOrderModel = {
       ...partiallyFilled,
       status: "OPEN",
       filledInput: "0",
       remainingInput: "100",
-      minimumRemainingReceived: "12.368646",
       userOutput: "0",
       priceRate: null,
       progress: 0,
     };
-
-    expect(await readOverview(unfilled)).toEqual([
-      ["Swap:order.soldAmount", "0 / 100 GNOT (0%)"],
-      ["Swap:order.remainingAmount", "100 GNOT"],
-      ["Swap:order.minimumRemaining", "12.368646 GNS"],
-      ["Swap:order.expiresAt", formatOrderDateTime(EXPIRES_AT)],
-    ]);
+    expect(await readOverview(unfilled)).toEqual(["0 / 100 GNOT (0%)", "100 GNOT", "0 GNS"]);
   });
 
-  it.each<[LimitOrderModel["status"], Partial<LimitOrderModel>, string, string]>([
-    ["COMPLETED", { filledInput: "100", userOutput: "12.495486", progress: 100 }, "100 GNOT", "12.495486 GNS"],
-    ["CANCELLED", { filledInput: "35", userOutput: "4.37342" }, "35 GNOT", "4.37342 GNS"],
-    ["EXPIRED", { filledInput: "0", userOutput: "0", progress: 0 }, "0 GNOT", "0 GNS"],
-  ])("reports what happened to a %s order, with nothing remaining", async (status, fills, sold, purchased) => {
-    expect(await readOverview(closed(status, fills))).toEqual([
-      ["Swap:order.orderAmount", "100 GNOT"],
-      ["Swap:order.soldAmount", sold],
-      ["Swap:order.purchasedAmount", purchased],
-      ["Swap:order.closedAt", formatOrderDateTime(CLOSED_AT)],
-    ]);
+  it.each<[LimitOrderModel["status"], Partial<LimitOrderModel>, string, string, number]>([
+    [
+      "COMPLETED",
+      { filledInput: "100", userOutput: "12.495486", progress: 100 },
+      "100 / 100 GNOT (100%)",
+      "12.495486 GNS",
+      CLOSED_AT,
+    ],
+    [
+      "CANCELLED",
+      { filledInput: "35", refundedInput: "65", userOutput: "4.37342" },
+      "35 / 100 GNOT (35%)",
+      "4.37342 GNS",
+      CLOSED_AT,
+    ],
+    [
+      "EXPIRED",
+      { filledInput: "0", refundedInput: "100", userOutput: "0", progress: 0 },
+      "0 / 100 GNOT (0%)",
+      "0 GNS",
+      EXPIRES_AT,
+    ],
+  ])("shows actual fill amounts and the event date for a %s order", async (status, fills, sold, purchased, date) => {
+    expect(await readOverview(closed(status, fills))).toEqual([sold, "0 GNOT", purchased, formatOrderDateTime(date)]);
   });
 
-  it("does not present the expiry as the close time of an expired order that is not closed yet", async () => {
-    // Its input is still escrowed until refunded, yet a closed order lists no remaining amount.
+  it("shows unrefunded expired input and the expiry date even before cleanup closes the order", async () => {
     const expired = closed("EXPIRED", {
       closedAt: null,
       filledInput: "0",
       remainingInput: "100",
-      minimumRemainingReceived: "12.368646",
       userOutput: "0",
+      progress: 0,
       canCancel: true,
     });
-
     expect(await readOverview(expired)).toEqual([
-      ["Swap:order.orderAmount", "100 GNOT"],
-      ["Swap:order.soldAmount", "0 GNOT"],
-      ["Swap:order.purchasedAmount", "0 GNS"],
-      ["Swap:order.closedAt", "-"],
+      "0 / 100 GNOT (0%)",
+      "100 GNOT",
+      "0 GNS",
+      formatOrderDateTime(EXPIRES_AT),
     ]);
   });
+
+  it.each<LimitOrderModel["status"]>(["CANCELLED", "COMPLETED"])(
+    "does not substitute the expiry for an unknown %s close date",
+    async status => {
+      const values = await readOverview(closed(status, { closedAt: null }));
+      expect(values.at(-1)).toBe("-");
+    },
+  );
 });
 
 describe("LimitOrderItemCard execution fee", () => {
