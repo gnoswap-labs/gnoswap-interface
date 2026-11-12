@@ -4,13 +4,16 @@ import { useTranslation } from "react-i18next";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import { ValueAnnotation } from "@components/order/common/OrderValueAnnotation.styles";
 import { OrderInfoRow } from "@components/order/order-info-rows/OrderInfoRows";
 import { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
 import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
+import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
 import { SwapCardType } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
+import { formatOrderDateTime, formatOrderRelativeDuration } from "@utils/order-format-utils";
 
 import OrderCardSkeleton from "../order-form/OrderCardSkeleton";
 import OrderFormButton from "../order-form/OrderFormButton";
@@ -119,7 +122,10 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   minTradingText,
   onClickButton,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
+  const nowUnixSeconds = useOrderClock();
+  const expiresIn = formatOrderRelativeDuration(expiry, locale);
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
   const infoRows: OrderInfoRow[] = useMemo(
     () => [
@@ -136,8 +142,18 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
         tooltip: t("Swap:limit.executionFeeTooltip"),
         value: executionFee,
       },
+      {
+        key: "expiresAt",
+        label: t("Swap:order.expiresAt"),
+        value: (
+          <span>
+            {formatOrderDateTime(nowUnixSeconds + expiry)}{" "}
+            {expiresIn && <ValueAnnotation>({expiresIn})</ValueAnnotation>}
+          </span>
+        ),
+      },
     ],
-    [executionFee, minimumReceived, slippage, t, tokenB],
+    [executionFee, expiresIn, expiry, minimumReceived, nowUnixSeconds, slippage, t, tokenB],
   );
 
   // Max is worked out here rather than in the sell field, so the order button

@@ -3,7 +3,9 @@ import BigNumber from "bignumber.js";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { ValueAnnotation } from "@components/order/common/OrderValueAnnotation.styles";
 import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
+import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { LimitOrderModel } from "@models/order/limit-order-model";
 import {
   formatBps,
@@ -13,6 +15,7 @@ import {
   formatOrderFeeUsd,
   formatOrderFullAmount,
   formatOrderRate,
+  formatOrderTimeUntil,
 } from "@utils/order-format-utils";
 
 import OrderProgressBar from "../order-progress-bar/OrderProgressBar";
@@ -44,9 +47,12 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   onClickCancel,
   renderHistory,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
+  const nowUnixSeconds = useOrderClock();
   const { tokenIn, tokenOut } = order;
   const executionFeeUsd = formatOrderFeeUsd(order.cumulativeExecutionFee, tokenOutUsdPrice);
+  const expiresIn = order.isActive ? formatOrderTimeUntil(order.expiresAt, locale, nowUnixSeconds) : null;
 
   const metrics: OrderMetric[] = useMemo(
     () => [
@@ -108,9 +114,7 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         />
         <div className="card-status-group">
           <span className={cx("card-status", { ongoing: order.isActive })}>{t(STATUS_LABEL_KEY[order.status])}</span>
-          <span className="card-status-time">
-            {formatOrderDateTime(order.isActive ? order.expiresAt : order.closedAt)}
-          </span>
+          {!order.isActive && <span className="card-status-time">{formatOrderDateTime(order.closedAt)}</span>}
         </div>
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
@@ -137,7 +141,9 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         {order.isActive && (
           <div className="card-sub-info">
             <span>{t("Swap:order.expiresAt")}</span>
-            <span className="value">{formatOrderDateTime(order.expiresAt)}</span>
+            <span className="value">
+              {formatOrderDateTime(order.expiresAt)} {expiresIn && <ValueAnnotation>({expiresIn})</ValueAnnotation>}
+            </span>
           </div>
         )}
       </div>
