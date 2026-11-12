@@ -4,28 +4,22 @@ import { useCallback, useMemo, useState } from "react";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { TokenModel } from "@models/token/token-model";
-import { checkGnotPath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { formatOrderRate } from "@utils/order-format-utils";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
 
 import { OrderButtonState } from "./use-order-handler.utils";
+import { useOrderTokenUsdPrice } from "./use-order-token-usd-price";
 
 const COPIED_DURATION = 2_000;
 
 /** Wallet, balance, price and URL helpers shared by the DCA and limit forms. */
 export const useOrderFormCommon = (tokenA: TokenModel | null, tokenB: TokenModel | null) => {
   const { connected, isSwitchNetwork, switchNetwork, account } = useWallet();
-  const { tokenPrices, displayBalanceStringMap } = useTokenData(true);
+  const { displayBalanceStringMap } = useTokenData(true);
   const [copied, setCopied] = useState(false);
 
-  const getUsdPrice = useCallback(
-    (token: TokenModel | null): string | null => {
-      if (!token) return null;
-      return tokenPrices[checkGnotPath(token.priceID)]?.usd ?? tokenPrices[checkGnotPath(token.path)]?.usd ?? null;
-    },
-    [tokenPrices],
-  );
+  const getUsdPrice = useOrderTokenUsdPrice();
 
   const tokenABalance = useMemo(() => {
     if (isSwitchNetwork || !tokenA) return "-";
@@ -55,7 +49,6 @@ export const useOrderFormCommon = (tokenA: TokenModel | null, tokenB: TokenModel
     },
     [getUsdPrice, tokenA, tokenB],
   );
-
 
   const copyUrl = useCallback(async (query: Record<string, string | number | null | undefined>) => {
     const params = Object.entries(query)

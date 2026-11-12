@@ -4,18 +4,17 @@ import { useTranslation } from "react-i18next";
 
 import ConfirmStopOrderModal from "@components/order/confirm-stop-order-modal/ConfirmStopOrderModal";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
-import { useTokenData } from "@hooks/token/data/use-token-data";
 import { DcaOrderModel } from "@models/order/dca-order-model";
 import { LimitOrderModel } from "@models/order/limit-order-model";
 import { StopOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
 import { useGetDcaOrder } from "@query/order";
 import { DexEvent } from "@repositories/common";
-import { checkGnotPath } from "@utils/common";
 import { formatPrice } from "@utils/new-number-utils";
 import { formatOrderFullAmount } from "@utils/order-format-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
+import { useOrderTokenUsdPrice } from "./use-order-token-usd-price";
 import { useOrderTransaction } from "./use-order-transaction";
 
 const LIMIT_STATUS_LABEL_KEY: Partial<Record<LimitOrderModel["status"], string>> = {
@@ -29,7 +28,7 @@ type SelectedOrder = { kind: "dca"; order: DcaOrderModel } | { kind: "limit"; or
 export const useStopOrderHandler = () => {
   const { t } = useTranslation();
   const { orderRepository } = useGnoswapContext();
-  const { tokenPrices } = useTokenData(true);
+  const getUsdPrice = useOrderTokenUsdPrice();
   const { submit } = useOrderTransaction();
   const [selected, setSelected] = useState<SelectedOrder | null>(null);
 
@@ -41,12 +40,12 @@ export const useStopOrderHandler = () => {
 
   const formatUsd = useCallback(
     (token: TokenModel, amount: BigNumber.Value | null) => {
-      const price = tokenPrices[checkGnotPath(token.priceID)]?.usd ?? tokenPrices[checkGnotPath(token.path)]?.usd;
-      if (price === undefined || price === null || amount === null) return "-";
+      const price = getUsdPrice(token);
+      if (price === null || amount === null) return "-";
       const usdAmount = BigNumber(amount).multipliedBy(price);
       return usdAmount.isFinite() ? formatPrice(usdAmount) : "-";
     },
-    [tokenPrices],
+    [getUsdPrice],
   );
 
   const summary: StopOrderSummary | null = useMemo(() => {
@@ -154,22 +153,16 @@ export const useStopOrderHandler = () => {
     openModal();
   }, [openModal, summary]);
 
-  const openStopDcaOrder = useCallback(
-    (order: DcaOrderModel) => {
-      pendingOpen.current = true;
-      setSelected({ kind: "dca", order });
-    },
-    [],
-  );
+  const openStopDcaOrder = useCallback((order: DcaOrderModel) => {
+    pendingOpen.current = true;
+    setSelected({ kind: "dca", order });
+  }, []);
 
-  const openCancelLimitOrder = useCallback(
-    (order: LimitOrderModel) => {
-      if (!order.canCancel) return;
-      pendingOpen.current = true;
-      setSelected({ kind: "limit", order });
-    },
-    [],
-  );
+  const openCancelLimitOrder = useCallback((order: LimitOrderModel) => {
+    if (!order.canCancel) return;
+    pendingOpen.current = true;
+    setSelected({ kind: "limit", order });
+  }, []);
 
   /** Pays a completed DCA order's unclaimed output; the realm finalizes the order in the same call. */
   const claimDcaOrder = useCallback(

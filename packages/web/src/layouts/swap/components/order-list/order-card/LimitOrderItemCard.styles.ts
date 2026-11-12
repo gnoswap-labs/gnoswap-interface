@@ -29,4 +29,8 @@ export const LimitOrderItemCardWrapper = styled(OrderItemCardWrapper)`
     color: ${({ theme }) => theme.color.text05};
     white-space: nowrap;
   }
+
+  .card-sub-info .value .value-usd {
+    color: ${({ theme }) => theme.color.text04};
+  }
 `;

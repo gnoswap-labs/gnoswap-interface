@@ -9,6 +9,8 @@ import {
   formatBps,
   formatOrderAmount,
   formatOrderDateTime,
+  formatOrderFee,
+  formatOrderFeeUsd,
   formatOrderFullAmount,
   formatOrderRate,
 } from "@utils/order-format-utils";
@@ -19,6 +21,8 @@ import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "
 
 export interface LimitOrderItemCardProps {
   order: LimitOrderModel;
+  /** Current USD price of the order's output token, to value the execution fee. Null while unknown. */
+  tokenOutUsdPrice?: string | null;
   txUrl: string;
   onClickCancel: (order: LimitOrderModel) => void;
   /** Keeps the order actions disabled, e.g. while the order list is served from fixtures. */
@@ -35,12 +39,14 @@ const STATUS_LABEL_KEY: Record<LimitOrderModel["status"], string> = {
 
 const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   order,
+  tokenOutUsdPrice = null,
   txUrl,
   onClickCancel,
   renderHistory,
 }) => {
   const { t } = useTranslation();
   const { tokenIn, tokenOut } = order;
+  const executionFeeUsd = formatOrderFeeUsd(order.cumulativeExecutionFee, tokenOutUsdPrice);
 
   const metrics: OrderMetric[] = useMemo(
     () => [
@@ -119,8 +125,12 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
           </span>
         </div>
         <div className="card-sub-info">
-          <span>{t("Swap:dca.executionFee")}</span>
-          <span className="value">{formatBps(order.executionFeeRate)}</span>
+          <span>{`${t("Swap:dca.executionFee")} (${formatBps(order.executionFeeRate)})`}</span>
+          <span className="value">
+            {formatOrderFee(order.cumulativeExecutionFee, tokenOut.decimals)}
+            {order.cumulativeExecutionFee !== null && ` ${tokenOut.displaySymbol}`}
+            {executionFeeUsd && <span className="value-usd">{` (${executionFeeUsd})`}</span>}
+          </span>
         </div>
         {order.isActive && (
           <div className="card-sub-info">

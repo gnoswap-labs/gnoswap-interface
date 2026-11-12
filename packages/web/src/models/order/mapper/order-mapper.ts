@@ -157,6 +157,8 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     minimumReceived: toDisplayAmount(tokenOut, calculateLimitMinimumReceived(item.takingAmount, item.slippageBps)),
     minimumRemainingReceived: toDisplayAmount(tokenOut, calculateLimitMinimumRemainingReceived(item)),
     executionFeeRate: item.executionFeeRate,
+    // Null, not "0", when the order-api does not report it.
+    cumulativeExecutionFee: makeDisplayTokenAmountString(tokenOut, item.cumulativeExecutionFee),
     filledInput: toDisplayAmount(tokenIn, item.filledInput),
     remainingInput: toDisplayAmount(tokenIn, item.remainingInput),
     refundedInput: toDisplayAmount(tokenIn, item.refundedInput),
@@ -202,5 +204,6 @@ export function mapLimitFillToHistory(
     rate: calculatePriceRate(tokenIn, tokenOut, item.amountIn, item.userOutput),
     soldAmount: toDisplayAmount(tokenIn, item.amountIn),
     purchasedAmount: toDisplayAmount(tokenOut, item.userOutput),
+    executionFee: makeDisplayTokenAmountString(tokenOut, item.executionFee),
   };
 }

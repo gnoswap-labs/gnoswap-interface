@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 
 import { DcaOrderModel } from "@models/order/dca-order-model";
 
-import { formatTokenAmount } from "./new-number-utils";
+import { formatPrice, formatTokenAmount } from "./new-number-utils";
 
 const ORDER_DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss";
 const ORDER_DATE_FORMAT = "YYYY-MM-DD";
@@ -35,6 +35,28 @@ export function formatOrderFullAmount(amount: BigNumber.Value | null | undefined
   if (!value.isFinite() || value.isZero()) return "0";
 
   return trimFractionZeros(value.toFormat(decimals, BigNumber.ROUND_DOWN));
+}
+
+/**
+ * An execution fee that was actually charged, to the output token's last decimal so a tiny fee never reads as zero.
+ * `-` when the fee is unknown, which is not the same as a charged `0`.
+ */
+export function formatOrderFee(fee: BigNumber.Value | null | undefined, decimals: number): string {
+  if (fee === null || fee === undefined || fee === "") return "-";
+  return formatOrderFullAmount(fee, decimals);
+}
+
+/**
+ * The approximate current USD value of a fee, e.g. `≈$0.12`, and `<$0.01` for less than a cent. Null when there is
+ * no fee to value or no USD price, so no placeholder value is ever shown.
+ */
+export function formatOrderFeeUsd(fee: string | null | undefined, usdPrice: string | null | undefined): string | null {
+  if (!fee || !usdPrice) return null;
+  const value = BigNumber(fee).multipliedBy(usdPrice);
+  if (!value.isFinite() || !value.isGreaterThan(0)) return null;
+  if (value.isLessThan(0.01)) return "<$0.01";
+
+  return formatPrice(value, { usd: true, isKMB: false, approx: true });
 }
 
 /** Exchange rates: six decimals rounded down with trailing zeros dropped. `-` when unknown. */

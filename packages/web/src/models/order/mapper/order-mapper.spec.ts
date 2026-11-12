@@ -15,6 +15,7 @@ import {
   canCancelLimitOrder,
   mapDcaOrderItemToModel,
   resolveOrderRealm,
+  mapLimitFillToHistory,
   mapLimitOrderItemToModel,
   resolveOrderToken,
 } from "./order-mapper";
@@ -309,6 +310,48 @@ describe("order-mapper", () => {
 
       expect(order.minimumRemainingReceived).toBe("0.33166667");
       expect(order.minimumReceived).toBe("0.995");
+    });
+  });
+
+  describe("execution fees", () => {
+    const item: LimitOrderItem = {
+      orderId: "11",
+      owner: "g1",
+      status: "COMPLETED",
+      tokenIn: "gno.land/r/gnoland/wugnot",
+      tokenOut: "gno.land/r/gnoswap/gns",
+      makingAmount: "3000000",
+      takingAmount: "12430800",
+      slippageBps: 50,
+      executionFeeRate: 15,
+      filledInput: "3000000",
+      remainingInput: "0",
+      refundedInput: "0",
+      userOutput: "12495486",
+      createdAt: 1,
+      expiresAt: 2,
+      createdTxHash: "tx",
+      closedAt: 3,
+      closedTxHash: "tx",
+    };
+
+    const feeOf = (cumulativeExecutionFee?: string) =>
+      mapLimitOrderItemToModel({ ...item, cumulativeExecutionFee }, tokens).cumulativeExecutionFee;
+
+    it("keeps the stored cumulative fee at the output token's full precision", () => {
+      expect(feeOf("18771")).toBe("0.018771");
+    });
+
+    it("tells a known zero fee from one the order-api does not report", () => {
+      expect(feeOf("0")).toBe("0");
+      expect(feeOf(undefined)).toBeNull();
+    });
+
+    it("carries each fill's own fee into its history row", () => {
+      const fill = { txHash: "tx", amountIn: "1000000", userOutput: "4165000", executionFee: "18771", blockTime: 5 };
+
+      expect(mapLimitFillToHistory(fill, gnot, gns, 0).executionFee).toBe("0.018771");
+      expect(mapLimitFillToHistory({ ...fill, executionFee: "0" }, gnot, gns, 0).executionFee).toBe("0");
     });
   });
 });

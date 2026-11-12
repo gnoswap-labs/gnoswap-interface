@@ -85,6 +85,29 @@ describe("OrderHistoryTable", () => {
     expect(hrefs).toEqual(["https://gnoscan.io/tx/tx1", "https://gnoscan.io/tx/tx2"]);
   });
 
+  it("lists each limit fill's own fee, with a dash for an unreported one, and none for DCA", () => {
+    const items = [row(1, { executionFee: "0.018771" }), row(2, { executionFee: "0" }), row(3, { executionFee: null })];
+    const { rerender } = renderTable({ items, showExecutionFee: true });
+
+    expect(screen.getByText("0.018771")).toBeInTheDocument();
+    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(screen.getByText("-")).toBeInTheDocument();
+
+    rerender(
+      <GnoswapThemeProvider>
+        <OrderHistoryTable
+          items={items}
+          inputToken={token("GNS")}
+          outputToken={token("GNOT")}
+          currentPage={1}
+          totalPages={1}
+          changePage={jest.fn()}
+        />
+      </GnoswapThemeProvider>,
+    );
+    expect(screen.queryByText("0.018771")).not.toBeInTheDocument();
+  });
+
   it("paginates only when there is more than one page", () => {
     const changePage = jest.fn();
     const { rerender } = renderTable({ totalPages: 1, changePage });
