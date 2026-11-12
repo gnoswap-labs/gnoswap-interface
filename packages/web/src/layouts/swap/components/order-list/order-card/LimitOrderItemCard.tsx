@@ -98,13 +98,12 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
           outputAmount={formatOrderFullAmount(order.takingAmount, tokenOut.decimals)}
           linkUrl={txUrl}
         />
-        {order.isActive ? (
-          <span className="card-status ongoing">{t(STATUS_LABEL_KEY[order.status])}</span>
-        ) : (
-          <span className="card-status">
-            {`${t(STATUS_LABEL_KEY[order.status])} · ${formatOrderDateTime(order.closedAt)}`}
+        <div className="card-status-group">
+          <span className={cx("card-status", { ongoing: order.isActive })}>{t(STATUS_LABEL_KEY[order.status])}</span>
+          <span className="card-status-time">
+            {formatOrderDateTime(order.isActive ? order.expiresAt : order.closedAt)}
           </span>
-        )}
+        </div>
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
       <OrderMetrics metrics={metrics} />
