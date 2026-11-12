@@ -72,19 +72,6 @@ export const OrderHistoryTableWrapper = styled.div`
     }
   }
 
-  &.with-fee .history-row {
-    grid-template-columns:
-      minmax(0, 1.2fr) minmax(0, 0.6fr) minmax(0, 0.8fr)
-      minmax(0, 1.15fr) minmax(0, 1.25fr);
-  }
-
-  .fee-cell .fee-amount {
-    white-space: normal;
-    overflow-wrap: anywhere;
-    text-overflow: clip;
-    text-align: right;
-  }
-
   .pagination {
     ${mixins.flexbox("row", "center", "center")};
     width: 100%;

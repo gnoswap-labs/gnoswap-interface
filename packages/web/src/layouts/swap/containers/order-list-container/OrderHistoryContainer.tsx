@@ -63,7 +63,6 @@ export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = 
       changePage={setPage}
       isPreviousData={isPreviousData}
       compact={isMobile}
-      showExecutionFee
     />
   );
 };
