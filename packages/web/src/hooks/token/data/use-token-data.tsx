@@ -2,13 +2,12 @@ import BigNumber from "bignumber.js";
 import { useAtom } from "jotai";
 import { useCallback, useEffect, useMemo } from "react";
 
-import { GNOT_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
+import { EMPTY_TOKEN_PRICES, GNOT_TOKEN, XGNS_TOKEN } from "@common/values/token-constant";
 import { MATH_NEGATIVE_TYPE } from "@constants/option.constant";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { CardListTokenInfo, UpDownType } from "@models/common/card-list-item-info";
 import { isNativeTokenByType, TokenModel } from "@models/token/token-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
 import { useGetAllTokenPrices, useGetGrc20Balances, useGetSwapExtensionBalances, useGetTokens } from "@query/token";
 import { TokenState } from "@states/index";
 import { getOriginToken, swapExtensions } from "@resources/swap-extension";
@@ -18,7 +17,6 @@ import { makeDisplayTokenAmount, makeDisplayTokenAmountString } from "@utils/tok
 import { isEmptyObject } from "@utils/validation-utils";
 
 import { useGnotToGnot } from "./use-gnot-wugnot";
-const EMPTY_TOKEN_PRICES: Record<string, TokenPriceModel> = {};
 
 export const useTokenData = (showUnverified = true) => {
   const {
@@ -84,7 +82,7 @@ export const useTokenData = (showUnverified = true) => {
       }
 
       balanceMap[token.path] = grc20BalancesData?.data
-        ? grc20BalancesData.data.find(balance => balance.path === token.path)?.amount ?? "0"
+        ? (grc20BalancesData.data.find(balance => balance.path === token.path)?.amount ?? "0")
         : null;
     });
     return balanceMap;
