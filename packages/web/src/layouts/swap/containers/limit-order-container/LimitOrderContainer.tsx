@@ -22,7 +22,8 @@ const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, cha
   // A shared link may carry `amount`, `price` and `expiry`.
   const applyQuery = useCallback(
     (query: Record<string, string | string[] | undefined>) => {
-      restoreOrderSide(getQueryString(query.side) === "buy" ? "buy" : "sell");
+      const side = getQueryString(query.side);
+      if (side === "buy" || side === "sell") restoreOrderSide(side);
       const amount = getQueryString(query.amount);
       const price = getQueryString(query.price);
       const expiry = Number(getQueryString(query.expiry));

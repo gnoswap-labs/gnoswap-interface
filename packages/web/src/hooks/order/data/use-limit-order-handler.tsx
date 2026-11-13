@@ -18,7 +18,13 @@ import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
 import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
-import { calculatePriceDeviation, formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
+import {
+  calculatePriceDeviation,
+  formatBps,
+  formatOrderDateTime,
+  formatOrderRate,
+  trimFractionZeros,
+} from "@utils/order-format-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
@@ -78,7 +84,6 @@ export const useLimitOrderHandler = () => {
     tokenBBalance,
     isSameToken,
     formatUsd,
-    formatRate,
   } = useOrderFormCommon(tokenA, tokenB);
 
   const { data: config, isLoading: isLoadingConfig } = useGetLimitConfig();
@@ -108,22 +113,15 @@ export const useLimitOrderHandler = () => {
     if (!tokenB || routes?.status !== "SUCCESS") return null;
     const output = makeDisplayTokenAmountString(tokenB, routes.amount);
     if (!output) return null;
-    return formatLimitPriceInput(BigNumber(output).dividedBy(quoteAmount)) || null;
-  }, [quoteAmount, routes, tokenB]);
+    const price =
+      orderSide === "buy" ? BigNumber(quoteAmount).dividedBy(output) : BigNumber(output).dividedBy(quoteAmount);
+    return price.isFinite() && price.isGreaterThan(0) ? price.toFixed() : null;
+  }, [orderSide, quoteAmount, routes, tokenB]);
   const marketPrice = useMemo(
-    () =>
-      orderSide === "buy" && quotedMarketPrice
-        ? formatLimitPriceInput(BigNumber(1).dividedBy(quotedMarketPrice)) || null
-        : quotedMarketPrice,
-    [orderSide, quotedMarketPrice],
+    () => (quotedMarketPrice ? formatLimitPriceInput(quotedMarketPrice) || null : null),
+    [quotedMarketPrice],
   );
   const defaultPreset = orderSide === "buy" ? -10 : 10;
-  const orderPrice =
-    orderSide === "buy"
-      ? BigNumber(limitPrice || 0).isGreaterThan(0)
-        ? BigNumber(1).dividedBy(limitPrice).toFixed()
-        : ""
-      : limitPrice;
 
   // Preserve manual prices (including an empty edit), but keep presets tied to
   // fresh router quotes. Pair ownership survives switching to Swap or DCA.
@@ -287,6 +285,8 @@ export const useLimitOrderHandler = () => {
 
   const summary: LimitOrderSummary | null = useMemo(() => {
     if (!tokenA || !tokenB) return null;
+    const baseToken = orderSide === "buy" ? tokenB : tokenA;
+    const quoteToken = orderSide === "buy" ? tokenA : tokenB;
     return {
       tokenIn: tokenA,
       tokenOut: tokenB,
@@ -295,8 +295,10 @@ export const useLimitOrderHandler = () => {
       buyAmount: makeDisplayTokenAmountString(tokenB, takingAmount) ?? "0",
       buyAmountUsd: formatUsd(buyUsd),
       minimumReceived,
-      limitPrice: formatRate(isValidPrice ? orderPrice : null).text,
-      limitPriceDeviation: calculatePriceDeviation(orderPrice, quotedMarketPrice),
+      limitPrice: isValidPrice
+        ? `1 ${baseToken.displaySymbol} = ${formatOrderRate(limitPrice)} ${quoteToken.displaySymbol}`
+        : "-",
+      limitPriceDeviation: calculatePriceDeviation(limitPrice, quotedMarketPrice),
       expiresAt: formatOrderDateTime(Math.floor(Date.now() / 1000) + expiry),
       expiryDurationSec: expiry,
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
@@ -306,10 +308,10 @@ export const useLimitOrderHandler = () => {
     buyUsd,
     expiry,
     executionFee,
-    formatRate,
     formatUsd,
     isValidPrice,
-    orderPrice,
+    limitPrice,
+    orderSide,
     quotedMarketPrice,
     minimumReceived,
     sellUsd,

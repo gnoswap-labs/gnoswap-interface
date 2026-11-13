@@ -1,3 +1,4 @@
+import type { UseQueryResult } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import BigNumber from "bignumber.js";
 import { createStore, Provider as JotaiProvider } from "jotai";
@@ -6,6 +7,7 @@ import React from "react";
 import type { LimitOrderSummary } from "@models/order/order-summary";
 import type { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
+import type { GetRoutesResponse } from "@repositories/swap-router/response/get-routes-response";
 import { CommonState, SwapState } from "@states/index";
 
 import { useLimitOrderHandler } from "./use-limit-order-handler";
@@ -202,6 +204,39 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.tokenB).toEqual(tokenB);
     expect(result.current.sellAmount).toBe("");
     expect(result.current.limitPrice).toBe("11");
+  });
+
+  it("computes the Buy market price directly from the quoted amounts before rounding", async () => {
+    jest.mocked(useGetRoutes).mockImplementation(request => {
+      if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
+        return { data: undefined } as UseQueryResult<GetRoutesResponse, Error>;
+      }
+      const output =
+        request.inputToken.path === tokenB.path
+          ? BigNumber(request.tokenAmount).dividedBy(6)
+          : BigNumber(request.tokenAmount).multipliedBy(6);
+      return {
+        data: {
+          status: "SUCCESS",
+          amount: output.shiftedBy(request.outputToken.decimals).toFixed(0, BigNumber.ROUND_DOWN),
+        },
+      } as unknown as UseQueryResult<GetRoutesResponse, Error>;
+    });
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => {
+      result.current.changeTokenA(tokenB);
+      result.current.changeTokenB(tokenA);
+      result.current.restoreOrderSide("buy");
+      result.current.changeSellAmount("18");
+    });
+
+    // The quote is exactly 18 B -> 3 A. Inverting a pre-rounded 0.166666 B/A gives 6.00002 instead.
+    await waitFor(() => expect(result.current.marketPrice).toBe("6"));
+    expect(result.current.limitPrice).toBe("5.4");
+    act(() => result.current.changeLimitPrice("6"));
+    expect(result.current.buyAmount).toBe("3");
+    const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+    expect(summary.limitPriceDeviation).toBe(0);
   });
 
   it("restores a Buy link without reversing its input/output tokens again", async () => {
@@ -436,6 +471,24 @@ describe("useLimitOrderHandler", () => {
 
       act(() => result.current.changeLimitPrice("12.5"));
       expect(summary().limitPriceDeviation).toBe(0.25);
+    });
+
+    it("keeps the Buy confirmation price and deviation in the form's base-token direction", async () => {
+      const { result } = await renderWithPair();
+      act(() => result.current.changeOrderSide("buy"));
+      act(() => {
+        result.current.changeLimitPrice("6");
+        result.current.changeSellAmount("18");
+      });
+
+      expect(summary()).toMatchObject({
+        tokenIn: tokenB,
+        tokenOut: tokenA,
+        sellAmount: "18",
+        buyAmount: "3",
+        limitPrice: "1 A = 6 B",
+        limitPriceDeviation: -0.4,
+      });
     });
 
     it("compares with the market price quoted for the amount being sold", async () => {
