@@ -40,7 +40,14 @@ jest.mock("@hooks/order/ui/use-confirm-order-modal", () => ({
     return { openModal: jest.fn(), closeModal: jest.fn() };
   },
 }));
-jest.mock("@query/order", () => ({ useGetLimitConfig: () => ({ data: undefined, isLoading: false }) }));
+jest.mock("@query/order", () => ({
+  useGetLimitConfig: () => ({
+    data: { whitelistedPools: ["gno.land/r/demo/a:gno.land/r/demo/b:3000"] },
+    isLoading: false,
+    isError: false,
+    refetch: jest.fn(),
+  }),
+}));
 jest.mock("@query/router", () => ({
   useGetRoutes: (
     request: {
