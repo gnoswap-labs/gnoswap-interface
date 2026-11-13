@@ -95,7 +95,7 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
     <OrderHistoryTableWrapper>
       <div className="history-row history-header">
         <span className="cell left">{t("Swap:order.time")}</span>
-        <span className={cx("cell", { "filled-price": kind === "limit" })}>
+        <span className="cell execution-price">
           {t(kind === "limit" ? "Swap:order.filledPrice" : "Swap:order.rate")}
         </span>
         <span className="cell">{t("Swap:order.sold")}</span>

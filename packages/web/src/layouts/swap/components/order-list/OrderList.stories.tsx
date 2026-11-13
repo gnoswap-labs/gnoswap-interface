@@ -146,4 +146,5 @@ export const Empty: Story = {
 
 const wrapper = css`
   width: 500px;
+  max-width: 100%;
 `;
