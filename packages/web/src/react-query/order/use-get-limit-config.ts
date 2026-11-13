@@ -5,7 +5,7 @@ import { LimitConfigResponse } from "@repositories/order/response";
 
 import { QUERY_KEY } from "../query-keys";
 
-const STALE_TIME = 5 * 60_000;
+const STALE_TIME = 60_000;
 
 export const useGetLimitConfig = (options?: UseQueryOptions<LimitConfigResponse, Error>) => {
   const { orderRepository } = useGnoswapContext();
@@ -14,6 +14,7 @@ export const useGetLimitConfig = (options?: UseQueryOptions<LimitConfigResponse,
     queryKey: [QUERY_KEY.limitConfig],
     queryFn: () => orderRepository.getLimitConfig(),
     staleTime: STALE_TIME,
+    refetchInterval: STALE_TIME,
     ...options,
   });
 };

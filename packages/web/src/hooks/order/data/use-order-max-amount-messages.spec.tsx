@@ -52,6 +52,7 @@ jest.mock("./use-order-form-common", () => ({
     formatRate: () => ({ text: "-", usd: "-" }),
   }),
 }));
+let mockLimitConfig: { whitelistedPools?: string[] } | undefined;
 jest.mock("@query/order", () => ({
   useGetDcaConfig: () => ({ data: { whitelistedPools: [] }, isLoading: false, isError: false, refetch: jest.fn() }),
   useGetDcaPair: () => ({ data: undefined, isError: false, refetch: jest.fn() }),
@@ -60,9 +61,11 @@ jest.mock("@query/order", () => ({
     isFetching: false,
     refetch: jest.fn(),
   }),
-  useGetLimitConfig: () => ({ data: undefined, isLoading: false }),
+  useGetLimitConfig: () => ({ data: mockLimitConfig, isLoading: false, isError: false, refetch: jest.fn() }),
 }));
-jest.mock("@query/pools", () => ({ useGetPoolList: () => ({ data: undefined, isError: false, refetch: jest.fn() }) }));
+jest.mock("@query/pools", () => ({
+  useGetPoolList: () => ({ data: [], isError: false, refetch: jest.fn() }),
+}));
 // One input unit buys two output units.
 jest.mock("@query/router", () => ({
   useGetRoutes: (request: { tokenAmount: string; exactType: "EXACT_IN" | "EXACT_OUT" } | null) => ({
@@ -99,6 +102,9 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>
 
 describe("order Max amount messages", () => {
   beforeEach(() => {
+    mockLimitConfig = {
+      whitelistedPools: ["gno.land/r/demo/a:gno.land/r/demo/b:3000"],
+    };
     mockMakeCreateDcaOrderMessages.mockClear();
     mockMakeCreateLimitOrderMessages.mockClear();
   });
@@ -164,5 +170,27 @@ describe("order Max amount messages", () => {
     act(() => result.current.changeSellAmount("5"));
     expect(result.current.sellAmount).toBe("4.999998");
     expect(result.current.buyAmount).toBe("1.666666");
+  });
+
+  it("does not build Limit Max messages without a direct whitelisted pool", async () => {
+    mockLimitConfig = { whitelistedPools: [] };
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    act(() => result.current.changeLimitPrice("3"));
+
+    await expect(result.current.makeMaxAmountMessages("5000000")).resolves.toEqual([]);
+    expect(mockMakeCreateLimitOrderMessages).not.toHaveBeenCalled();
+  });
+
+  it("does not build Limit Max messages while the whitelist is unavailable", async () => {
+    mockLimitConfig = undefined;
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    act(() => result.current.changeLimitPrice("3"));
+
+    await expect(result.current.makeMaxAmountMessages("5000000")).resolves.toEqual([]);
+    expect(mockMakeCreateLimitOrderMessages).not.toHaveBeenCalled();
   });
 });
