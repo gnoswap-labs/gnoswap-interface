@@ -38,6 +38,7 @@ const ORDER: DcaOrderModel = {
   nextExecutionAt: NOW + 20 * MINUTE,
   createdAt: NOW - 4 * HOUR,
   closedAt: null,
+  forceCancelled: false,
   createdTxHash: "",
   closedTxHash: null,
 };

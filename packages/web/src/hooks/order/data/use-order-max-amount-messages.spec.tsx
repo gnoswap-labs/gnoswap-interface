@@ -54,6 +54,7 @@ jest.mock("./use-order-form-common", () => ({
 }));
 jest.mock("@query/order", () => ({
   useGetDcaConfig: () => ({ data: { whitelistedPools: [] }, isLoading: false, isError: false, refetch: jest.fn() }),
+  useGetDcaPair: () => ({ data: undefined, isError: false, refetch: jest.fn() }),
   useGetDcaSchedule: () => ({
     data: { slotOffset: 120, firstExecutionAt: 1, estimatedEndAt: 2 },
     isFetching: false,

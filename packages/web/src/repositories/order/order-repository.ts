@@ -4,6 +4,7 @@ import {
   CancelOrderRequest,
   CreateDcaOrderRequest,
   CreateLimitOrderRequest,
+  GetDcaPairRequest,
   GetDcaScheduleRequest,
   GetOrderHistoryRequest,
   GetOrdersRequest,
@@ -12,6 +13,7 @@ import {
   DcaConfigResponse,
   DcaExecutionItem,
   DcaOrderItem,
+  DcaPairResponse,
   DcaScheduleResponse,
   LimitConfigResponse,
   LimitFillItem,
@@ -21,6 +23,9 @@ import {
 
 export interface OrderRepository {
   getDcaConfig(): Promise<DcaConfigResponse>;
+
+  /** Minimum amount and price-limit support of one swap direction. */
+  getDcaPair(request: GetDcaPairRequest): Promise<DcaPairResponse>;
 
   getDcaSchedule(request: GetDcaScheduleRequest): Promise<DcaScheduleResponse>;
 

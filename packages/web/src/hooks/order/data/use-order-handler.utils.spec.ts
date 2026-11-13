@@ -9,12 +9,14 @@ import {
   clampExecutionCount,
   getAvailableDcaIntervals,
   getAvailableExpiryOptions,
+  getDcaEffectiveMinAmountPerExecution,
   getDcaMinAmountPerExecution,
   getLimitMinMakingAmount,
   getOrderButtonState,
   hasDirectPoolForPair,
   hasWhitelistedPoolForPair,
   isDcaAmountTooLow,
+  isDcaPairSupported,
   isExecutionCountWithinLimit,
   isLimitAmountTooLow,
   isOrderButtonActionable,
@@ -243,6 +245,28 @@ describe("use-order-handler.utils", () => {
       expect(getDcaMinAmountPerExecution("1", false, 2, 1000)).toBe("1");
       expect(isDcaAmountTooLow("499", getDcaMinAmountPerExecution("1", true, 2, 1000))).toBe(true);
       expect(isDcaAmountTooLow("500", getDcaMinAmountPerExecution("1", true, 2, 1000))).toBe(false);
+    });
+  });
+
+  describe("DCA pair settings", () => {
+    it("takes the larger of the global and the per-token minimum", () => {
+      expect(getDcaEffectiveMinAmountPerExecution("100", "5000000")).toBe("5000000");
+      // The pair already reports the effective value; a stale global never lowers it.
+      expect(getDcaEffectiveMinAmountPerExecution("6000000", "5000000")).toBe("6000000");
+    });
+
+    it("falls back to the global minimum while the pair is unknown, then to the default", () => {
+      expect(getDcaEffectiveMinAmountPerExecution("100", undefined)).toBe("100");
+      expect(getDcaEffectiveMinAmountPerExecution(undefined, "5000000")).toBe("5000000");
+      expect(getDcaEffectiveMinAmountPerExecution(undefined, undefined)).toBe("1");
+      expect(getDcaEffectiveMinAmountPerExecution("", "not-a-number")).toBe("1");
+    });
+
+    it("supports a direction only with a price limit and a whitelisted pool", () => {
+      const priceLimit = { minOutputPerInputX128: "1", updatedAt: 1 };
+      expect(isDcaPairSupported({ supported: true, priceLimit })).toBe(true);
+      expect(isDcaPairSupported({ supported: false, priceLimit })).toBe(false);
+      expect(isDcaPairSupported({ supported: true, priceLimit: null })).toBe(false);
     });
   });
 

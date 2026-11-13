@@ -31,6 +31,10 @@ const mockState: {
     | undefined;
   configError: boolean;
   refetchConfig: jest.Mock;
+  /** Settings the pair endpoint serves for any direction; `undefined` while loading. */
+  pair: { minAmountPerExecution: string; priceLimit: object | null; supported: boolean } | undefined;
+  pairError: boolean;
+  refetchPair: jest.Mock;
   scheduleCounts: number[];
   scheduleIntervals: number[];
   realDebounce: boolean;
@@ -45,6 +49,9 @@ const mockState: {
   config: undefined,
   configError: false,
   refetchConfig: jest.fn(),
+  pair: undefined,
+  pairError: false,
+  refetchPair: jest.fn(),
   scheduleCounts: [],
   scheduleIntervals: [],
   realDebounce: false,
@@ -103,6 +110,11 @@ jest.mock("@query/order", () => ({
     isError: mockState.configError,
     refetch: mockState.refetchConfig,
   }),
+  useGetDcaPair: (request: { inputToken: string; outputToken: string } | null) => ({
+    data: request ? mockState.pair : undefined,
+    isError: mockState.pairError,
+    refetch: mockState.refetchPair,
+  }),
   useGetDcaSchedule: (request: { executionCount: number; interval: number } | null) => {
     if (request) mockState.scheduleCounts.push(request.executionCount);
     if (request) mockState.scheduleIntervals.push(request.interval);
@@ -144,6 +156,16 @@ const mockWhitelist = ({ data, isError }: { data?: string[]; isError: boolean })
   mockState.config = data ? { whitelistedPools: data } : undefined;
   mockState.configError = isError;
 };
+
+const PRICE_LIMIT = { minOutputPerInputX128: "340282366920938463463374607431768211456", updatedAt: 1 };
+/** A direction with a whitelisted pool and a price limit, and the 1-unit global minimum. */
+const SUPPORTED_PAIR = { minAmountPerExecution: "1", priceLimit: PRICE_LIMIT, supported: true };
+
+beforeEach(() => {
+  mockState.pair = SUPPORTED_PAIR;
+  mockState.pairError = false;
+  mockState.refetchPair = jest.fn();
+});
 
 const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>{children}</JotaiProvider>;
 
@@ -351,7 +373,11 @@ describe("useDcaOrderHandler confirmation", () => {
 
   it.each([
     ["the balance drops", "INSUFFICIENT_BALANCE", () => (mockState.balance = "0")],
-    ["execution is halted", "ORDER_PAUSED", () => (mockState.config = { ...mockState.config, halted: { execute: true } })],
+    [
+      "execution is halted",
+      "ORDER_PAUSED",
+      () => (mockState.config = { ...mockState.config, halted: { execute: true } }),
+    ],
     [
       "the per-round minimum rises above the round amount",
       "AMOUNT_TOO_LOW",
@@ -481,5 +507,96 @@ describe("useDcaOrderHandler execution fee", () => {
     act(() => result.current.setExecutionCountInput("2"));
 
     expect(result.current.summary).toMatchObject({ rate: "0.9985", executionFee: "0.15%" });
+  });
+});
+
+describe("useDcaOrderHandler pair settings", () => {
+  beforeEach(() => {
+    mockState.configError = false;
+    mockState.config = { maxExecutionCount: 10, minAmountPerExecution: "1", whitelistedPools };
+    mockPoolList({ data: undefined, isError: false });
+    mockState.refetchConfig = jest.fn();
+    mockState.refetchSchedule = null;
+    mockState.confirmProps = null;
+    mockSendCreateDcaOrder.mockClear();
+  });
+
+  afterEach(() => {
+    mockState.config = undefined;
+  });
+
+  const confirm = async () => {
+    render(<>{mockState.renderConfirm?.()}</>);
+    await act(async () => {
+      mockState.confirmProps?.confirm();
+      await Promise.resolve();
+    });
+  };
+
+  /** 10 A over 2 rounds: 5 A (5,000,000 raw) per round. */
+  const renderOrder = () => {
+    const result = renderWithPair(tokenB);
+    act(() => result.current.setExecutionCountInput("2"));
+    return result;
+  };
+
+  it("applies the input token's minimum instead of the global one", () => {
+    mockState.pair = { ...SUPPORTED_PAIR, minAmountPerExecution: "6000000" };
+    const result = renderOrder();
+
+    expect(result.current.buttonState).toBe("AMOUNT_TOO_LOW");
+    expect(result.current.minTradingText).toBe("Swap:dca.minTrading");
+    // floor(10,000,000 / 6,000,000) rounds fit the per-token minimum.
+    expect(result.current.maxExecutionCount).toBe(1);
+  });
+
+  it("keeps the global minimum as the floor while the pair settings load, and sends nothing", async () => {
+    mockState.pair = undefined;
+    mockState.config = { ...mockState.config, minAmountPerExecution: "6000000" };
+    expect(renderOrder().current.buttonState).toBe("AMOUNT_TOO_LOW");
+
+    mockState.config = { ...mockState.config, minAmountPerExecution: "1" };
+    const result = renderOrder();
+    // No error flashes while loading, but the order waits for the pair settings.
+    expect(result.current.buttonState).toBe("PLACE_ORDER");
+    await confirm();
+    expect(mockState.confirmProps?.isLoading).toBe(true);
+    expect(mockSendCreateDcaOrder).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["has no price limit", { ...SUPPORTED_PAIR, priceLimit: null }],
+    ["is not supported", { ...SUPPORTED_PAIR, supported: false }],
+  ])("blocks a whitelisted pair whose direction %s", (_, pair) => {
+    mockState.pair = pair;
+    const result = renderOrder();
+    expect(result.current.buttonState).toBe("NO_WHITELISTED_POOL");
+    expect(result.current.buttonText).toBe("NO_WHITELISTED_POOL");
+  });
+
+  it("sends the order once the pair settings are known", async () => {
+    renderOrder();
+    await confirm();
+    expect(mockSendCreateDcaOrder).toHaveBeenCalledTimes(1);
+  });
+
+  it("blocks the order and retries the pair settings when they fail without a cache", () => {
+    mockState.pair = undefined;
+    mockState.pairError = true;
+    const result = renderOrder();
+
+    expect(result.current.buttonState).toBe("POOL_CHECK_FAILED");
+    act(() => result.current.onClickButton());
+    expect(mockState.refetchPair).toHaveBeenCalledTimes(1);
+    expect(mockState.refetchConfig).not.toHaveBeenCalled();
+  });
+
+  it("checks only the pool with an order-api from before the pair endpoint", () => {
+    mockState.config = { maxExecutionCount: 10, minAmountPerExecution: "1" };
+    mockPoolList({ data: [{ poolPath: `${tokenA.path}:${tokenB.path}:3000` }], isError: false });
+    mockState.pair = undefined;
+    mockState.pairError = true;
+
+    expect(renderOrder().current.buttonState).toBe("PLACE_ORDER");
   });
 });

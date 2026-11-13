@@ -127,6 +127,14 @@ describe("order-mapper", () => {
     expect(cancelled.nextExecutionAt).toBeNull();
   });
 
+  it("tells a keeper's force cancel apart from the owner's", () => {
+    const cancelled = { ...dcaItem, status: "CANCELLED" as const, nextExecutionAt: null };
+    expect(mapDcaOrderItemToModel({ ...cancelled, forceCancelled: true }, tokens).forceCancelled).toBe(true);
+    expect(mapDcaOrderItemToModel(cancelled, tokens).forceCancelled).toBe(false);
+    // Only a cancelled order can have been force cancelled.
+    expect(mapDcaOrderItemToModel({ ...dcaItem, forceCancelled: true }, tokens).forceCancelled).toBe(false);
+  });
+
   it("keeps a completed DCA order claimable until its output is paid", () => {
     const completed = { ...dcaItem, status: "COMPLETED" as const, remainingCount: 0, nextExecutionAt: null };
 

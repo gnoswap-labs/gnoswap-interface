@@ -127,7 +127,10 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
           <ActiveDcaOrderStatus order={order} />
         ) : (
           <div className="card-status-group">
-            <span className="card-status">{t(STATUS_LABEL_KEY[order.status])}</span>
+            <span className="card-status">
+              {/* A keeper closed it because it blocked its group; refunded and claimed as a normal cancel. */}
+              {t(order.forceCancelled ? "Swap:order.status.cancelledByKeeper" : STATUS_LABEL_KEY[order.status])}
+            </span>
             {/* The close time the order-api reports: unknown stays `-` instead of borrowing another time. */}
             <span className="card-status-time">{formatOrderDateTime(order.closedAt)}</span>
           </div>

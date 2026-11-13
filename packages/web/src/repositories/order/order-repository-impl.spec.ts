@@ -37,3 +37,17 @@ describe("OrderRepositoryImpl realm-scoped reads", () => {
     expect(urls()).toEqual(["orders/dca/7", "orders/dca/7/executions?page=1&size=10"]);
   });
 });
+
+describe("OrderRepositoryImpl DCA pair settings", () => {
+  it("asks for the settings of one direction", async () => {
+    const { repository, urls } = makeRepository();
+    const gnot = "gno.land/r/gnoland/wugnot";
+    const gns = "gno.land/r/gnoswap/gns";
+
+    await repository.getDcaPair({ inputToken: gnot, outputToken: gns });
+
+    expect(urls()).toEqual([
+      `orders/dca/pair?inputToken=${encodeURIComponent(gnot)}&outputToken=${encodeURIComponent(gns)}`,
+    ]);
+  });
+});

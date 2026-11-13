@@ -61,6 +61,8 @@ export interface DcaOrderModel {
    * finalize it on-chain.
    */
   canClaim: boolean;
+  /** True when a keeper cancelled the order (ForceCancelOrder) rather than the owner. */
+  forceCancelled: boolean;
   /** Average output per input. Null until something executed. */
   priceRate: string | null;
   /**

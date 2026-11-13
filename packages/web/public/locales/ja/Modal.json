@@ -76,6 +76,24 @@
       },
       "title": "DCA命令の請求"
     },
+    "dcaError": {
+      "amountTooLow": {
+        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
+        "title": "Amount Too Low"
+      },
+      "halted": {
+        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
+        "title": "DCA Orders Paused"
+      },
+      "noEligiblePool": {
+        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
+        "title": "No Eligible Pool"
+      },
+      "pairNotSupported": {
+        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
+        "title": "Pair Not Supported"
+      }
+    },
     "dcaOrder": {
       "status": {
         "error": "<div>注文に失敗しました <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 対象： <span>{{tokenBSymbol}}</span></div>",

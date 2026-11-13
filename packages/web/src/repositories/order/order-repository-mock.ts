@@ -10,11 +10,12 @@ import MockLimitFillsResponse from "./mock/limit-fills.json";
 import MockLimitOrdersActiveResponse from "./mock/limit-orders-active.json";
 import MockLimitOrdersPastResponse from "./mock/limit-orders-past.json";
 import { OrderRepository } from "./order-repository";
-import { GetDcaScheduleRequest, GetOrderHistoryRequest, GetOrdersRequest } from "./request";
+import { GetDcaPairRequest, GetDcaScheduleRequest, GetOrderHistoryRequest, GetOrdersRequest } from "./request";
 import {
   DcaConfigResponse,
   DcaExecutionItem,
   DcaOrderItem,
+  DcaPairResponse,
   DcaScheduleResponse,
   LimitConfigResponse,
   LimitFillItem,
@@ -48,6 +49,20 @@ export class OrderRepositoryMock implements OrderRepository {
 
   getDcaConfig(): Promise<DcaConfigResponse> {
     return this.delay(MockDcaConfigResponse.data);
+  }
+
+  /** Every direction of a whitelisted pair has a price limit in the fixtures. */
+  getDcaPair(request: GetDcaPairRequest): Promise<DcaPairResponse> {
+    const supported = MockDcaConfigResponse.data.whitelistedPools.some(poolPath => {
+      const [token0, token1] = poolPath.split(":");
+      return [token0, token1].includes(request.inputToken) && [token0, token1].includes(request.outputToken);
+    });
+    return this.delay({
+      ...request,
+      minAmountPerExecution: MockDcaConfigResponse.data.minAmountPerExecution,
+      priceLimit: supported ? { minOutputPerInputX128: "1", updatedAt: 0 } : null,
+      supported,
+    });
   }
 
   getDcaSchedule(request: GetDcaScheduleRequest): Promise<DcaScheduleResponse> {

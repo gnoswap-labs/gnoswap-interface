@@ -38,6 +38,7 @@ const PAST_DCA_ORDER: DcaOrderModel = {
   claimedAmount: "32300000",
   claimableAmount: "0",
   canClaim: false,
+  forceCancelled: false,
   priceRate: "0.921375",
   returnRate: 0,
   nextExecutionAt: null,

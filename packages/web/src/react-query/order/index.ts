@@ -1,4 +1,5 @@
 export * from "./use-get-dca-config";
+export * from "./use-get-dca-pair";
 export * from "./use-get-dca-schedule";
 export * from "./use-get-dca-orders";
 export * from "./use-get-dca-order";

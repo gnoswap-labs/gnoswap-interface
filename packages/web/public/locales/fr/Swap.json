@@ -91,6 +91,7 @@
     "soldAmount": "Montant de la vente",
     "status": {
       "cancelled": "Annulé",
+      "cancelledByKeeper": "Cancelled by Keeper",
       "completed": "Terminé",
       "expired": "Périmé",
       "partiallyFilled": "Partiellement rempli"

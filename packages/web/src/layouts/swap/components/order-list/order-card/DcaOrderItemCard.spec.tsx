@@ -28,6 +28,7 @@ it("preserves each token's precision in the DCA deposit, sold and purchased amou
     claimedAmount: "0",
     claimableAmount: "2.079988123456789012",
     canClaim: false,
+    forceCancelled: false,
     priceRate: null,
     returnRate: null,
     nextExecutionAt: null,

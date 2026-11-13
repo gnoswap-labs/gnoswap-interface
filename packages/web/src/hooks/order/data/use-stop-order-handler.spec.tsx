@@ -88,6 +88,7 @@ const dcaOrder: DcaOrderModel = {
   claimedAmount: "0",
   claimableAmount: "0",
   canClaim: false,
+  forceCancelled: false,
   priceRate: null,
   returnRate: null,
   nextExecutionAt: 3601,

@@ -34,6 +34,12 @@ export interface DcaOrderItem {
   closedTxHash: string | null;
   refundedAmount: string;
   /**
+   * True only for an order a keeper closed with ForceCancelOrder because it
+   * blocked its group. Its status is still `CANCELLED` and it is refunded and
+   * claimed to the owner as a normal cancel. Absent from earlier order-api versions.
+   */
+  forceCancelled?: boolean;
+  /**
    * Output of swapping the whole deposit at once when the order was placed.
    * Null when the realm did not quote it; absent from order-api versions
    * before the return.

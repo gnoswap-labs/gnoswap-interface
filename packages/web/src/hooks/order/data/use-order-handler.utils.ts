@@ -7,7 +7,9 @@ import { TokenModel } from "@models/token/token-model";
 
 /**
  * The realms' v0 minimums in raw input units, used until their config loads:
- * DCA `minAmountPerExecution` and Limit `minMakingAmount`.
+ * DCA `minAmountPerExecution` and Limit `minMakingAmount`. A DCA order is never
+ * submitted on this fallback: it waits for the pair settings, which carry the
+ * input token's effective minimum.
  */
 export const DEFAULT_MIN_AMOUNT_PER_EXECUTION = "1";
 export const DEFAULT_MIN_MAKING_AMOUNT = "100";
@@ -150,6 +152,30 @@ export function hasWhitelistedPoolForPair(
       (token0 === outputTokenPath && token1 === inputTokenPath)
     );
   });
+}
+
+/**
+ * The minimum a DCA execution must sell: `max(global, per-token)`. The pair
+ * endpoint already reports the effective value for the input token; the global
+ * config value is the floor while the pair is loading or failed.
+ */
+export function getDcaEffectiveMinAmountPerExecution(
+  globalMinAmountPerExecution: string | null | undefined,
+  pairMinAmountPerExecution: string | null | undefined,
+): string {
+  const known = [globalMinAmountPerExecution, pairMinAmountPerExecution]
+    .map(value => BigNumber(value || NaN))
+    .filter(value => value.isFinite() && value.isGreaterThan(0));
+  if (known.length === 0) return DEFAULT_MIN_AMOUNT_PER_EXECUTION;
+  return BigNumber.max(...known).toFixed(0);
+}
+
+/**
+ * Whether the DCA realm accepts orders in this direction: it needs a
+ * manager-set price limit and a whitelisted pool of the pair.
+ */
+export function isDcaPairSupported(pair: { supported: boolean; priceLimit: unknown | null }): boolean {
+  return pair.supported && pair.priceLimit !== null;
 }
 
 /** USD value of a display amount, or null when the price is unknown. */
