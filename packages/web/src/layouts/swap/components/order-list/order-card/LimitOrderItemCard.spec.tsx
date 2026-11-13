@@ -102,11 +102,12 @@ describe("LimitOrderItemCard overview", () => {
     expect(await readOverview(unfilled)).toEqual(["0 / 100 GNOT (0%)", "100 GNOT", "0 GNS"]);
   });
 
-  it.each<[LimitOrderModel["status"], Partial<LimitOrderModel>, string, string, number]>([
+  it.each<[LimitOrderModel["status"], Partial<LimitOrderModel>, string, string, string, number]>([
     [
       "COMPLETED",
       { filledInput: "100", userOutput: "12.495486", progress: 100 },
       "100 / 100 GNOT (100%)",
+      "0 GNOT",
       "12.495486 GNS",
       CLOSED_AT,
     ],
@@ -114,6 +115,7 @@ describe("LimitOrderItemCard overview", () => {
       "CANCELLED",
       { filledInput: "35", refundedInput: "65", userOutput: "4.37342" },
       "35 / 100 GNOT (35%)",
+      "65 GNOT",
       "4.37342 GNS",
       CLOSED_AT,
     ],
@@ -121,12 +123,29 @@ describe("LimitOrderItemCard overview", () => {
       "EXPIRED",
       { filledInput: "0", refundedInput: "100", userOutput: "0", progress: 0 },
       "0 / 100 GNOT (0%)",
+      "100 GNOT",
       "0 GNS",
       EXPIRES_AT,
     ],
-  ])("shows actual fill amounts and the event date for a %s order", async (status, fills, sold, purchased, date) => {
-    expect(await readOverview(closed(status, fills))).toEqual([sold, "0 GNOT", purchased, formatOrderDateTime(date)]);
-  });
+    [
+      "CANCELLED",
+      { filledInput: "0", refundedInput: "100", userOutput: "0", progress: 0 },
+      "0 / 100 GNOT (0%)",
+      "100 GNOT",
+      "0 GNS",
+      CLOSED_AT,
+    ],
+  ])(
+    "shows unfilled amounts including refunds and the event date for a %s order",
+    async (status, fills, sold, remaining, purchased, date) => {
+      expect(await readOverview(closed(status, fills))).toEqual([
+        sold,
+        remaining,
+        purchased,
+        formatOrderDateTime(date),
+      ]);
+    },
+  );
 
   it("shows unrefunded expired input and the expiry date even before cleanup closes the order", async () => {
     const expired = closed("EXPIRED", {
@@ -143,6 +162,17 @@ describe("LimitOrderItemCard overview", () => {
       "0 GNS",
       formatOrderDateTime(EXPIRES_AT),
     ]);
+  });
+
+  it("preserves a single raw unit of unfilled input above the JavaScript safe integer range", async () => {
+    const values = await readOverview(
+      closed("CANCELLED", {
+        makingAmount: "9007199254740993.000001",
+        filledInput: "9007199254740993",
+        refundedInput: "0.000001",
+      }),
+    );
+    expect(values[1]).toBe("0.000001 GNOT");
   });
 
   it.each<LimitOrderModel["status"]>(["CANCELLED", "COMPLETED"])(

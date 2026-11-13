@@ -56,8 +56,7 @@
     "marketPrice": "Giá thị trường:",
     "minimumReceivedTooltip": "Số lượng tối thiểu bạn nhận được sau khi trừ phí thực hiện, dựa trên giá giới hạn và mức trượt giá bạn đã chọn. Con số này được hiển thị cho trường hợp khớp lệnh toàn bộ; đối với trường hợp khớp lệnh một phần, tỷ lệ này vẫn được áp dụng và số lượng sẽ được làm tròn lên cho mỗi lần khớp lệnh.",
     "minTrading": "{{amount}} tối thiểu {{symbol}}",
-    "sellWhen": "Bán khi 1 {{symbol}} đạt",
-    "startToOrder": "Bắt đầu đặt hàng"
+    "sellWhen": "Bán khi 1 {{symbol}} đạt"
   },
   "order": {
     "active": "Đơn hàng đang mở",

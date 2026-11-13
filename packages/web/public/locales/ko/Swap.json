@@ -56,8 +56,7 @@
     "marketPrice": "시장 가격:",
     "minimumReceivedTooltip": "지정가 및 선택한 슬리피지를 기준으로, 실행 수수료를 차감한 후 받게 되는 최소 수익액입니다. 이 수치는 전량 체결된 경우를 기준으로 표시되며, 부분 체결의 경우 동일한 비율을 적용하고 체결 건당 올림 처리됩니다.",
     "minTrading": "최소 {{amount}} {{symbol}}",
-    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도",
-    "startToOrder": "주문 시작하기"
+    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도"
   },
   "order": {
     "active": "진행 중인 주문",

@@ -56,8 +56,7 @@
     "marketPrice": "Market Price:",
     "minimumReceivedTooltip": "Minimum output you receive after execution fees, based on your limit price and selected slippage. Shown for a full fill; partial fills use the same ratio and round up per fill.",
     "minTrading": "Minimum {{amount}} {{symbol}}",
-    "sellWhen": "Sell when 1 {{symbol}} reaches",
-    "startToOrder": "Start to Order"
+    "sellWhen": "Sell when 1 {{symbol}} reaches"
   },
   "order": {
     "active": "Open Orders",

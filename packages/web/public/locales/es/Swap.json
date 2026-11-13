@@ -56,8 +56,7 @@
     "marketPrice": "Precio de mercado:",
     "minimumReceivedTooltip": "Importe mínimo que recibirás tras deducir las comisiones de ejecución, en función de tu precio límite y del deslizamiento seleccionado. Se muestra para una ejecución completa; en las ejecuciones parciales se aplica la misma proporción y se redondea al alza por cada ejecución.",
     "minTrading": "{{amount}} mínimo {{symbol}}",
-    "sellWhen": "Vender cuando 1 {{symbol}} alcance",
-    "startToOrder": "Empezar a hacer el pedido"
+    "sellWhen": "Vender cuando 1 {{symbol}} alcance"
   },
   "order": {
     "active": "Pedidos pendientes",

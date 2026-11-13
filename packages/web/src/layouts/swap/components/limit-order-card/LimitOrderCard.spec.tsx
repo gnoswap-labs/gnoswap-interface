@@ -142,21 +142,22 @@ describe("LimitOrderCard Max", () => {
     expect(onClickButton).not.toHaveBeenCalled();
   });
 
-  it("holds Start to Order while Max is worked out over an amount already in the field", async () => {
+  it("blocks order submission while Max is worked out over an amount already in the field", async () => {
     const estimate = Promise.withResolvers<typeof PRICED>();
     mockEstimateMaxNativeAmount.mockReturnValue(estimate.promise);
     const onClickButton = jest.fn();
-    renderCard({ sellAmount: "5", buttonState: "PLACE_ORDER", buttonText: "Start to Order", onClickButton });
+    renderCard({ sellAmount: "5", buttonState: "PLACE_ORDER", buttonText: "Place Order", onClickButton });
+    const orderButton = screen.getByRole("button", { name: "Place Order" });
 
     fireEvent.click(maxButton());
 
-    await waitFor(() => expect(screen.getByRole("button", { name: "Start to Order" })).toBeDisabled());
-    fireEvent.click(screen.getByRole("button", { name: "Start to Order" }));
+    await waitFor(() => expect(orderButton).toBeDisabled());
+    fireEvent.click(orderButton);
     expect(onClickButton).not.toHaveBeenCalled();
 
     await act(async () => estimate.resolve(PRICED));
 
-    fireEvent.click(screen.getByRole("button", { name: "Start to Order" }));
+    fireEvent.click(orderButton);
     expect(onClickButton).toHaveBeenCalledTimes(1);
   });
 });

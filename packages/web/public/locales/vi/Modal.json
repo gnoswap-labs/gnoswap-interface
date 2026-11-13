@@ -237,9 +237,6 @@
       "title": "Bọc"
     }
   },
-  "confirmLimitOrder": {
-    "title": "Xác nhận lệnh giới hạn"
-  },
   "confirmPlaceOrder": {
     "actualAmount": "Chỉ có lệnh “ {{amount}} ” ( {{symbol}} ) được đặt sao cho mỗi giao dịch đều bán ra cùng một lượng.",
     "title": "Xác nhận đặt hàng"
