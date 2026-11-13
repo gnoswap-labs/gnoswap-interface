@@ -12,7 +12,17 @@ const createJestConfig = nextJest({
 // are published as ESM only, so they have to go through the transformer instead of
 // being required as-is. Every enclosing scope has to be listed as well, otherwise the
 // pattern still matches on the outer `node_modules/` segment of a nested dependency.
-const ESM_ONLY_PACKAGES = ["@adena-wallet", "@gnolang", "@cosmjs", "@scure", "@noble", "uuid"];
+const ESM_ONLY_PACKAGES = [
+  "@adena-wallet",
+  "@gnolang",
+  "@cosmjs",
+  "@scure",
+  "@noble",
+  "@toruslabs",
+  "@web3auth",
+  "@metamask",
+  "uuid",
+];
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {
