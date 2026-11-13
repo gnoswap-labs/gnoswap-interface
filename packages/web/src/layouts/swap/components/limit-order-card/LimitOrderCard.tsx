@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import { isAmount } from "@common/utils/data-check-util";
@@ -72,7 +73,6 @@ export interface LimitOrderCardProps {
   switchTokens: () => void;
 
   limitPrice: string;
-  limitPriceUsd: string;
   marketPrice: string | null;
   selectedPreset: number | null;
   changeLimitPrice: (value: string) => void;
@@ -120,7 +120,6 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   changeBuyAmount,
   switchTokens,
   limitPrice,
-  limitPriceUsd,
   marketPrice,
   selectedPreset,
   changeLimitPrice,
@@ -141,10 +140,13 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
   const baseToken = orderSide === "buy" ? tokenB : tokenA;
   const quoteToken = orderSide === "buy" ? tokenA : tokenB;
+  const sellAmountInputRef = useRef<HTMLInputElement>(null);
   const buyAmountInputRef = useRef<HTMLInputElement>(null);
   const [buyAmountFocused, setBuyAmountFocused] = useState(false);
   useEffect(() => {
-    if (orderSide === "buy" && !isLoading) buyAmountInputRef.current?.focus({ preventScroll: true });
+    if (!isLoading) {
+      (orderSide === "buy" ? buyAmountInputRef : sellAmountInputRef).current?.focus({ preventScroll: true });
+    }
   }, [isLoading, orderSide]);
   const infoRows: OrderInfoRow[] = useMemo(
     () => [
@@ -252,6 +254,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             />
           </LimitOrderSideSelect>
           <OrderSellInput
+            inputRef={sellAmountInputRef}
             token={tokenA}
             amount={sellAmount}
             amountUsd={sellAmountUsd}
@@ -260,6 +263,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             changeToken={changeTokenA}
             changeAmount={typeSellAmount}
             readOnly={orderSide === "buy"}
+            showMaxButton={orderSide !== "buy"}
             onClickMax={fillMaxAmount}
             loadingMaxAmount={loadingMaxAmount}
             pendingBalance={pendingBalance}
@@ -295,6 +299,13 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
               <div className="balance-wrapper">
                 {connectedWallet && <IconWallet />}
                 <span className="balance-text">{buyBalanceDisplay}</span>
+                {orderSide === "buy" &&
+                  connectedWallet &&
+                  BigNumber(tokenABalance.replace(/,/g, "")).isGreaterThan(0) && (
+                    <button className="balance-max-button" onClick={fillMaxAmount} disabled={loadingMaxAmount}>
+                      <span className="max-badge">{t("common:max")}</span>
+                    </button>
+                  )}
               </div>
             </div>
           </div>
@@ -304,7 +315,6 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             inputLogoURI={baseToken?.logoURI}
             outputSymbol={quoteToken?.displaySymbol ?? "-"}
             value={limitPrice}
-            valueUsd={limitPriceUsd}
             marketPrice={marketPrice}
             selectedPreset={selectedPreset}
             changeValue={changeLimitPrice}

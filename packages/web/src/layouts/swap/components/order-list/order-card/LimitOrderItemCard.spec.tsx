@@ -185,6 +185,26 @@ describe("LimitOrderItemCard overview", () => {
   );
 });
 
+describe("LimitOrderItemCard purchased amount", () => {
+  it.each([
+    { decimals: 6, amount: "1.079988" },
+    { decimals: 18, amount: "1.079988123456789012" },
+  ])("preserves $decimals token decimals in the summary metric", ({ decimals, amount }) => {
+    render(
+      <GnoswapThemeProvider>
+        <LimitOrderItemCard
+          order={{ ...partiallyFilled, tokenOut: { ...partiallyFilled.tokenOut, decimals }, userOutput: amount }}
+          marketPrice={null}
+          txUrl=""
+          onClickCancel={jest.fn()}
+          renderHistory={() => null}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getByTitle(amount)).toHaveTextContent(amount);
+  });
+});
 describe("LimitOrderItemCard execution fee", () => {
   const renderFee = (order: LimitOrderModel, tokenOutUsdPrice: string | null = null) => {
     render(
@@ -204,7 +224,7 @@ describe("LimitOrderItemCard execution fee", () => {
   };
 
   it("shows the saved rate and the fee actually charged, valued at the current price", () => {
-    expect(renderFee(partiallyFilled, "1.2")).toBe("0.018771 GNS (≈$0.0225)");
+    expect(renderFee(partiallyFilled, "1.2")).toBe("0.018771 GNS ($0.0225)");
   });
 
   it("shows a known zero fee as zero, for an order that closed unfilled", () => {

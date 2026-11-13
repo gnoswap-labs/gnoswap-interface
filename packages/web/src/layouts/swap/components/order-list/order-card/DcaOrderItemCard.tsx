@@ -121,6 +121,7 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
           inputToken={inputToken}
           outputToken={outputToken}
           inputAmount={formatOrderFullAmount(order.depositAmount, inputToken.decimals)}
+          showOutputLogo
           linkUrl={txUrl}
         />
         {order.isActive ? (

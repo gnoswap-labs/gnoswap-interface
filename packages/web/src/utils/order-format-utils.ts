@@ -48,7 +48,7 @@ export function formatOrderFee(fee: BigNumber.Value | null | undefined, decimals
 }
 
 /**
- * The approximate current USD value of a fee, e.g. `≈$0.12`, and `<$0.01` for less than a cent. Null when there is
+ * The current USD value of a fee, e.g. `$0.12`, and `<$0.01` for less than a cent. Null when there is
  * no fee to value or no USD price, so no placeholder value is ever shown.
  */
 export function formatOrderFeeUsd(fee: string | null | undefined, usdPrice: string | null | undefined): string | null {
@@ -57,7 +57,7 @@ export function formatOrderFeeUsd(fee: string | null | undefined, usdPrice: stri
   if (!value.isFinite() || !value.isGreaterThan(0)) return null;
   if (value.isLessThan(0.01)) return "<$0.01";
 
-  return formatPrice(value, { usd: true, isKMB: false, approx: true });
+  return formatPrice(value, { usd: true, isKMB: false });
 }
 
 /** Exchange rates: six decimals rounded down with trailing zeros dropped. `-` when unknown. */

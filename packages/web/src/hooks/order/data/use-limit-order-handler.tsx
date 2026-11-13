@@ -632,9 +632,6 @@ export const useLimitOrderHandler = () => {
     minimumReceived,
     executionFee,
     limitPrice,
-    limitPriceUsd: formatUsd(
-      isValidPrice ? calculateUsdValue(limitPrice, getUsdPrice(orderSide === "buy" ? tokenA : tokenB)) : null,
-    ),
     marketPrice,
     selectedPreset: pricePreset,
     expiry,

@@ -77,7 +77,6 @@ const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
     changeBuyAmount,
     switchTokens: jest.fn(),
     limitPrice: "1.25",
-    limitPriceUsd: "-",
     marketPrice: "1.25",
     selectedPreset: 0,
     changeLimitPrice: jest.fn(),
@@ -164,17 +163,23 @@ describe("LimitOrderCard amount fields", () => {
     expect(changeSellAmount).not.toHaveBeenCalled();
   });
 
-  it("focuses the purchased quantity on Buy without stealing focus during subsequent price edits", () => {
+  it("focuses the editable amount on side changes without stealing focus during subsequent price edits", () => {
     const { rerender } = renderCard({ sellAmount: "10", buyAmount: "8" });
     const funding = screen.getByDisplayValue("10");
     const purchased = screen.getByDisplayValue("8");
-    act(() => funding.focus());
+    expect(funding).toHaveFocus();
     rerender({ orderSide: "buy" });
     expect(purchased).toHaveFocus();
     expect(funding.tabIndex).toBe(-1);
     const price = screen.getByDisplayValue("1.25");
     act(() => price.focus());
     rerender({ orderSide: "buy", buyAmount: "9" });
+    expect(price).toHaveFocus();
+    rerender({ orderSide: "sell" });
+    expect(funding).toHaveFocus();
+    expect(purchased).toHaveAttribute("readonly");
+    act(() => price.focus());
+    rerender({ sellAmount: "11" });
     expect(price).toHaveFocus();
   });
 
