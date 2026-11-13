@@ -24,7 +24,7 @@
     "minTrading": "每笔订单的最低金额为{{amount}} ，{{symbol}} ",
     "noWhitelistedPool": "该货币对不支持",
     "orders": "订单",
-    "orderSentence": "您将每隔 <hl>{{interval}}</hl> 按市价卖出 <sell/>，买入 <buy/>，共进行 <hl>{{rounds}} 轮</hl>。",
+    "orderSentence": "您将以市价卖出 <sell/> 买入 <buy/>，每隔 <hl>{{interval}}</hl> 执行一次，持续 <hl>{{rounds}} 轮</hl>（总计 <total/>）。",
     "over": "结束",
     "overTooltip": "作为您的订单的一部分，将被触发的单笔交易数量。",
     "placeOrder": "下单",

@@ -24,7 +24,7 @@
     "minTrading": "{{amount}} o mínimo de {{symbol}} por pedido",
     "noWhitelistedPool": "Par no compatible",
     "orders": "Pedidos",
-    "orderSentence": "Estás vendiendo <sell/> para comprar <buy/> al precio de mercado cada <hl>{{interval}}</hl> durante <hl>{{rounds}} rondas</hl>.",
+    "orderSentence": "Estás vendiendo <sell/> para comprar <buy/> al precio de mercado cada <hl>{{interval}}</hl> durante <hl>{{rounds}} rondas</hl> (total <total/>).",
     "over": "Más de",
     "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",
     "placeOrder": "Realizar pedido",

@@ -24,7 +24,7 @@
     "minTrading": "Số lượng tối thiểu {{amount}} {{symbol}} cho mỗi đơn hàng",
     "noWhitelistedPool": "Cặp này không được hỗ trợ",
     "orders": "Đơn hàng",
-    "orderSentence": "Bạn đang bán <sell/> để mua <buy/> theo giá thị trường sau mỗi <hl>{{interval}}</hl> trong <hl>{{rounds}} vòng</hl>.",
+    "orderSentence": "Bạn đang bán <sell/> để mua <buy/> theo giá thị trường mỗi <hl>{{interval}}</hl> trong <hl>{{rounds}} vòng</hl> (tổng cộng <total/>).",
     "over": "Hết",
     "overTooltip": "Số lượng các giao dịch riêng lẻ sẽ được thực hiện trong khuôn khổ lệnh của bạn.",
     "placeOrder": "Đặt hàng",

@@ -24,7 +24,7 @@
     "minTrading": "1注文あたりの最低注文数量：{{amount}} 、{{symbol}} ",
     "noWhitelistedPool": "この組み合わせはサポートされていません",
     "orders": "注文",
-    "orderSentence": "市場価格で、<sell/>を売って<buy/>を購入する取引を、<hl>{{interval}}</hl>ごとに<hl>{{rounds}} rounds</hl>行います。",
+    "orderSentence": "市場価格で<sell/>を売って<buy/>を購入します。これを<hl>{{interval}}</hl>ごとに<hl>{{rounds}}ラウンド</hl>実行します（合計<total/>）。",
     "over": "以上",
     "overTooltip": "注文の一環として発動される個別の取引の数。",
     "placeOrder": "注文する",

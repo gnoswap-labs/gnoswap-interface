@@ -24,7 +24,7 @@
     "minTrading": "주문당 최소 {{amount}} {{symbol}} ",
     "noWhitelistedPool": "해당 조합은 지원되지 않습니다",
     "orders": "회",
-    "orderSentence": "매 <hl>{{interval}}</hl>마다 <hl>{{rounds}}회</hl> 시장가로 <sell/>을(를) 매도해 <buy/>을(를) 매수합니다.",
+    "orderSentence": "매 <hl>{{interval}}</hl>마다 <hl>{{rounds}}회</hl> 시장가로 <sell/>을(를) 매도해 <buy/>을(를) 매수합니다(총 <total/>).",
     "over": "횟수",
     "overTooltip": "주문의 일환으로 실행될 개별 거래의 수입니다.",
     "placeOrder": "주문하기",
