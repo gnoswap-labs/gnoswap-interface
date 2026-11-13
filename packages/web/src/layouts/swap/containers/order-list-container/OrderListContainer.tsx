@@ -15,9 +15,9 @@ import { OrderState } from "@states/index";
 import { formatOrderRoi } from "@utils/order-format-utils";
 
 import DcaOrderItemCard from "../../components/order-list/order-card/DcaOrderItemCard";
-import LimitOrderItemCard from "../../components/order-list/order-card/LimitOrderItemCard";
 import OrderList from "../../components/order-list/OrderList";
 import { DcaOrderHistoryContainer, LimitOrderHistoryContainer } from "./OrderHistoryContainer";
+import LimitOrderItemCardContainer from "./LimitOrderItemCardContainer";
 
 const ORDER_PAGE_SIZE = 10;
 
@@ -133,7 +133,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
     }
 
     return (limitOrders.data?.items ?? []).map(order => (
-      <LimitOrderItemCard
+      <LimitOrderItemCardContainer
         key={`${order.packagePath}:${order.orderId}`}
         order={order}
         tokenOutUsdPrice={getUsdPrice(order.tokenOut)}

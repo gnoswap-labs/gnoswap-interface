@@ -10,6 +10,8 @@ export interface OrderMetric {
   key: string;
   label: string;
   value: string;
+  /** Secondary context next to the value, such as price deviation or the filled share. */
+  annotation?: string;
   /** Cumulative return, shown next to the purchased amount. */
   roi?: { text: string; isNegative: boolean } | null;
 }
@@ -22,6 +24,7 @@ export const OrderMetrics: React.FC<{ metrics: OrderMetric[] }> = ({ metrics }) 
         <span className="metric-value">
           <span className="value-text">{metric.value}</span>
           {metric.roi && <span className={cx("roi", { negative: metric.roi.isNegative })}>{metric.roi.text}</span>}
+          {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
         </span>
       </div>
     ))}

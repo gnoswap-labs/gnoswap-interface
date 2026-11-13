@@ -69,7 +69,13 @@ const closed = (status: LimitOrderModel["status"], overrides: Partial<LimitOrder
 const readOverview = async (order: LimitOrderModel) => {
   render(
     <GnoswapThemeProvider>
-      <LimitOrderItemCard order={order} txUrl="" onClickCancel={jest.fn()} renderHistory={() => null} />
+      <LimitOrderItemCard
+        order={order}
+        marketPrice={null}
+        txUrl=""
+        onClickCancel={jest.fn()}
+        renderHistory={() => null}
+      />
     </GnoswapThemeProvider>,
   );
 
@@ -154,6 +160,7 @@ describe("LimitOrderItemCard execution fee", () => {
       <GnoswapThemeProvider>
         <LimitOrderItemCard
           order={order}
+          marketPrice={null}
           tokenOutUsdPrice={tokenOutUsdPrice}
           txUrl=""
           onClickCancel={jest.fn()}

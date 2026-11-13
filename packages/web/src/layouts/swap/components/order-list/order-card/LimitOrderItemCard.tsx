@@ -8,12 +8,14 @@ import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { LimitOrderModel } from "@models/order/limit-order-model";
 import {
+  calculatePriceDeviation,
   formatBps,
   formatOrderAmount,
   formatOrderDateTime,
   formatOrderFee,
   formatOrderFeeUsd,
   formatOrderFullAmount,
+  formatOrderPriceDeviation,
   formatOrderRate,
   formatOrderTimeUntil,
 } from "@utils/order-format-utils";
@@ -24,6 +26,8 @@ import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "
 
 export interface LimitOrderItemCardProps {
   order: LimitOrderModel;
+  /** Current output per input, quoted for the order's original making amount. Null without a quote. */
+  marketPrice: string | null;
   /** Current USD price of the order's output token, to value the execution fee. Null while unknown. */
   tokenOutUsdPrice?: string | null;
   txUrl: string;
@@ -42,6 +46,7 @@ const STATUS_LABEL_KEY: Record<LimitOrderModel["status"], string> = {
 
 const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   order,
+  marketPrice,
   tokenOutUsdPrice = null,
   txUrl,
   onClickCancel,
@@ -54,22 +59,31 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   const executionFeeUsd = formatOrderFeeUsd(order.cumulativeExecutionFee, tokenOutUsdPrice);
   const expiresIn = order.isActive ? formatOrderTimeUntil(order.expiresAt, locale, nowUnixSeconds) : null;
 
-  const metrics: OrderMetric[] = useMemo(
-    () => [
+  const metrics: OrderMetric[] = useMemo(() => {
+    const deviation = formatOrderPriceDeviation(calculatePriceDeviation(order.limitPrice, marketPrice), locale);
+    return [
       {
-        key: "sold",
-        label: t("Swap:order.soldAmount"),
-        value: `${formatOrderAmount(order.filledInput)} ${tokenIn.displaySymbol}`,
+        key: "marketPrice",
+        label: t("Swap:limit.currentMarketPrice", { defaultValue: "Market Price" }),
+        value: formatOrderRate(marketPrice),
+      },
+      {
+        key: "limitPrice",
+        label: t("Swap:limit.triggerPrice", { defaultValue: "Limit Trigger Price" }),
+        value: formatOrderRate(order.limitPrice),
+        annotation: deviation ? `(≈ ${deviation})` : undefined,
       },
       {
         key: "purchased",
         label: t("Swap:order.purchasedAmount"),
         value: `${formatOrderAmount(order.userOutput)} ${tokenOut.displaySymbol}`,
+        annotation: t("Swap:order.filledShare", {
+          defaultValue: "{{percent}}% filled",
+          percent: formatOrderAmount(order.progress),
+        }),
       },
-      { key: "limitPrice", label: t("Swap:limit.limitPrice"), value: formatOrderRate(order.limitPrice) },
-    ],
-    [order, t, tokenIn.displaySymbol, tokenOut.displaySymbol],
-  );
+    ];
+  }, [locale, marketPrice, order.limitPrice, order.progress, order.userOutput, t, tokenOut.displaySymbol]);
 
   const overview = useMemo(() => {
     const inputAmount = (amount: string) =>

@@ -44,6 +44,7 @@ const meta = {
   component: LimitOrderItemCard,
   args: {
     order: ORDER,
+    marketPrice: "1",
     txUrl: "",
     tokenOutUsdPrice: "1.2",
     onClickCancel: () => undefined,
