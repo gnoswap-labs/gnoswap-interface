@@ -11,7 +11,7 @@ import { TokenModel } from "@models/token/token-model";
 import { useGetDcaOrder } from "@query/order";
 import { DexEvent } from "@repositories/common";
 import { formatPrice } from "@utils/new-number-utils";
-import { formatOrderFullAmount } from "@utils/order-format-utils";
+import { formatOrderFullAmount, formatOrderRate } from "@utils/order-format-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { useOrderTokenUsdPrice } from "./use-order-token-usd-price";
@@ -66,7 +66,7 @@ export const useStopOrderHandler = () => {
         soldAmount: formatOrderFullAmount(order.soldAmount, inputToken.decimals),
         soldAmountUsd: formatUsd(inputToken, order.soldAmount),
         purchasedAmount: formatOrderFullAmount(order.purchasedAmount, outputToken.decimals),
-        priceRate: order.priceRate === null ? "-" : formatOrderFullAmount(order.priceRate, outputToken.decimals),
+        priceRate: formatOrderRate(order.priceRate),
         priceRateUsd: formatUsd(outputToken, order.priceRate),
         remainingAmount: formatOrderFullAmount(order.remainingAmount, inputToken.decimals),
         remainingAmountUsd: formatUsd(inputToken, order.remainingAmount),
@@ -85,7 +85,7 @@ export const useStopOrderHandler = () => {
       soldAmount: formatOrderFullAmount(order.filledInput, tokenIn.decimals),
       soldAmountUsd: formatUsd(tokenIn, order.filledInput),
       purchasedAmount: formatOrderFullAmount(order.userOutput, tokenOut.decimals),
-      priceRate: rate === null ? "-" : formatOrderFullAmount(rate, tokenOut.decimals),
+      priceRate: formatOrderRate(rate),
       priceRateUsd: formatUsd(tokenOut, rate),
       remainingAmount: formatOrderFullAmount(order.remainingInput, tokenIn.decimals),
       remainingAmountUsd: formatUsd(tokenIn, order.remainingInput),

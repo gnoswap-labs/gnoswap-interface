@@ -67,6 +67,7 @@
     "connectWallet": "주문을 확인하시려면 지갑을 연결해 주세요.",
     "expiredAt": "만료 일시",
     "expiresAt": "만료일",
+    "filledPrice": "체결가",
     "nextTrade": "다음 거래",
     "noOrders": "주문이 없습니다.",
     "ongoing": "진행 중",

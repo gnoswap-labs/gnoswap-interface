@@ -6,7 +6,7 @@ import IconRemove from "@components/common/icons/IconRemove";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
 import { LimitOrderSide } from "@models/order/order-type";
-import { formatPrice } from "@utils/new-number-utils";
+import { formatOrderRate } from "@utils/order-format-utils";
 import { subscriptFormat } from "@utils/number-utils";
 
 import { LimitPriceControl, LimitPriceField, LimitPricePresets } from "./LimitPriceInput.styles";
@@ -45,7 +45,7 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   const hasPrice = !!value;
   const displayMarketPrice = marketPrice?.startsWith("0.")
     ? subscriptFormat(marketPrice)
-    : formatPrice(marketPrice, { usd: false });
+    : formatOrderRate(marketPrice);
 
   return (
     <LimitPriceField>

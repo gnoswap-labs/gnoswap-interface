@@ -67,6 +67,7 @@
     "connectWallet": "ご注文内容を確認するには、ウォレットを接続してください。",
     "expiredAt": "失効日時",
     "expiresAt": "有効期限",
+    "filledPrice": "約定価格",
     "nextTrade": "次の取引",
     "noOrders": "注文が見つかりませんでした。",
     "ongoing": "進行中",

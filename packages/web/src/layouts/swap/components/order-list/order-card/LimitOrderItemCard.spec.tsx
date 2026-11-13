@@ -185,6 +185,27 @@ describe("LimitOrderItemCard overview", () => {
   );
 });
 
+describe("LimitOrderItemCard purchased amount", () => {
+  it.each([
+    { decimals: 6, amount: "1.079988" },
+    { decimals: 18, amount: "1.079988123456789012" },
+  ])("preserves $decimals token decimals in the summary metric", ({ decimals, amount }) => {
+    render(
+      <GnoswapThemeProvider>
+        <LimitOrderItemCard
+          order={{ ...partiallyFilled, tokenOut: { ...partiallyFilled.tokenOut, decimals }, userOutput: amount }}
+          marketPrice={null}
+          txUrl=""
+          onClickCancel={jest.fn()}
+          renderHistory={() => null}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getByText(`${amount} GNS`)).toBeInTheDocument();
+  });
+});
+
 describe("LimitOrderItemCard execution fee", () => {
   const renderFee = (order: LimitOrderModel, tokenOutUsdPrice: string | null = null) => {
     render(

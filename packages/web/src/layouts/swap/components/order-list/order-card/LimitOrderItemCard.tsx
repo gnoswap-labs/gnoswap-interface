@@ -91,7 +91,7 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
       {
         key: "purchased",
         label: t("Swap:order.purchasedAmount"),
-        value: `${formatOrderAmount(order.userOutput)} ${tokenOut.displaySymbol}`,
+        value: `${formatOrderFullAmount(order.userOutput, tokenOut.decimals)} ${tokenOut.displaySymbol}`,
         annotation: t("Swap:order.filledShare", {
           defaultValue: "{{percent}}% filled",
           percent: formatOrderAmount(order.progress),
@@ -107,6 +107,7 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     order.userOutput,
     quoteToken.displaySymbol,
     t,
+    tokenOut.decimals,
     tokenOut.displaySymbol,
   ]);
 

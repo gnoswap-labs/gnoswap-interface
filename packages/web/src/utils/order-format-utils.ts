@@ -17,7 +17,7 @@ export function trimFractionZeros(value: string): string {
 }
 
 /**
- * Amounts in order cards and history rows: two decimals rounded down, trailing
+ * Amounts in order cards: two decimals rounded down, trailing
  * zeros dropped, `<0.01` below that and K/M/B above a thousand. `0` when empty.
  */
 export function formatOrderAmount(amount: BigNumber.Value | null | undefined): string {
