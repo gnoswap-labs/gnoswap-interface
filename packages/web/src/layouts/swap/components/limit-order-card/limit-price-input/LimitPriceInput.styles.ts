@@ -41,7 +41,7 @@ export const LimitPriceControl = styled.div`
     min-width: 0;
   }
 
-  .price-usd {
+  .price-deviation {
     ${fonts.body12};
     color: ${({ theme }) => theme.color.text04};
     flex-shrink: 0;

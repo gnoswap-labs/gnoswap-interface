@@ -64,7 +64,6 @@ export const Default: Story = {
     changeBuyAmount: fn(),
     switchTokens: fn(),
     limitPrice: "1.2716",
-    limitPriceUsd: "$1",
     marketPrice: "1.2716",
     selectedPreset: 0,
     changeLimitPrice: fn(),
@@ -126,7 +125,6 @@ export const InteractivePresets: Story = {
             {...args}
             limitPrice={limitPrice}
             selectedPreset={selectedPreset}
-            limitPriceUsd={limitPrice ? formatPrice(BigNumber(limitPrice).multipliedBy(outputUsd)) : "-"}
             buyAmount={buyAmount}
             buyAmountUsd={formatPrice(BigNumber(buyAmount).multipliedBy(outputUsd))}
             minimumReceived={minimumReceived}
@@ -172,7 +170,6 @@ export const SmallMarketPrice: Story = {
     buyAmountUsd: "$1",
     minimumReceived: "4.383274",
     limitPrice: "0.0000044053",
-    limitPriceUsd: "$0.000001",
     marketPrice: "0.0000044053",
   },
 };

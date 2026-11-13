@@ -77,7 +77,6 @@ const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
     changeBuyAmount,
     switchTokens: jest.fn(),
     limitPrice: "1.25",
-    limitPriceUsd: "-",
     marketPrice: "1.25",
     selectedPreset: 0,
     changeLimitPrice: jest.fn(),

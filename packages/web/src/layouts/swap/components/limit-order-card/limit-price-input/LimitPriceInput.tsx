@@ -6,7 +6,7 @@ import IconRemove from "@components/common/icons/IconRemove";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
 import { LimitOrderSide } from "@models/order/order-type";
-import { formatOrderRate } from "@utils/order-format-utils";
+import { calculatePriceDeviation, formatOrderPriceDeviation, formatOrderRate } from "@utils/order-format-utils";
 import { subscriptFormat } from "@utils/number-utils";
 
 import { LimitPriceControl, LimitPriceField, LimitPricePresets } from "./LimitPriceInput.styles";
@@ -17,7 +17,6 @@ interface LimitPriceInputProps {
   inputLogoURI?: string;
   outputSymbol: string;
   value: string;
-  valueUsd: string;
   marketPrice: string | null;
   selectedPreset: number | null;
   changeValue: (value: string) => void;
@@ -34,14 +33,17 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
   inputLogoURI,
   outputSymbol,
   value,
-  valueUsd,
   marketPrice,
   selectedPreset,
   changeValue,
   stepPrice,
   applyPreset,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const priceDeviation = formatOrderPriceDeviation(
+    calculatePriceDeviation(value, marketPrice),
+    i18n.resolvedLanguage ?? i18n.language,
+  );
   const hasPrice = !!value;
   const displayMarketPrice = marketPrice?.startsWith("0.")
     ? subscriptFormat(marketPrice)
@@ -81,7 +83,7 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
             aria-label={t("Swap:limit.limitPrice")}
           />
           <span className="quote-token">{outputSymbol}</span>
-          <span className="price-usd">{valueUsd === "-" ? "(-)" : `(${valueUsd})`}</span>
+          <span className="price-deviation">{priceDeviation === null ? "(-)" : `(${priceDeviation})`}</span>
         </div>
         <div className="price-steps">
           <button

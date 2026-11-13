@@ -279,30 +279,6 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.selectedPreset).toBeNull();
   });
 
-  it("updates the USD estimate with the output token price without changing the order ratio", async () => {
-    mockGetUsdPrice.mockImplementation(token => (token?.path === tokenB.path ? "2" : "99"));
-    const { result, rerender } = renderHook(() => useLimitOrderHandler(), { wrapper });
-    act(() => result.current.changeTokenA(tokenA));
-    act(() => result.current.changeTokenB(tokenB));
-    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
-    act(() => result.current.changeLimitPrice("10"));
-    act(() => result.current.changeSellAmount("3"));
-    expect(result.current.limitPriceUsd).toBe("$20");
-    expect(result.current.buyAmount).toBe("30");
-
-    mockGetUsdPrice.mockReturnValue("1");
-    rerender();
-    expect(result.current.limitPriceUsd).toBe("$10");
-    expect(result.current.limitPrice).toBe("10");
-    expect(result.current.buyAmount).toBe("30");
-
-    mockGetUsdPrice.mockReturnValue(null);
-    rerender();
-    expect(result.current.limitPriceUsd).toBe("-");
-    act(() => result.current.changeLimitPrice(""));
-    expect(result.current.limitPriceUsd).toBe("-");
-  });
-
   it("keeps the base asset while Buy reverses funding, applies a discount, and calculates the submitted output", async () => {
     mockGetUsdPrice.mockImplementation(token => (token?.path === tokenB.path ? "2" : "99"));
     const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
@@ -324,7 +300,6 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.limitPrice).toBe("6.");
     act(() => result.current.changeSellAmount("18"));
     expect(result.current.buyAmount).toBe("3");
-    expect(result.current.limitPriceUsd).toBe("$12");
     const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
     expect(summary).toMatchObject({ tokenIn: tokenB, tokenOut: tokenA, sellAmount: "18", buyAmount: "3" });
 
