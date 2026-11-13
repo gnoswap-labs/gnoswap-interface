@@ -237,9 +237,6 @@
       "title": "Enveloppe"
     }
   },
-  "confirmLimitOrder": {
-    "title": "Confirmer l'ordre à cours limité"
-  },
   "confirmPlaceOrder": {
     "actualAmount": "Seul l'ordre « {{amount}} » ( {{symbol}} ) est passé, de sorte que chaque transaction vende le même montant.",
     "title": "Confirmer la commande"

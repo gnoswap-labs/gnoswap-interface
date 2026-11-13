@@ -237,9 +237,6 @@
       "title": "包装"
     }
   },
-  "confirmLimitOrder": {
-    "title": "确认限价单"
-  },
   "confirmPlaceOrder": {
     "actualAmount": "仅下单了{{amount}} {{symbol}} ，因此每笔交易卖出的数量都相同。",
     "title": "确认下单"

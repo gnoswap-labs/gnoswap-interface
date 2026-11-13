@@ -56,8 +56,7 @@
     "marketPrice": "市場価格：",
     "minimumReceivedTooltip": "指値価格および選択したスリッページに基づいて、執行手数料を差し引いた後に受け取る最低の売却額です。これは全量約定の場合の表示です。一部約定の場合は、同じ比率を適用し、約定ごとに切り上げられます。",
     "minTrading": "{{amount}} 以上{{symbol}}",
-    "sellWhen": "1 {{symbol}} が次の価格に達したら売却",
-    "startToOrder": "注文を開始する"
+    "sellWhen": "1 {{symbol}} が次の価格に達したら売却"
   },
   "order": {
     "active": "未決済注文",

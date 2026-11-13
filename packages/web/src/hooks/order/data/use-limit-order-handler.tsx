@@ -205,7 +205,7 @@ export const useLimitOrderHandler = () => {
     isAmountTooLow,
   });
 
-  const buttonText = getOrderButtonText(buttonState, t, t("Swap:limit.startToOrder"));
+  const buttonText = getOrderButtonText(buttonState, t, t("Swap:dca.placeOrder"));
 
   const maxSlippageBps = config?.maxSlippageBps ?? MAX_LIMIT_SLIPPAGE_BPS;
   const slippageBps = toLimitSlippageBps(slippage, maxSlippageBps);

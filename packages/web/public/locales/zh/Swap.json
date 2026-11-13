@@ -56,8 +56,7 @@
     "marketPrice": "市场价格：",
     "minimumReceivedTooltip": "扣除交易手续费后您能获得的最低收益，该金额基于您的限价和所选滑点。此处显示的是全额成交的情况；部分成交时，将采用相同的比率，并按每笔成交向上取整。",
     "minTrading": "{{amount}} 以上{{symbol}}",
-    "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出",
-    "startToOrder": "开始下单"
+    "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出"
   },
   "order": {
     "active": "未结订单",
