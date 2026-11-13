@@ -15,6 +15,7 @@ import {
   formatOrderFee,
   formatOrderFeeUsd,
   formatOrderFullAmount,
+  formatOrderMarketPrice,
   formatOrderPriceDeviation,
   formatOrderRate,
   formatOrderTimeUntil,
@@ -27,7 +28,7 @@ import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "
 
 export interface LimitOrderItemCardProps {
   order: LimitOrderModel;
-  /** Current output per input, quoted for the order's original making amount. Null without a quote. */
+  /** Current pool spot rate of the order's pair as output per input, whatever the order size. Null while unknown. */
   marketPrice: string | null;
   /** Current USD price of the order's output token, to value the execution fee. Null while unknown. */
   tokenOutUsdPrice?: string | null;
@@ -74,13 +75,13 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
       calculatePriceDeviation(displayedLimitPrice, displayedMarketPrice),
       locale,
     );
-    const price = (rate: string | null) =>
-      `${formatOrderRate(rate)}${order.side && rate !== null ? ` ${quoteToken.displaySymbol}` : ""}`;
+    const price = (rate: string | null, format = formatOrderRate) =>
+      `${format(rate)}${order.side && rate !== null ? ` ${quoteToken.displaySymbol}` : ""}`;
     return [
       {
         key: "marketPrice",
         label: t("Swap:limit.currentMarketPrice", { defaultValue: "Market Price" }),
-        value: price(displayedMarketPrice),
+        value: price(displayedMarketPrice, formatOrderMarketPrice),
       },
       {
         key: "limitPrice",

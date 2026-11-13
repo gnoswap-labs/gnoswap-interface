@@ -92,6 +92,7 @@ export enum QUERY_KEY {
   dcaExecutions = "dca_executions",
   limitConfig = "limit_config",
   limitOrders = "limit_orders",
+  limitMarketPrices = "limit_market_prices",
   limitOrderFills = "limit_order_fills",
 
   // gas

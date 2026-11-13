@@ -48,6 +48,10 @@ jest.mock("@query/order", () => ({
     refetch: jest.fn(),
   }),
 }));
+// These links carry their own prices; the shared pool market price is not needed.
+jest.mock("@providers/limit-market-price-provider/LimitMarketPriceProvider", () => ({
+  useLimitMarketPrices: () => ({ getPrice: () => null }),
+}));
 jest.mock("@query/router", () => ({
   useGetRoutes: (
     request: {

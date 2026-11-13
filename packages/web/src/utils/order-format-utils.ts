@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { DcaOrderModel } from "@models/order/dca-order-model";
 
 import { formatPrice, formatTokenAmount } from "./new-number-utils";
+import { subscriptFormat } from "./number-utils";
 
 const ORDER_DATE_TIME_FORMAT = "YYYY-MM-DD HH:mm:ss";
 const ORDER_DATE_FORMAT = "YYYY-MM-DD";
@@ -74,6 +75,23 @@ export function invertOrderRate(rate: string | null): string | null {
   if (rate === null) return null;
   const value = BigNumber(rate);
   return value.isFinite() && value.isGreaterThan(0) ? BigNumber(1).dividedBy(value).toFixed() : null;
+}
+
+/** Significant digits of a displayed Limit market price: those the limit price field keeps. */
+const MARKET_PRICE_SIGNIFICANT_DIGITS = 6;
+
+/**
+ * A Limit market price for display, so a pair and side read the same in the Limit form and on order cards: rounded
+ * down to the six significant digits the limit price field keeps, shown as a rate from 1 up and with subscript zeros
+ * once tiny (`0.0₅12345`). `-` when unknown.
+ */
+export function formatOrderMarketPrice(price: BigNumber.Value | null | undefined): string {
+  if (price === null || price === undefined || price === "") return "-";
+  const value = BigNumber(price);
+  if (!value.isFinite() || value.isLessThanOrEqualTo(0)) return "-";
+
+  const rounded = BigNumber(value.toPrecision(MARKET_PRICE_SIGNIFICANT_DIGITS, BigNumber.ROUND_DOWN));
+  return rounded.isLessThan(1) ? subscriptFormat(rounded.toFixed()) : formatOrderRate(rounded);
 }
 
 /** Unix seconds as local `YYYY-MM-DD HH:mm:ss`. */

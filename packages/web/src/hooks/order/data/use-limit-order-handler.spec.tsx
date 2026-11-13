@@ -9,6 +9,7 @@ import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import type { LimitOrderSummary } from "@models/order/order-summary";
 import type { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
+import type { LimitMarketPricePair } from "@repositories/order/request";
 import type { GetRoutesResponse } from "@repositories/swap-router/response/get-routes-response";
 import { CommonState, SwapState } from "@states/index";
 
@@ -63,6 +64,10 @@ jest.mock("@query/order", () => ({
   }),
 }));
 jest.mock("@query/router", () => ({ useGetRoutes: jest.fn() }));
+const mockGetPrice = jest.fn<string | null, [LimitMarketPricePair | null]>();
+jest.mock("@providers/limit-market-price-provider/LimitMarketPriceProvider", () => ({
+  useLimitMarketPrices: () => ({ getPrice: (pair: LimitMarketPricePair | null) => mockGetPrice(pair) }),
+}));
 
 const makeToken = (symbol: string): TokenModel => ({
   type: "GRC20",
@@ -88,6 +93,12 @@ const TOKEN_VALUE: Record<string, number> = {
   [tokenC.path]: 0.5,
   [tokenD.path]: 40,
 };
+/** The pool spot rate the market price API reports for a directed pair, in output tokens per input token. */
+const spotRate = (pair: LimitMarketPricePair | null) => {
+  const input = pair ? TOKEN_VALUE[pair.tokenIn] : undefined;
+  const output = pair ? TOKEN_VALUE[pair.tokenOut] : undefined;
+  return input && output ? BigNumber(input).dividedBy(output).toFixed() : null;
+};
 
 const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>{children}</JotaiProvider>;
 
@@ -100,19 +111,11 @@ describe("useLimitOrderHandler", () => {
     mockFundingBalance = "1000";
     mockRenderConfirmModal = undefined;
     mockGetUsdPrice.mockReset().mockReturnValue(null);
+    mockGetPrice.mockReset().mockImplementation(spotRate);
+    // The router quote only decides whether the pair can be filled; it never prices the form.
     jest.mocked(useGetRoutes).mockImplementation(request => {
-      if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
-        return { data: undefined } as ReturnType<typeof useGetRoutes>;
-      }
-      const price = TOKEN_VALUE[request.inputToken.path] / TOKEN_VALUE[request.outputToken.path];
-      const exactOut = request.exactType === "EXACT_OUT";
-      const quoted = exactOut
-        ? BigNumber(request.tokenAmount).dividedBy(price)
-        : BigNumber(request.tokenAmount).multipliedBy(price);
-      const amount = quoted
-        .shiftedBy((exactOut ? request.inputToken : request.outputToken).decimals)
-        .toFixed(0, exactOut ? BigNumber.ROUND_CEIL : BigNumber.ROUND_FLOOR);
-      return { data: { status: "SUCCESS", amount } } as unknown as UseQueryResult<GetRoutesResponse, Error>;
+      const data = request ? { status: "SUCCESS", amount: "1" } : undefined;
+      return { data } as unknown as UseQueryResult<GetRoutesResponse, Error>;
     });
   });
 
@@ -224,24 +227,19 @@ describe("useLimitOrderHandler", () => {
     });
   });
 
-  it("uses fresh amount-dependent router quotes for presets but preserves manually edited prices", async () => {
-    let liveRate = "8";
-    jest.mocked(useGetRoutes).mockImplementation(request => {
-      if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
-        return { data: undefined } as ReturnType<typeof useGetRoutes>;
-      }
-      const rate = BigNumber(request.tokenAmount).isGreaterThan(10) ? liveRate : "10";
-      const amount = BigNumber(request.tokenAmount).multipliedBy(rate).shiftedBy(6).toFixed(0);
-      return { data: { status: "SUCCESS", amount } } as unknown as ReturnType<typeof useGetRoutes>;
-    });
+  it("moves a selected preset with market price updates but keeps a manually edited price", async () => {
+    let liveRate = "10";
+    mockGetPrice.mockImplementation(pair => (pair ? liveRate : null));
     const { result, rerender } = renderHook(() => useLimitOrderHandler(), { wrapper });
     act(() => result.current.changeTokenA(tokenA));
     act(() => result.current.changeTokenB(tokenB));
     await waitFor(() => expect(result.current.limitPrice).toBe("11"));
 
     act(() => result.current.changeSellAmount("20"));
-    await waitFor(() => expect(result.current.marketPrice).toBe("8"));
+    liveRate = "8";
+    rerender();
     await waitFor(() => expect(result.current.limitPrice).toBe("8.8"));
+    expect(result.current.marketPrice).toBe("8");
     expect(result.current.buyAmount).toBe("176");
     expect(result.current.selectedPreset).toBe(10);
 
@@ -263,18 +261,20 @@ describe("useLimitOrderHandler", () => {
     // Even typing the exact preset price explicitly switches to a fixed price.
     act(() => result.current.changeLimitPrice("6.3"));
     liveRate = "5";
-    act(() => result.current.changeSellAmount("40"));
+    rerender();
     expect(result.current.marketPrice).toBe("5");
     expect(result.current.limitPrice).toBe("6.3");
+    act(() => result.current.changeSellAmount("40"));
     expect(result.current.buyAmount).toBe("252");
     expect(result.current.selectedPreset).toBeNull();
 
     act(() => result.current.applyPreset(10));
     act(() => result.current.stepPrice(1));
     liveRate = "4";
-    act(() => result.current.changeSellAmount("50"));
+    rerender();
     expect(result.current.marketPrice).toBe("4");
     expect(result.current.limitPrice).toBe("5.5055");
+    act(() => result.current.changeSellAmount("50"));
     expect(result.current.buyAmount).toBe("275.275");
     expect(result.current.selectedPreset).toBeNull();
   });
@@ -335,40 +335,36 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.limitPrice).toBe("11");
   });
 
-  it("computes the Buy market price directly from the quoted amounts before rounding", async () => {
-    jest.mocked(useGetRoutes).mockImplementation(request => {
-      if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
-        return { data: undefined } as UseQueryResult<GetRoutesResponse, Error>;
-      }
-      const price = request.inputToken.path === tokenB.path ? 6 : 1 / 6;
-      const exactOut = request.exactType === "EXACT_OUT";
-      const quoted = exactOut
-        ? BigNumber(request.tokenAmount).multipliedBy(price)
-        : BigNumber(request.tokenAmount).dividedBy(price);
-      return {
-        data: {
-          status: "SUCCESS",
-          amount: quoted
-            .shiftedBy((exactOut ? request.inputToken : request.outputToken).decimals)
-            .toFixed(0, exactOut ? BigNumber.ROUND_CEIL : BigNumber.ROUND_FLOOR),
-        },
-      } as unknown as UseQueryResult<GetRoutesResponse, Error>;
-    });
+  it("inverts the pool's full-precision rate for a Buy market price, rounding only the result", async () => {
+    // The pool pays 0.1234567 A per B. Inverting the rate cut to 0.123456 first would give 8.10005 B per A, not 8.1.
+    mockGetPrice.mockImplementation(pair =>
+      pair?.tokenIn === tokenB.path && pair.tokenOut === tokenA.path ? "0.1234567" : null,
+    );
     const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
     act(() => {
       result.current.changeTokenA(tokenB);
       result.current.changeTokenB(tokenA);
       result.current.restoreOrderSide("buy");
-      result.current.changeSellAmount("18");
     });
 
-    // The quote is exactly 18 B -> 3 A. Inverting a pre-rounded 0.166666 B/A gives 6.00002 instead.
-    await waitFor(() => expect(result.current.marketPrice).toBe("6"));
-    expect(result.current.limitPrice).toBe("5.4");
-    act(() => result.current.changeLimitPrice("6"));
-    expect(result.current.buyAmount).toBe("3");
-    const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
-    expect(summary.limitPriceDeviation).toBe(0);
+    await waitFor(() => expect(result.current.marketPrice).toBe("8.1"));
+    expect(result.current.limitPrice).toBe("7.29");
+    act(() => result.current.applyPreset(0));
+    expect(result.current.limitPrice).toBe("8.1");
+  });
+
+  it("still blocks an order the router cannot fill while showing the pool's market price", async () => {
+    jest
+      .mocked(useGetRoutes)
+      .mockImplementation(() => ({ data: { status: "NO_LIQUIDITY" } }) as unknown as ReturnType<typeof useGetRoutes>);
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+    act(() => result.current.changeSellAmount("2"));
+
+    expect(result.current.marketPrice).toBe("10");
+    expect(result.current.buttonState).toBe("INSUFFICIENT_LIQUIDITY");
   });
 
   it("restores a Buy link without reversing its input/output tokens again", async () => {
@@ -689,7 +685,7 @@ describe("useLimitOrderHandler", () => {
       return hook;
     };
 
-    it("reports how far the limit price sits from the quoted market price", async () => {
+    it("reports how far the limit price sits from the pool market price", async () => {
       const { result } = await renderWithPair();
       expect(summary().limitPriceDeviation).toBe(0.1);
 
@@ -721,36 +717,49 @@ describe("useLimitOrderHandler", () => {
       });
     });
 
-    it("compares with the market price quoted for the amount being sold", async () => {
+    it("keeps one market price, preset and deviation for any order size or router quote", async () => {
+      // A router quotes a larger order at a worse rate; the pool spot rate does not move with the order size.
       jest.mocked(useGetRoutes).mockImplementation(request => {
-        if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
-          return { data: undefined } as ReturnType<typeof useGetRoutes>;
-        }
-        const rate = BigNumber(request.tokenAmount).isGreaterThan(10) ? "8" : "10";
+        if (!request?.tokenAmount) return { data: undefined } as ReturnType<typeof useGetRoutes>;
+        const rate = BigNumber(request.tokenAmount).isGreaterThan(1) ? "8" : "10";
         const amount = BigNumber(request.tokenAmount).multipliedBy(rate).shiftedBy(6).toFixed(0);
         return { data: { status: "SUCCESS", amount } } as unknown as ReturnType<typeof useGetRoutes>;
       });
       const { result } = await renderWithPair();
-      act(() => result.current.changeLimitPrice("12"));
-      expect(summary().limitPriceDeviation).toBe(0.2);
 
-      // A larger order is quoted at a worse price, which moves the reference.
-      act(() => result.current.changeSellAmount("20"));
-      await waitFor(() => expect(result.current.marketPrice).toBe("8"));
-      expect(summary().limitPriceDeviation).toBe(0.5);
+      act(() => result.current.changeSellAmount("1"));
+      expect(result.current.marketPrice).toBe("10");
+      expect(result.current.limitPrice).toBe("11");
+      expect(summary().limitPriceDeviation).toBe(0.1);
+      act(() => result.current.changeSellAmount("1000"));
+      expect(result.current.marketPrice).toBe("10");
+      expect(result.current.limitPrice).toBe("11");
+      expect(result.current.buyAmount).toBe("11000");
+      expect(summary().limitPriceDeviation).toBe(0.1);
+
+      act(() => result.current.changeOrderSide("buy"));
+      act(() => result.current.changeBuyAmount("1"));
+      expect(result.current.marketPrice).toBe("10");
+      act(() => result.current.changeBuyAmount("1000"));
+      expect(result.current.marketPrice).toBe("10");
+      expect(result.current.limitPrice).toBe("9");
+      expect(result.current.sellAmount).toBe("9000");
     });
 
-    it.each([
-      ["has no quote yet", undefined],
-      ["has no liquidity", { status: "NO_LIQUIDITY" }],
-    ])("has no deviation while the router %s", (_, data) => {
-      jest.mocked(useGetRoutes).mockImplementation(() => ({ data }) as unknown as ReturnType<typeof useGetRoutes>);
+    it("offers no market price, preset or deviation without a pool rate, yet takes a manually priced order", () => {
+      mockGetPrice.mockReturnValue(null);
       const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
       act(() => result.current.changeTokenA(tokenA));
       act(() => result.current.changeTokenB(tokenB));
-      act(() => result.current.changeLimitPrice("12"));
+      act(() => result.current.applyPreset(10));
 
       expect(result.current.marketPrice).toBeNull();
+      expect(result.current.limitPrice).toBe("");
+      act(() => {
+        result.current.changeLimitPrice("12");
+        result.current.changeSellAmount("2");
+      });
+      expect(result.current.buttonState).toBe("PLACE_ORDER");
       expect(summary().limitPriceDeviation).toBeNull();
     });
   });

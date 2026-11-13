@@ -25,6 +25,7 @@ import {
   GetOrderHistoryRequest,
   GetOrdersRequest,
   OrderGasRequest,
+  GetLimitMarketPricesRequest,
 } from "./request";
 import {
   DcaConfigResponse,
@@ -35,6 +36,7 @@ import {
   LimitConfigResponse,
   LimitFillItem,
   LimitOrderItem,
+  LimitMarketPricesResponse,
   OrderAPIResponse,
   OrderPagedResponse,
 } from "./response";
@@ -89,6 +91,25 @@ export class OrderRepositoryImpl implements OrderRepository {
 
   public getLimitConfig = async (): Promise<LimitConfigResponse> => {
     return this.get<LimitConfigResponse>("orders/limit/config");
+  };
+
+  public getLimitMarketPrices = async (request: GetLimitMarketPricesRequest): Promise<LimitMarketPricesResponse> => {
+    if (!this.networkClient) {
+      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
+    }
+
+    const response = await this.networkClient.post<
+      GetLimitMarketPricesRequest,
+      OrderAPIResponse<LimitMarketPricesResponse>
+    >({
+      url: "orders/limit/market-prices",
+      body: request,
+    });
+    if (response.status < 200 || response.status >= 300) {
+      throw new Error(response.message);
+    }
+
+    return response.data.data;
   };
 
   public getLimitOrders = async (request: GetOrdersRequest): Promise<OrderPagedResponse<LimitOrderItem>> => {
