@@ -18,6 +18,7 @@ interface OrderPairLabelProps {
   /** Gnoscan link of the order, shown as an external link icon. */
   linkUrl?: string;
   logoSize?: number;
+  showOutputLogo?: boolean;
 }
 
 /** `[logo] (amount) GNS → GNOT [link]`, the heading of an order. */
@@ -28,6 +29,7 @@ const OrderPairLabel: React.FC<OrderPairLabelProps> = ({
   outputAmount,
   linkUrl,
   logoSize = 20,
+  showOutputLogo = false,
 }) => {
   const inputSymbol = inputToken.displaySymbol || inputToken.symbol;
   const outputSymbol = outputToken.displaySymbol || outputToken.symbol;
@@ -41,7 +43,7 @@ const OrderPairLabel: React.FC<OrderPairLabelProps> = ({
         </span>
         <IconRightArrow className="pair-arrow" />
         <span className="pair-token">
-          {outputAmount !== undefined && (
+          {(showOutputLogo || outputAmount !== undefined) && (
             <MissingLogo symbol={outputToken.symbol} url={outputToken.logoURI} width={logoSize} mobileWidth={16} />
           )}
           <span className="pair-token-text">
