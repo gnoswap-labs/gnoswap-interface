@@ -81,7 +81,7 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
             aria-label={t("Swap:limit.limitPrice")}
           />
           <span className="quote-token">{outputSymbol}</span>
-          <span className="price-usd">{valueUsd === "-" ? "(-)" : `(≈ ${valueUsd})`}</span>
+          <span className="price-usd">{valueUsd === "-" ? "(-)" : `(${valueUsd})`}</span>
         </div>
         <div className="price-steps">
           <button

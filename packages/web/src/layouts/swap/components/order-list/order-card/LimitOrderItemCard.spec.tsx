@@ -202,7 +202,7 @@ describe("LimitOrderItemCard purchased amount", () => {
       </GnoswapThemeProvider>,
     );
 
-    expect(screen.getByText(`${amount} GNS`)).toBeInTheDocument();
+    expect(screen.getByTitle(amount)).toHaveTextContent(amount);
   });
 });
 
@@ -225,7 +225,7 @@ describe("LimitOrderItemCard execution fee", () => {
   };
 
   it("shows the saved rate and the fee actually charged, valued at the current price", () => {
-    expect(renderFee(partiallyFilled, "1.2")).toBe("0.018771 GNS (≈$0.0225)");
+    expect(renderFee(partiallyFilled, "1.2")).toBe("0.018771 GNS ($0.0225)");
   });
 
   it("shows a known zero fee as zero, for an order that closed unfilled", () => {

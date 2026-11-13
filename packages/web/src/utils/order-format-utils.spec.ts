@@ -51,7 +51,7 @@ describe("order-format-utils", () => {
   });
 
   it("values a fee at the current USD price only when there is both a fee and a price", () => {
-    expect(formatOrderFeeUsd("2", "1.5")).toBe("≈$3");
+    expect(formatOrderFeeUsd("2", "1.5")).toBe("$3");
     expect(formatOrderFeeUsd("0.000001", "1.5")).toBe("<$0.01");
     expect(formatOrderFeeUsd("0", "1.5")).toBeNull();
     expect(formatOrderFeeUsd(null, "1.5")).toBeNull();

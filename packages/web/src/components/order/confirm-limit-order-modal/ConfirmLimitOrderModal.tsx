@@ -19,7 +19,7 @@ export interface ConfirmLimitOrderModalProps {
   close: () => void;
 }
 
-/** A row value followed by a note: `1 GNS = 1.27 GNOT (≈ +10%)`. Without a note it is the plain value. */
+/** A row value followed by a note: `1 GNS = 1.27 GNOT (+10%)`. Without a note it is the plain value. */
 const AnnotatedValue: React.FC<{ annotation: string | null; children: string }> = ({ annotation, children }) =>
   annotation ? (
     <span>
@@ -43,7 +43,7 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
   const rows: OrderInfoRow[] = useMemo(() => {
     const deviation = formatOrderPriceDeviation(summary.limitPriceDeviation, locale);
     const expiresIn = formatOrderRelativeDuration(summary.expiryDurationSec, locale);
-    const priceNote = deviation ? `(≈ ${deviation})` : null;
+    const priceNote = deviation ? `(${deviation})` : null;
     const expiryNote = expiresIn ? `(${expiresIn})` : null;
 
     return [
