@@ -56,11 +56,6 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   const [now, setNow] = useState(() => Date.now());
   const [highlighted, setHighlighted] = useState<Set<string>>(new Set());
   const previousSnapshot = useRef<{ page: number; keys: Set<string> } | null>(null);
-  const rateUnit = rateBase
-    ? rateBase === "output"
-      ? `${inputToken.displaySymbol}/${outputToken.displaySymbol}`
-      : `${outputToken.displaySymbol}/${inputToken.displaySymbol}`
-    : null;
   const getDisplayRate = (item: OrderHistoryModel): string | null => {
     if (item.rate === null) return null;
     return rateBase === "output"
@@ -102,7 +97,6 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
         <span className="cell left">{t("Swap:order.time")}</span>
         <span className={cx("cell", { "filled-price": kind === "limit" })}>
           {t(kind === "limit" ? "Swap:order.filledPrice" : "Swap:order.rate")}
-          {rateUnit && ` (${rateUnit})`}
         </span>
         <span className="cell">{t("Swap:order.sold")}</span>
         <span className="cell">{t("Swap:order.purchased")}</span>
