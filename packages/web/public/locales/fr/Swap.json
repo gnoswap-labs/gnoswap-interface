@@ -44,7 +44,7 @@
     "belowMarketWarning": "Le cours de déclenchement est inférieur au cours du marché et votre ordre pourrait être exécuté immédiatement.",
     "buyTheDip": "Acheter sur la baisse",
     "buyWhen": "Acheter lorsque 1 {{symbol}} descend à",
-    "executionFeeTooltip": "Les frais prélevés sur le produit de chaque transaction exécutée et reversés au protocole.",
+    "executionFeeTooltip": "Les frais prélevés sur le produit de chaque transaction exécutée dans son intégralité et reversés au protocole. Le montant indiqué correspond à une estimation pour une exécution intégrale à votre prix limite ; les frais réels dépendent du produit de la transaction exécutée.",
     "expiresIn": "Expire dans",
     "expiryOption": {
       "oneDay": "1 jour",

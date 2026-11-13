@@ -44,7 +44,7 @@
     "belowMarketWarning": "Trigger price is below market and your order may instantly fill.",
     "buyTheDip": "Buy the dip",
     "buyWhen": "Buy when 1 {{symbol}} drops to",
-    "executionFeeTooltip": "The fee deducted from the output of each filled trade that goes to the protocol.",
+    "executionFeeTooltip": "The fee deducted from the output of each filled trade that goes to the protocol. The amount shown is an estimate for a full fill at your limit price; the actual fee depends on executed output.",
     "expiresIn": "Expires in",
     "expiryOption": {
       "oneDay": "1 Day",

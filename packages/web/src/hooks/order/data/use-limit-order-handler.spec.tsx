@@ -51,7 +51,9 @@ jest.mock("./use-order-form-common", () => ({
     formatRate: () => ({ text: "-", usd: "-" }),
   }),
 }));
-let mockLimitConfig: { maxSlippageBps?: number; whitelistedPools?: string[] } | undefined;
+let mockLimitConfig:
+  | { maxSlippageBps?: number; whitelistedPools?: string[]; executionFeeBps?: number }
+  | undefined;
 let mockLimitConfigError = false;
 const mockRefetchLimitConfig = jest.fn();
 jest.mock("@query/order", () => ({
@@ -277,6 +279,40 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.limitPrice).toBe("5.5055");
     expect(result.current.buyAmount).toBe("275.275");
     expect(result.current.selectedPreset).toBeNull();
+  });
+
+  it("estimates the full target-price fee independently of market price and slippage", async () => {
+    mockLimitConfig = { ...mockLimitConfig, executionFeeBps: 15 };
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+    act(() => result.current.changeLimitPrice("10"));
+    act(() => result.current.changeSellAmount("3"));
+    expect(result.current.buyAmount).toBe("30");
+    expect(result.current.executionFeeAmount).toBe("0.045067");
+    act(() => result.current.changeSlippage(5));
+    expect(result.current.executionFeeAmount).toBe("0.045067");
+    expect(result.current.minimumReceived).toBe("28.5");
+    act(() => result.current.changeLimitPrice("20"));
+    expect(result.current.executionFeeAmount).toBe("0.090135");
+    const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+    expect(summary.executionFeeAmount).toBe("0.090135");
+    expect(summary.buyAmount).toBe("60");
+  });
+
+  it("distinguishes a zero-rate fee from a config that has not reported its rate", async () => {
+    const { result, rerender } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+    act(() => result.current.changeSellAmount("3"));
+    expect(result.current.executionFeeAmount).toBeNull();
+    mockLimitConfig = { ...mockLimitConfig, executionFeeBps: 0 };
+    rerender();
+    expect(result.current.executionFeeAmount).toBe("0");
+    act(() => result.current.changeSellAmount(""));
+    expect(result.current.executionFeeAmount).toBeNull();
   });
 
   it("keeps the base asset while Buy reverses funding, applies a discount, and calculates the submitted output", async () => {

@@ -51,6 +51,9 @@ export interface LimitOrderSummary {
   expiryDurationSec: number;
   slippage: string;
   executionFee: string;
+  /** Estimate for a full fill at the limit price, in display output-token units; not an actual charged fee. */
+  executionFeeAmount: string | null;
+  executionFeeUsd: string | null;
 }
 
 /** Everything the stop / cancel confirm modal shows, already formatted. */

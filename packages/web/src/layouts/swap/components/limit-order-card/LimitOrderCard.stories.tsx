@@ -11,8 +11,9 @@ import {
   stepLimitPrice,
   toLimitSlippageBps,
 } from "@hooks/order/data/use-order-handler.utils";
-import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
+import { calculateLimitMinimumReceived, estimateLimitExecutionFee } from "@utils/order-amount-utils";
 import { formatPrice } from "@utils/new-number-utils";
+import { formatOrderFeeUsd } from "@utils/order-format-utils";
 import globalStyle from "@styles/globalStyle";
 import { getTheme } from "@utils/theme-utils";
 
@@ -58,6 +59,8 @@ export const Default: Story = {
     buyAmountUsd: "$1,541.55",
     minimumReceived: "1950.433825",
     executionFee: "0.15%",
+    executionFeeAmount: "2.944769",
+    executionFeeUsd: "$2.32",
     changeTokenA: fn(),
     changeTokenB: fn(),
     changeSellAmount: fn(),
@@ -110,6 +113,8 @@ export const InteractivePresets: Story = {
       args.orderSide,
     );
     const buyAmount = BigNumber(rawTakingAmount).shiftedBy(-outputToken.decimals).toFixed();
+    const rawFee = estimateLimitExecutionFee(rawTakingAmount, 15);
+    const executionFeeAmount = rawFee === null ? null : BigNumber(rawFee).shiftedBy(-outputToken.decimals).toFixed();
     const minimumReceived = BigNumber(rawTakingAmount).isGreaterThan(0)
       ? BigNumber(
           calculateLimitMinimumReceived(rawTakingAmount, toLimitSlippageBps(args.slippage, args.maxSlippage * 100)),
@@ -128,6 +133,8 @@ export const InteractivePresets: Story = {
             buyAmount={buyAmount}
             buyAmountUsd={formatPrice(BigNumber(buyAmount).multipliedBy(outputUsd))}
             minimumReceived={minimumReceived}
+            executionFeeAmount={executionFeeAmount}
+            executionFeeUsd={formatOrderFeeUsd(executionFeeAmount, outputUsd.toFixed())}
             changeLimitPrice={price => {
               setSelectedPreset(null);
               setLimitPrice(price);

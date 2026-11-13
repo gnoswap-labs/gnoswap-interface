@@ -5,7 +5,7 @@ import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconClose from "@components/common/icons/IconCancel";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import { LimitOrderSummary } from "@models/order/order-summary";
-import { formatOrderPriceDeviation, formatOrderRelativeDuration } from "@utils/order-format-utils";
+import { formatOrderFullAmount, formatOrderPriceDeviation, formatOrderRelativeDuration } from "@utils/order-format-utils";
 
 import { OrderModalWrapper } from "../common/OrderModal.styles";
 import { TokenBadge } from "../confirm-dca-order-modal/ConfirmDcaOrderModal";
@@ -66,12 +66,21 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
       },
       {
         key: "executionFee",
-        label: t("Swap:dca.executionFee"),
+        label: `${t("Swap:dca.executionFee")} (${summary.executionFee})`,
         tooltip: t("Swap:limit.executionFeeTooltip"),
-        value: summary.executionFee,
+        value:
+          summary.executionFeeAmount !== null ? (
+            <span>
+              {formatOrderFullAmount(summary.executionFeeAmount, tokenOut.decimals)} {tokenOut.displaySymbol}
+              {summary.executionFeeUsd && " "}
+              {summary.executionFeeUsd && <ValueAnnotation>({summary.executionFeeUsd})</ValueAnnotation>}
+            </span>
+          ) : (
+            "-"
+          ),
       },
     ];
-  }, [locale, summary, t, tokenOut.displaySymbol]);
+  }, [locale, summary, t, tokenOut.decimals, tokenOut.displaySymbol]);
 
   return (
     <OrderModalWrapper>

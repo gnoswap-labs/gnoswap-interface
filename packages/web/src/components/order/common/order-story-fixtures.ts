@@ -39,6 +39,8 @@ export const STORY_LIMIT_ORDER_SUMMARY: LimitOrderSummary = {
   expiryDurationSec: 86_400,
   slippage: "0.5%",
   executionFee: "0.15%",
+  executionFeeAmount: "2.944777",
+  executionFeeUsd: "$2.32",
 };
 
 export const STORY_STOP_ORDER_SUMMARY: StopOrderSummary = {

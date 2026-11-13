@@ -44,7 +44,7 @@
     "belowMarketWarning": "Giá kích hoạt thấp hơn giá thị trường và lệnh của bạn có thể được khớp ngay lập tức.",
     "buyTheDip": "Mua khi giá giảm",
     "buyWhen": "Mua khi 1 {{symbol}} giảm xuống còn",
-    "executionFeeTooltip": "Phí được khấu trừ từ số tiền thu được từ mỗi giao dịch đã được thực hiện và được chuyển vào giao thức.",
+    "executionFeeTooltip": "Phí được khấu trừ từ số lượng giao dịch thực hiện của mỗi lệnh được khớp hoàn toàn và được chuyển vào giao thức. Số tiền hiển thị là mức ước tính cho trường hợp lệnh được khớp hoàn toàn theo giá giới hạn của bạn; mức phí thực tế phụ thuộc vào số lượng giao dịch thực hiện.",
     "expiresIn": "Hết hạn trong",
     "expiryOption": {
       "oneDay": "1 ngày",

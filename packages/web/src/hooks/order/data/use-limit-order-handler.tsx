@@ -17,11 +17,12 @@ import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
-import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
+import { calculateLimitMinimumReceived, estimateLimitExecutionFee } from "@utils/order-amount-utils";
 import {
   calculatePriceDeviation,
   formatBps,
   formatOrderDateTime,
+  formatOrderFeeUsd,
   formatOrderRate,
   trimFractionZeros,
 } from "@utils/order-format-utils";
@@ -295,6 +296,10 @@ export const useLimitOrderHandler = () => {
   const effectiveSlippage = BigNumber(slippageBps).dividedBy(100).toNumber();
   const maxSlippage = BigNumber(maxSlippageBps).dividedBy(100).toNumber();
   const executionFee = formatBps(config?.executionFeeBps);
+  const rawExecutionFee = hasRawAmounts ? estimateLimitExecutionFee(takingAmount, config?.executionFeeBps) : null;
+  const executionFeeAmount =
+    tokenB && rawExecutionFee !== null ? makeDisplayTokenAmountString(tokenB, rawExecutionFee) : null;
+  const executionFeeUsd = formatOrderFeeUsd(executionFeeAmount, getUsdPrice(tokenB));
   const minimumReceived = useMemo(
     () =>
       tokenB && hasRawAmounts
@@ -393,11 +398,15 @@ export const useLimitOrderHandler = () => {
       expiryDurationSec: expiry,
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
       executionFee,
+      executionFeeAmount,
+      executionFeeUsd,
     };
   }, [
     buyUsd,
     expiry,
     executionFee,
+    executionFeeAmount,
+    executionFeeUsd,
     formatUsd,
     isValidPrice,
     limitPrice,
@@ -635,6 +644,8 @@ export const useLimitOrderHandler = () => {
     buyAmountUsd: formatUsd(buyUsd),
     minimumReceived,
     executionFee,
+    executionFeeAmount,
+    executionFeeUsd,
     limitPrice,
     marketPrice,
     selectedPreset: pricePreset,
