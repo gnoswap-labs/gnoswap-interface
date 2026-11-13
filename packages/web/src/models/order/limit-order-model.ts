@@ -1,5 +1,6 @@
 import { LimitOrderStatus } from "@repositories/order/response";
 import { TokenModel } from "@models/token/token-model";
+import { LimitOrderSide } from "./order-type";
 
 /** Expiry options offered by the limit form, in seconds. */
 export const LIMIT_EXPIRY_OPTIONS = [
@@ -26,6 +27,8 @@ export interface LimitOrderModel {
   isActive: boolean;
   tokenIn: TokenModel;
   tokenOut: TokenModel;
+  /** Derived only from creation baseToken metadata; unknown for legacy orders. */
+  side: LimitOrderSide | null;
   makingAmount: string;
   takingAmount: string;
   /** Slippage saved with this order, in basis points. */

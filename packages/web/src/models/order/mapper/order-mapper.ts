@@ -151,6 +151,13 @@ export function mapLimitOrderItemToModel(item: LimitOrderItem, tokens: TokenMode
     isActive: ACTIVE_LIMIT_ORDER_STATUSES.includes(item.status),
     tokenIn,
     tokenOut,
+    side: item.baseToken
+      ? item.baseToken === item.tokenIn
+        ? "sell"
+        : item.baseToken === item.tokenOut
+          ? "buy"
+          : null
+      : null,
     makingAmount: toDisplayAmount(tokenIn, item.makingAmount),
     takingAmount: toDisplayAmount(tokenOut, item.takingAmount),
     slippageBps: item.slippageBps,

@@ -42,6 +42,8 @@
   "header": "Échange",
   "limit": {
     "belowMarketWarning": "Le cours de déclenchement est inférieur au cours du marché et votre ordre pourrait être exécuté immédiatement.",
+    "buyTheDip": "Acheter sur la baisse",
+    "buyWhen": "Lorsque 1 {{symbol}} baisse à",
     "executionFeeTooltip": "Les frais sont prélevés sur le montant de chaque transaction exécutée. Le montant minimum perçu est indiqué après déduction de ces frais.",
     "expiresIn": "Expire dans",
     "expiryOption": {
@@ -56,12 +58,13 @@
     "marketPrice": "Prix du marché :",
     "minimumReceivedTooltip": "Montant minimum que vous recevez après déduction des frais d'exécution, calculé en fonction de votre cours limite et du glissement sélectionné. Ce montant s'applique à une exécution complète ; en cas d'exécution partielle, le même ratio est appliqué et le montant est arrondi à l'unité supérieure pour chaque exécution partielle.",
     "minTrading": "{{amount}} minimale {{symbol}}",
+    "sellAtTarget": "Vendre au prix cible",
     "sellWhen": "Vendre quand 1 {{symbol}} atteint"
   },
   "order": {
     "active": "Commandes en cours",
-    "cancelOrder": "Annuler la commande",
     "cancelledAt": "Annulé le",
+    "cancelOrder": "Annuler la commande",
     "claimOrder": "Allégation",
     "completedAt": "Terminé le",
     "connectWallet": "Veuillez connecter votre portefeuille pour consulter votre commande.",

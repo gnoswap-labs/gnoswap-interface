@@ -6,6 +6,17 @@ import mixins from "@styles/mixins";
 import { OrderItemCardWrapper } from "./OrderItemCard.styles";
 
 export const LimitOrderItemCardWrapper = styled(OrderItemCardWrapper)`
+  .order-identity {
+    ${mixins.flexbox("column", "flex-start", "flex-start")};
+    min-width: 0;
+    gap: 4px;
+  }
+
+  .order-side {
+    ${fonts.p4};
+    color: ${({ theme }) => theme.color.text04};
+  }
+
   .card-metrics {
     grid-template-columns: repeat(3, minmax(max-content, 1fr));
     overflow-x: auto;

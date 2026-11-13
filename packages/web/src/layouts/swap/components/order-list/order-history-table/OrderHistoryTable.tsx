@@ -1,4 +1,5 @@
 import { cx } from "@emotion/css";
+import BigNumber from "bignumber.js";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,6 +24,8 @@ export interface OrderHistoryTableProps {
   items: OrderHistoryModel[];
   inputToken: TokenModel;
   outputToken: TokenModel;
+  /** Known Limit base orientation. Omitted for legacy orders and DCA. */
+  rateBase?: "input" | "output";
   currentPage: number;
   totalPages: number;
   changePage: (page: number) => void;
@@ -41,6 +44,7 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   items,
   inputToken,
   outputToken,
+  rateBase,
   currentPage,
   totalPages,
   changePage,
@@ -52,6 +56,19 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   const [now, setNow] = useState(() => Date.now());
   const [highlighted, setHighlighted] = useState<Set<string>>(new Set());
   const previousSnapshot = useRef<{ page: number; keys: Set<string> } | null>(null);
+  const rateUnit = rateBase
+    ? rateBase === "output"
+      ? `${inputToken.displaySymbol}/${outputToken.displaySymbol}`
+      : `${outputToken.displaySymbol}/${inputToken.displaySymbol}`
+    : null;
+  const getDisplayRate = (item: OrderHistoryModel): string | null => {
+    if (item.rate === null) return null;
+    return rateBase === "output"
+      ? BigNumber(item.purchasedAmount).isGreaterThan(0)
+        ? BigNumber(item.soldAmount).dividedBy(item.purchasedAmount).toFixed()
+        : null
+      : item.rate;
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), CLOCK_INTERVAL);
@@ -85,6 +102,7 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
         <span className="cell left">{t("Swap:order.time")}</span>
         <span className={cx("cell", { "filled-price": kind === "limit" })}>
           {t(kind === "limit" ? "Swap:order.filledPrice" : "Swap:order.rate")}
+          {rateUnit && ` (${rateUnit})`}
         </span>
         <span className="cell">{t("Swap:order.sold")}</span>
         <span className="cell">{t("Swap:order.purchased")}</span>
@@ -92,6 +110,9 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
       {items.map(item => {
         const soldAmount = formatOrderFullAmount(item.soldAmount, inputToken.decimals);
         const purchasedAmount = formatOrderFullAmount(item.purchasedAmount, outputToken.decimals);
+        const displayedRate = getDisplayRate(item);
+        const baseSymbol = rateBase === "output" ? outputToken.displaySymbol : inputToken.displaySymbol;
+        const quoteSymbol = rateBase === "output" ? inputToken.displaySymbol : outputToken.displaySymbol;
         return (
           <div key={item.key} className={cx("history-row", { highlight: highlighted.has(item.key) })}>
             <span className="cell left">
@@ -104,13 +125,9 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
             </span>
             <span
               className="cell"
-              title={
-                item.rate === null
-                  ? undefined
-                  : `1 ${inputToken.displaySymbol} = ${item.rate} ${outputToken.displaySymbol}`
-              }
+              title={displayedRate === null ? undefined : `1 ${baseSymbol} = ${displayedRate} ${quoteSymbol}`}
             >
-              <span>{formatOrderRate(item.rate)}</span>
+              <span>{formatOrderRate(displayedRate)}</span>
             </span>
             <span className="cell" title={`${soldAmount} ${inputToken.displaySymbol}`}>
               <span>{soldAmount}</span>

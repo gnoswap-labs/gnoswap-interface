@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 
 import { DCA_INTERVAL_UNITS, DcaIntervalUnit } from "@models/order/dca-order-model";
 import { LIMIT_EXPIRY_OPTIONS, LimitExpiryKey } from "@models/order/limit-order-model";
+import { LimitOrderSide } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
 
 /**
@@ -42,11 +43,16 @@ export interface OrderButtonStateParams {
   isSwitchNetwork: boolean;
   isPaused: boolean;
   hasTokens: boolean;
-  /** Sell amount in display units, as typed. */
+  /** User-entered amount: funding for Sell, purchased quantity for quantity-first Buy. */
   amount: string;
   /** Sell token balance in display units. `-` or empty when unknown. */
   balance: string;
   hasLiquidity: boolean;
+  /**
+   * Amount required from the funding-token balance. Defaults to `amount` for
+   * existing callers; Buy callers provide the derived making amount.
+   */
+  requiredAmount?: string;
   /**
    * False when none of the pair's pools is on the DCA realm's whitelist. The
    * realm swaps each round in one of the pair's whitelisted pools and rejects
@@ -71,6 +77,7 @@ export function getOrderButtonState({
   amount,
   balance,
   hasLiquidity,
+  requiredAmount = amount,
   hasWhitelistedPool = true,
   isPoolCheckFailed = false,
   isAmountTooLow,
@@ -83,8 +90,16 @@ export function getOrderButtonState({
   const amountBN = BigNumber(amount || 0);
   if (!amountBN.isFinite() || amountBN.isLessThanOrEqualTo(0)) return "ENTER_AMOUNT";
 
+  const requiredAmountBN = BigNumber(requiredAmount || 0);
   const balanceBN = BigNumber(`${balance}`.replace(/,/g, ""));
-  if (!balanceBN.isFinite() || amountBN.isGreaterThan(balanceBN)) return "INSUFFICIENT_BALANCE";
+  if (
+    !requiredAmountBN.isFinite() ||
+    requiredAmountBN.isLessThan(0) ||
+    !balanceBN.isFinite() ||
+    requiredAmountBN.isGreaterThan(balanceBN)
+  ) {
+    return "INSUFFICIENT_BALANCE";
+  }
 
   if (!hasLiquidity) return "INSUFFICIENT_LIQUIDITY";
   if (isPoolCheckFailed) return "POOL_CHECK_FAILED";
@@ -241,19 +256,33 @@ export function toLimitSlippageBps(slippagePercent: number, maxSlippageBps = MAX
   return Math.min(maxSlippageBps, Math.round(slippagePercent * 100));
 }
 
-/** Raw output the owner must receive: `floor(making × limitPrice)` with both decimals applied. */
+/** Raw output at the displayed price, rounded down after applying both token decimals. */
 export function calculateTakingAmount(
   rawMakingAmount: string,
   limitPrice: string,
   tokenIn: Pick<TokenModel, "decimals">,
   tokenOut: Pick<TokenModel, "decimals">,
+  side: LimitOrderSide = "sell",
 ): string {
-  const taking = BigNumber(rawMakingAmount || 0)
-    .shiftedBy(-tokenIn.decimals)
-    .multipliedBy(limitPrice || 0)
-    .shiftedBy(tokenOut.decimals);
+  const making = BigNumber(rawMakingAmount || 0).shiftedBy(tokenOut.decimals - tokenIn.decimals);
+  // Divide directly for Buy: multiplying by a rounded reciprocal can lose a raw output unit.
+  const taking = side === "buy" ? making.dividedBy(limitPrice || 0) : making.multipliedBy(limitPrice || 0);
   if (!taking.isFinite() || taking.isLessThanOrEqualTo(0)) return "0";
   return taking.toFixed(0, BigNumber.ROUND_FLOOR);
+}
+
+/** Raw funding amount for an exact requested output, rounded down at input precision. */
+export function calculateMakingAmount(
+  rawTakingAmount: string,
+  limitPrice: string,
+  tokenIn: Pick<TokenModel, "decimals">,
+  tokenOut: Pick<TokenModel, "decimals">,
+): string {
+  const making = BigNumber(rawTakingAmount || 0)
+    .multipliedBy(limitPrice || 0)
+    .shiftedBy(tokenIn.decimals - tokenOut.decimals);
+  if (!making.isFinite() || making.isLessThanOrEqualTo(0)) return "0";
+  return making.toFixed(0, BigNumber.ROUND_FLOOR);
 }
 
 /** Trims a price to a few significant digits for the limit price field. */

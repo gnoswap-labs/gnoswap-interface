@@ -48,6 +48,9 @@ export type OrderListTab = "active" | "past";
 
 export type OrderKind = "dca" | "limit";
 
+/** The asset being priced is sold from tokenIn, or bought into tokenOut. */
+export type LimitOrderSide = "sell" | "buy";
+
 /** One row of the order history table, shared by DCA executions and limit fills. */
 export interface OrderHistoryModel {
   key: string;

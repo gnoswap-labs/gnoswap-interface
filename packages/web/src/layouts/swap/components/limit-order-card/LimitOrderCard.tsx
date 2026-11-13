@@ -1,9 +1,11 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 
+import { isAmount } from "@common/utils/data-check-util";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import SelectTab from "@components/common/select-tab/SelectTab";
 import { ValueAnnotation } from "@components/order/common/OrderValueAnnotation.styles";
 import { OrderInfoRow } from "@components/order/order-info-rows/OrderInfoRows";
 import { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
@@ -11,7 +13,7 @@ import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
-import { SwapCardType } from "@models/order/order-type";
+import { LimitOrderSide, SwapCardType } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
 import { formatOrderDateTime, formatOrderRelativeDuration } from "@utils/order-format-utils";
 
@@ -22,11 +24,15 @@ import { SwapCardWrapper } from "../swap-card/SwapCard.styles";
 import { ContentWrapper } from "../swap-card/swap-card-content/SwapCardContent.styles";
 import SwapCardHeader from "../swap-card/swap-card-header/SwapCardHeader";
 import LimitExpirySelect from "./limit-expiry-select/LimitExpirySelect";
-import { LimitOrderInfoRows } from "./LimitOrderCard.styles";
+import { LimitOrderInfoRows, LimitOrderSideSelect } from "./LimitOrderCard.styles";
 import LimitPriceInput from "./limit-price-input/LimitPriceInput";
 import LimitPriceWarning from "./limit-price-input/LimitPriceWarning";
 
+const LEADING_ZERO_REGEX = /^0+(?=\d)|(\.\d*)$/g;
+
 export interface LimitOrderCardProps {
+  orderSide: LimitOrderSide;
+  changeOrderSide: (side: LimitOrderSide) => void;
   swapType: SwapCardType;
   changeSwapType: (type: SwapCardType) => void;
   copied: boolean;
@@ -59,7 +65,10 @@ export interface LimitOrderCardProps {
   executionFee: string;
   changeTokenA: (token: TokenModel) => void;
   changeTokenB: (token: TokenModel) => void;
+  /** Funding budget: Sell typing, the funding Max and legacy links. */
   changeSellAmount: (value: string) => void;
+  /** The purchased quantity typed in Buy; the funding amount is derived from it. */
+  changeBuyAmount: (value: string) => void;
   switchTokens: () => void;
 
   limitPrice: string;
@@ -81,6 +90,8 @@ export interface LimitOrderCardProps {
 }
 
 const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
+  orderSide,
+  changeOrderSide,
   swapType,
   changeSwapType,
   copied,
@@ -106,6 +117,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   changeTokenA,
   changeTokenB,
   changeSellAmount,
+  changeBuyAmount,
   switchTokens,
   limitPrice,
   limitPriceUsd,
@@ -127,6 +139,13 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   const nowUnixSeconds = useOrderClock();
   const expiresIn = formatOrderRelativeDuration(expiry, locale);
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
+  const baseToken = orderSide === "buy" ? tokenB : tokenA;
+  const quoteToken = orderSide === "buy" ? tokenA : tokenB;
+  const buyAmountInputRef = useRef<HTMLInputElement>(null);
+  const [buyAmountFocused, setBuyAmountFocused] = useState(false);
+  useEffect(() => {
+    if (orderSide === "buy" && !isLoading) buyAmountInputRef.current?.focus({ preventScroll: true });
+  }, [isLoading, orderSide]);
   const infoRows: OrderInfoRow[] = useMemo(
     () => [
       { key: "slippage", label: t("Swap:swapInfo.slippageSet"), value: `${slippage}%` },
@@ -186,6 +205,18 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
     [changeSellAmount, resetMaxAmountError],
   );
 
+  // Buy: the purchased quantity is typed here, and the funding amount above follows from it.
+  const typeBuyAmount = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      if (value !== "" && !isAmount(value)) return;
+      if (tokenB && (value.split(".")[1]?.length ?? 0) > tokenB.decimals) return;
+      resetMaxAmountError();
+      changeBuyAmount(value.replace(LEADING_ZERO_REGEX, "$1"));
+    },
+    [changeBuyAmount, resetMaxAmountError, tokenB],
+  );
+
   return (
     <SwapCardWrapper>
       <SwapCardHeader
@@ -202,6 +233,24 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
         <OrderCardSkeleton />
       ) : (
         <ContentWrapper>
+          <LimitOrderSideSelect role="group" aria-label="Order side">
+            <SelectTab
+              selectType={orderSide}
+              list={[
+                {
+                  key: "sell",
+                  display: t("Swap:limit.sellAtTarget", { defaultValue: "Sell at target" }),
+                },
+                {
+                  key: "buy",
+                  display: t("Swap:limit.buyTheDip", { defaultValue: "Buy the dip" }),
+                },
+              ]}
+              onClick={side => {
+                if (side === "sell" || side === "buy") changeOrderSide(side);
+              }}
+            />
+          </LimitOrderSideSelect>
           <OrderSellInput
             token={tokenA}
             amount={sellAmount}
@@ -210,6 +259,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             connectedWallet={connectedWallet}
             changeToken={changeTokenA}
             changeAmount={typeSellAmount}
+            readOnly={orderSide === "buy"}
             onClickMax={fillMaxAmount}
             loadingMaxAmount={loadingMaxAmount}
             pendingBalance={pendingBalance}
@@ -220,15 +270,21 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
               </div>
             </div>
           </OrderSellInput>
-          <div className="second-section">
+          <div className={`second-section${orderSide === "buy" && buyAmountFocused ? " is-focused" : ""}`}>
             <div className="amount-container">
               <input
+                ref={buyAmountInputRef}
                 className="amount-text"
                 value={buyAmount}
-                readOnly
+                onChange={orderSide === "buy" ? typeBuyAmount : undefined}
+                readOnly={orderSide !== "buy"}
+                tabIndex={orderSide === "buy" ? undefined : -1}
+                onFocus={() => setBuyAmountFocused(true)}
+                onBlur={() => setBuyAmountFocused(false)}
                 placeholder="0"
                 autoComplete="off"
                 spellCheck="false"
+                inputMode="decimal"
               />
               <div className="token-selector">
                 <SelectPairButton token={tokenB} changeToken={changeTokenB} />
@@ -243,9 +299,10 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             </div>
           </div>
           <LimitPriceInput
-            inputSymbol={tokenA?.displaySymbol ?? "-"}
-            inputLogoURI={tokenA?.logoURI}
-            outputSymbol={tokenB?.displaySymbol ?? "-"}
+            orderSide={orderSide}
+            inputSymbol={baseToken?.displaySymbol ?? "-"}
+            inputLogoURI={baseToken?.logoURI}
+            outputSymbol={quoteToken?.displaySymbol ?? "-"}
             value={limitPrice}
             valueUsd={limitPriceUsd}
             marketPrice={marketPrice}
@@ -254,7 +311,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             stepPrice={stepPrice}
             applyPreset={applyPreset}
           />
-          <LimitPriceWarning value={limitPrice} marketPrice={marketPrice} />
+          <LimitPriceWarning orderSide={orderSide} value={limitPrice} marketPrice={marketPrice} />
           <LimitExpirySelect expiry={expiry} options={expiryOptions} changeExpiry={changeExpiry} />
           <LimitOrderInfoRows rows={infoRows} />
         </ContentWrapper>

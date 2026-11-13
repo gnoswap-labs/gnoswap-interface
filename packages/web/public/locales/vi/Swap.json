@@ -42,6 +42,8 @@
   "header": "Hoán đổi",
   "limit": {
     "belowMarketWarning": "Giá kích hoạt thấp hơn giá thị trường và lệnh của bạn có thể được khớp ngay lập tức.",
+    "buyTheDip": "Mua khi giá giảm",
+    "buyWhen": "Khi 1 {{symbol}} giảm xuống còn",
     "executionFeeTooltip": "Phí được khấu trừ từ số tiền thu được từ mỗi giao dịch đã hoàn tất. Số tiền tối thiểu nhận được được hiển thị sau khi trừ phí này.",
     "expiresIn": "Hết hạn trong",
     "expiryOption": {
@@ -56,12 +58,13 @@
     "marketPrice": "Giá thị trường:",
     "minimumReceivedTooltip": "Số lượng tối thiểu bạn nhận được sau khi trừ phí thực hiện, dựa trên giá giới hạn và mức trượt giá bạn đã chọn. Con số này được hiển thị cho trường hợp khớp lệnh toàn bộ; đối với trường hợp khớp lệnh một phần, tỷ lệ này vẫn được áp dụng và số lượng sẽ được làm tròn lên cho mỗi lần khớp lệnh.",
     "minTrading": "{{amount}} tối thiểu {{symbol}}",
+    "sellAtTarget": "Bán tại giá mục tiêu",
     "sellWhen": "Bán khi 1 {{symbol}} đạt"
   },
   "order": {
     "active": "Đơn hàng đang mở",
-    "cancelOrder": "Hủy đơn hàng",
     "cancelledAt": "Thời điểm hủy",
+    "cancelOrder": "Hủy đơn hàng",
     "claimOrder": "Yêu cầu",
     "completedAt": "Thời điểm hoàn thành",
     "connectWallet": "Vui lòng kết nối ví của bạn để xem đơn hàng.",

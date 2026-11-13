@@ -33,6 +33,7 @@ const partiallyFilled: LimitOrderModel = {
   isActive: true,
   tokenIn: token("GNOT"),
   tokenOut: token("GNS"),
+  side: null,
   makingAmount: "100",
   takingAmount: "12.4308",
   slippageBps: 50,
@@ -239,5 +240,28 @@ describe("LimitOrderItemCard execution fee", () => {
 
   it("shows the fee without a USD value while the price is unknown", () => {
     expect(renderFee(closed("COMPLETED", { cumulativeExecutionFee: "0.018771" }))).toBe("0.018771 GNS");
+  });
+});
+
+describe("LimitOrderItemCard recorded side", () => {
+  it.each(["buy", "sell", null] as const)("uses the recorded %s perspective without inferring legacy intent", side => {
+    const { container } = render(
+      <GnoswapThemeProvider>
+        <LimitOrderItemCard
+          order={{ ...partiallyFilled, side, limitPrice: "0.125", takingAmount: "12.5" }}
+          marketPrice="0.1"
+          txUrl=""
+          onClickCancel={jest.fn()}
+          renderHistory={() => null}
+        />
+      </GnoswapThemeProvider>,
+    );
+    expect(container.querySelector(".order-side")?.textContent ?? null).toBe(
+      side ? `${side === "buy" ? "Buy GNS" : "Sell GNOT"}` : null,
+    );
+    const values = Array.from(container.querySelectorAll(".metric .value-text"), element => element.textContent);
+    expect(values.slice(0, 2)).toEqual(
+      side === "buy" ? ["10 GNOT", "8 GNOT"] : side === "sell" ? ["0.1 GNS", "0.125 GNS"] : ["0.1", "0.125"],
+    );
   });
 });

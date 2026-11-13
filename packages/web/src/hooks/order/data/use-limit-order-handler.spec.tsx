@@ -1,3 +1,4 @@
+import type { UseQueryResult } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import BigNumber from "bignumber.js";
 import { createStore, Provider as JotaiProvider } from "jotai";
@@ -6,6 +7,7 @@ import React from "react";
 import type { LimitOrderSummary } from "@models/order/order-summary";
 import type { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
+import type { GetRoutesResponse } from "@repositories/swap-router/response/get-routes-response";
 import { CommonState, SwapState } from "@states/index";
 
 import { useLimitOrderHandler } from "./use-limit-order-handler";
@@ -29,6 +31,7 @@ jest.mock("../ui/use-confirm-order-modal", () => ({
 }));
 jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: jest.fn() }) }));
 const mockGetUsdPrice = jest.fn<string | null, [TokenModel | null]>(() => null);
+let mockFundingBalance = "1000";
 jest.mock("./use-order-form-common", () => ({
   getOrderButtonText: (_: string, __: unknown, placeOrderText: string) => placeOrderText,
   useOrderFormCommon: () => ({
@@ -38,7 +41,7 @@ jest.mock("./use-order-form-common", () => ({
     copied: false,
     copyUrl: jest.fn(),
     getUsdPrice: (token: TokenModel | null) => mockGetUsdPrice(token),
-    tokenABalance: "1000",
+    tokenABalance: mockFundingBalance,
     tokenBBalance: "1000",
     isSameToken: false,
     formatUsd: (value: number | null) => (value === null ? "-" : `$${value}`),
@@ -81,6 +84,7 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>
 describe("useLimitOrderHandler", () => {
   beforeEach(() => {
     mockLimitConfig = undefined;
+    mockFundingBalance = "1000";
     mockRenderConfirmModal = undefined;
     mockGetUsdPrice.mockReset().mockReturnValue(null);
     jest.mocked(useGetRoutes).mockImplementation(request => {
@@ -88,8 +92,14 @@ describe("useLimitOrderHandler", () => {
         return { data: undefined } as ReturnType<typeof useGetRoutes>;
       }
       const price = TOKEN_VALUE[request.inputToken.path] / TOKEN_VALUE[request.outputToken.path];
-      const amount = BigNumber(request.tokenAmount).multipliedBy(price).shiftedBy(6).toFixed(0);
-      return { data: { status: "SUCCESS", amount } } as unknown as ReturnType<typeof useGetRoutes>;
+      const exactOut = request.exactType === "EXACT_OUT";
+      const quoted = exactOut
+        ? BigNumber(request.tokenAmount).dividedBy(price)
+        : BigNumber(request.tokenAmount).multipliedBy(price);
+      const amount = quoted
+        .shiftedBy((exactOut ? request.inputToken : request.outputToken).decimals)
+        .toFixed(0, exactOut ? BigNumber.ROUND_CEIL : BigNumber.ROUND_FLOOR);
+      return { data: { status: "SUCCESS", amount } } as unknown as UseQueryResult<GetRoutesResponse, Error>;
     });
   });
 
@@ -170,6 +180,187 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.limitPriceUsd).toBe("-");
     act(() => result.current.changeLimitPrice(""));
     expect(result.current.limitPriceUsd).toBe("-");
+  });
+
+  it("keeps the base asset while Buy reverses funding, applies a discount, and calculates the submitted output", async () => {
+    mockGetUsdPrice.mockImplementation(token => (token?.path === tokenB.path ? "2" : "99"));
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+    act(() => result.current.changeSellAmount("3"));
+
+    act(() => result.current.changeOrderSide("buy"));
+    expect(result.current.tokenA).toEqual(tokenB);
+    expect(result.current.tokenB).toEqual(tokenA);
+    expect(result.current.sellAmount).toBe("");
+    expect(result.current.marketPrice).toBe("10");
+    expect(result.current.limitPrice).toBe("9");
+
+    act(() => result.current.applyPreset(-5));
+    expect(result.current.limitPrice).toBe("9.5");
+    act(() => result.current.changeLimitPrice("6."));
+    expect(result.current.limitPrice).toBe("6.");
+    act(() => result.current.changeSellAmount("18"));
+    expect(result.current.buyAmount).toBe("3");
+    expect(result.current.limitPriceUsd).toBe("$12");
+    const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+    expect(summary).toMatchObject({ tokenIn: tokenB, tokenOut: tokenA, sellAmount: "18", buyAmount: "3" });
+
+    act(() => result.current.changeOrderSide("sell"));
+    expect(result.current.tokenA).toEqual(tokenA);
+    expect(result.current.tokenB).toEqual(tokenB);
+    expect(result.current.sellAmount).toBe("");
+    expect(result.current.limitPrice).toBe("11");
+  });
+
+  it("computes the Buy market price directly from the quoted amounts before rounding", async () => {
+    jest.mocked(useGetRoutes).mockImplementation(request => {
+      if (!request?.inputToken || !request.outputToken || !request.tokenAmount) {
+        return { data: undefined } as UseQueryResult<GetRoutesResponse, Error>;
+      }
+      const price = request.inputToken.path === tokenB.path ? 6 : 1 / 6;
+      const exactOut = request.exactType === "EXACT_OUT";
+      const quoted = exactOut
+        ? BigNumber(request.tokenAmount).multipliedBy(price)
+        : BigNumber(request.tokenAmount).dividedBy(price);
+      return {
+        data: {
+          status: "SUCCESS",
+          amount: quoted
+            .shiftedBy((exactOut ? request.inputToken : request.outputToken).decimals)
+            .toFixed(0, exactOut ? BigNumber.ROUND_CEIL : BigNumber.ROUND_FLOOR),
+        },
+      } as unknown as UseQueryResult<GetRoutesResponse, Error>;
+    });
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => {
+      result.current.changeTokenA(tokenB);
+      result.current.changeTokenB(tokenA);
+      result.current.restoreOrderSide("buy");
+      result.current.changeSellAmount("18");
+    });
+
+    // The quote is exactly 18 B -> 3 A. Inverting a pre-rounded 0.166666 B/A gives 6.00002 instead.
+    await waitFor(() => expect(result.current.marketPrice).toBe("6"));
+    expect(result.current.limitPrice).toBe("5.4");
+    act(() => result.current.changeLimitPrice("6"));
+    expect(result.current.buyAmount).toBe("3");
+    const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+    expect(summary.limitPriceDeviation).toBe(0);
+  });
+
+  it("restores a Buy link without reversing its input/output tokens again", async () => {
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => {
+      result.current.changeTokenA(tokenB);
+      result.current.changeTokenB(tokenA);
+      result.current.restoreOrderSide("buy");
+      result.current.setLimitPrice("6");
+      result.current.changeSellAmount("18");
+    });
+    await waitFor(() => expect(result.current.buyAmount).toBe("3"));
+    expect(result.current.tokenA).toEqual(tokenB);
+    expect(result.current.tokenB).toEqual(tokenA);
+    expect(result.current.limitPrice).toBe("6");
+  });
+
+  describe("quantity-first Buy orders", () => {
+    const renderBuy = async (outputToken: TokenModel = tokenA) => {
+      const hook = renderHook(() => useLimitOrderHandler(), { wrapper });
+      act(() => {
+        hook.result.current.changeTokenA(tokenB);
+        hook.result.current.changeTokenB(outputToken);
+        hook.result.current.restoreOrderSide("buy");
+        hook.result.current.setLimitPrice("6");
+      });
+      await waitFor(() => expect(hook.result.current.orderSide).toBe("buy"));
+      return hook;
+    };
+
+    it("keeps the purchased quantity fixed while editing, clearing, or stepping the price", async () => {
+      const { result } = await renderBuy();
+      act(() => result.current.changeBuyAmount("3."));
+      expect(result.current.buyAmount).toBe("3.");
+      expect(result.current.sellAmount).toBe("18");
+      expect(result.current.marketPrice).toBe("10");
+
+      act(() => result.current.changeLimitPrice("7.5"));
+      expect(result.current.buyAmount).toBe("3.");
+      expect(result.current.sellAmount).toBe("22.5");
+      act(() => result.current.stepPrice(1));
+      expect(result.current.buyAmount).toBe("3.");
+      expect(result.current.sellAmount).toBe("22.5225");
+
+      act(() => result.current.changeLimitPrice(""));
+      expect(result.current.buyAmount).toBe("3.");
+      expect(result.current.sellAmount).toBe("");
+      expect(result.current.buttonState).toBe("ENTER_AMOUNT");
+      act(() => result.current.changeLimitPrice("6"));
+      const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+      expect(summary).toMatchObject({
+        tokenIn: tokenB,
+        tokenOut: tokenA,
+        sellAmount: "18",
+        buyAmount: "3",
+        limitPrice: "1 A = 6 B",
+      });
+    });
+
+    it.each([
+      { quantity: "3", price: "6", balance: "10", funding: "18", state: "INSUFFICIENT_BALANCE" },
+      { quantity: "100", price: "0.01", balance: "2", funding: "1", state: "PLACE_ORDER" },
+    ])("checks the $funding funding cost against $balance, not the $quantity purchased units", async row => {
+      mockFundingBalance = row.balance;
+      const { result } = await renderBuy();
+      act(() => {
+        result.current.changeLimitPrice(row.price);
+        result.current.changeBuyAmount(row.quantity);
+      });
+      expect(result.current.sellAmount).toBe(row.funding);
+      expect(result.current.buttonState).toBe(row.state);
+    });
+
+    it("preserves 18 purchased decimals while funding rounds down at its own precision", async () => {
+      const { result } = await renderBuy({ ...tokenA, decimals: 18 });
+      act(() => result.current.changeBuyAmount("1.123456789123456789"));
+      expect(result.current.buyAmount).toBe("1.123456789123456789");
+      expect(result.current.sellAmount).toBe("6.74074");
+      const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+      expect(summary.buyAmount).toBe("1.123456789123456789");
+      expect(summary.sellAmount).toBe("6.74074");
+    });
+
+    it("blocks a positive purchased quantity whose funding rounds to zero", async () => {
+      const { result } = await renderBuy({ ...tokenA, decimals: 18 });
+      act(() => result.current.changeBuyAmount("0.000000000000000001"));
+      expect(result.current.buyAmount).toBe("0.000000000000000001");
+      expect(result.current.sellAmount).toBe("0");
+      expect(result.current.buttonState).toBe("AMOUNT_TOO_LOW");
+    });
+
+    it("keeps funding Max within its budget and lets a typed Buy quantity replace it", async () => {
+      mockFundingBalance = "20";
+      const { result } = await renderBuy();
+      act(() => result.current.changeSellAmount("20"));
+      expect(result.current.buyAmount).toBe("3.333333");
+      expect(result.current.sellAmount).toBe("19.999998");
+      expect(result.current.buttonState).toBe("PLACE_ORDER");
+      act(() => result.current.changeLimitPrice("8"));
+      expect(result.current.buyAmount).toBe("2.5");
+      expect(result.current.sellAmount).toBe("20");
+
+      act(() => result.current.changeBuyAmount("3"));
+      expect(result.current.sellAmount).toBe("24");
+      expect(result.current.buttonState).toBe("INSUFFICIENT_BALANCE");
+      act(() => result.current.changeLimitPrice("6"));
+      expect(result.current.sellAmount).toBe("18");
+      expect(result.current.buyAmount).toBe("3");
+      act(() => result.current.changeBuyAmount(""));
+      expect(result.current.buyAmount).toBe("");
+      expect(result.current.sellAmount).toBe("");
+      expect(result.current.buttonState).toBe("ENTER_AMOUNT");
+    });
   });
 
   it.each([
@@ -389,6 +580,24 @@ describe("useLimitOrderHandler", () => {
 
       act(() => result.current.changeLimitPrice("12.5"));
       expect(summary().limitPriceDeviation).toBe(0.25);
+    });
+
+    it("keeps the Buy confirmation price and deviation in the form's base-token direction", async () => {
+      const { result } = await renderWithPair();
+      act(() => result.current.changeOrderSide("buy"));
+      act(() => {
+        result.current.changeLimitPrice("6");
+        result.current.changeSellAmount("18");
+      });
+
+      expect(summary()).toMatchObject({
+        tokenIn: tokenB,
+        tokenOut: tokenA,
+        sellAmount: "18",
+        buyAmount: "3",
+        limitPrice: "1 A = 6 B",
+        limitPriceDeviation: -0.4,
+      });
     });
 
     it("compares with the market price quoted for the amount being sold", async () => {

@@ -31,6 +31,8 @@ interface OrderSellInputProps {
   pendingBalance: string | null;
   /** False while Max waits on order terms that are not settled yet (DCA on GNOT: the schedule). */
   maxAmountReady?: boolean;
+  /** True when the amount is derived (Limit Buy funding): shown, but not typed into. Max and the token picker stay live. */
+  readOnly?: boolean;
   className?: string;
   children?: React.ReactNode;
 }
@@ -48,6 +50,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   loadingMaxAmount,
   pendingBalance,
   maxAmountReady = true,
+  readOnly = false,
   className = "first-section",
   children,
 }) => {
@@ -77,12 +80,14 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   );
 
   return (
-    <div className={cx(className, { "is-focused": focused })}>
+    <div className={cx(className, { "is-focused": !readOnly && focused })}>
       <div className="amount-container">
         <input
           className={cx("amount-text", { "amount-pending": !!pendingBalance })}
           value={pendingBalance ? "" : displayAmount}
           onChange={onChangeAmount}
+          readOnly={readOnly}
+          tabIndex={readOnly ? -1 : undefined}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder={pendingBalance ?? "0"}
