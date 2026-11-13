@@ -4,6 +4,7 @@ import { Trans, useTranslation } from "react-i18next";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { DcaOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
+import { formatOrderFullAmount } from "@utils/order-format-utils";
 
 import { DcaOrderSentenceWrapper } from "./DcaOrderSentence.styles";
 
@@ -19,10 +20,11 @@ const TokenLabel: React.FC<{ token: TokenModel; amount?: string }> = ({ token, a
   </span>
 );
 
-/** `You're selling 1 GNOT to buy GNS at market price every 1 minute for 1,000 rounds.` and the market price. */
+/** The per-round DCA terms, actual total deposit, and current market price. */
 const DcaOrderSentence: React.FC<DcaOrderSentenceProps> = ({ summary }) => {
   const { t } = useTranslation();
   const { inputToken, outputToken } = summary;
+  const totalAmount = formatOrderFullAmount(summary.actualSellAmount ?? summary.sellAmount, inputToken.decimals);
 
   return (
     <DcaOrderSentenceWrapper>
@@ -36,6 +38,7 @@ const DcaOrderSentence: React.FC<DcaOrderSentenceProps> = ({ summary }) => {
           components={{
             sell: <TokenLabel key="sell" token={inputToken} amount={summary.amountPerOrder} />,
             buy: <TokenLabel key="buy" token={outputToken} />,
+            total: <TokenLabel key="total" token={inputToken} amount={totalAmount} />,
             hl: <span key="hl" className="highlight" />,
           }}
         />

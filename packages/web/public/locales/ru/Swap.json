@@ -24,7 +24,7 @@
     "minTrading": "Минимальный заказ: {{amount}} {{symbol}} ",
     "noWhitelistedPool": "Пара не поддерживается",
     "orders": "Заказы",
-    "orderSentence": "Вы продаёте <sell/> и покупаете <buy/> по рыночной цене каждые <hl>{{interval}}</hl> в течение <hl>{{rounds}} раундов</hl>.",
+    "orderSentence": "Вы продаёте <sell/> и покупаете <buy/> по рыночной цене каждые <hl>{{interval}}</hl> в течение <hl>{{rounds}} раундов</hl> (всего <total/>).",
     "over": "Более",
     "overTooltip": "Количество отдельных сделок, которые будут открыты в рамках вашего ордера.",
     "placeOrder": "Оформить заказ",

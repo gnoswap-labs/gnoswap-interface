@@ -24,7 +24,7 @@
     "minTrading": "Minimum {{amount}} {{symbol}} per order",
     "noWhitelistedPool": "Pair Not Supported",
     "orders": "Orders",
-    "orderSentence": "You’re selling <sell/> to buy <buy/> at market price every <hl>{{interval}}</hl> for <hl>{{rounds}} rounds</hl>.",
+    "orderSentence": "You’re selling <sell/> to buy <buy/> at market price every <hl>{{interval}}</hl> for <hl>{{rounds}} rounds</hl> (total <total/>).",
     "over": "Over",
     "overTooltip": "The number of individual trades that will be triggered as part of your order.",
     "placeOrder": "Place Order",

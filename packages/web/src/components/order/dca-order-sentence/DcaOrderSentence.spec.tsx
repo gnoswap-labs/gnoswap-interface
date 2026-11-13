@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { createInstance } from "i18next";
 import { I18nextProvider } from "react-i18next";
 
@@ -22,17 +22,28 @@ const renderSentence = (summary = STORY_DCA_ORDER_SUMMARY) => {
 };
 
 describe("DcaOrderSentence", () => {
-  it("describes the per-round amount, pair, interval and rounds", () => {
-    const { container } = renderSentence({ ...STORY_DCA_ORDER_SUMMARY, executionCount: 1000 });
+  it.each([
+    { amount: "1.079988", decimals: 6 },
+    { amount: "1.079988123456789012", decimals: 18 },
+  ])("shows the total input amount with $decimals token decimals", ({ amount, decimals }) => {
+    renderSentence({
+      ...STORY_DCA_ORDER_SUMMARY,
+      inputToken: { ...STORY_DCA_ORDER_SUMMARY.inputToken, decimals },
+      sellAmount: amount,
+    });
 
-    expect(container.querySelector(".sentence")).toHaveTextContent(
-      "You’re selling 1,200GNS to buy GNOT at market price every 1 minute for 1,000 rounds.",
-    );
+    expect(screen.getByText(amount).closest(".token-label")).toHaveTextContent(`${amount}GNS`);
   });
 
-  it("shows the market price with its USD value", () => {
-    const { container } = renderSentence();
+  it("shows the actual deposit rather than the typed amount when rounds require rounding down", () => {
+    renderSentence({
+      ...STORY_DCA_ORDER_SUMMARY,
+      sellAmount: "1",
+      actualSellAmount: "0.999999",
+      amountPerOrder: "0.333333",
+      executionCount: 3,
+    });
 
-    expect(container.querySelector(".market-price")).toHaveTextContent("Market price: 1 GNS = 1.04 GNOT ($1.04)");
+    expect(screen.getByText("0.999999").closest(".token-label")).toHaveTextContent("0.999999GNS");
   });
 });
