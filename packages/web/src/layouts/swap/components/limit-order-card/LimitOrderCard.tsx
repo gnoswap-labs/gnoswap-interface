@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import BigNumber from "bignumber.js";
 import { useTranslation } from "react-i18next";
 
 import { isAmount } from "@common/utils/data-check-util";
@@ -260,6 +261,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             changeToken={changeTokenA}
             changeAmount={typeSellAmount}
             readOnly={orderSide === "buy"}
+            showMaxButton={orderSide !== "buy"}
             onClickMax={fillMaxAmount}
             loadingMaxAmount={loadingMaxAmount}
             pendingBalance={pendingBalance}
@@ -295,6 +297,13 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
               <div className="balance-wrapper">
                 {connectedWallet && <IconWallet />}
                 <span className="balance-text">{buyBalanceDisplay}</span>
+                {orderSide === "buy" &&
+                  connectedWallet &&
+                  BigNumber(tokenABalance.replace(/,/g, "")).isGreaterThan(0) && (
+                    <button className="balance-max-button" onClick={fillMaxAmount} disabled={loadingMaxAmount}>
+                      <span className="max-badge">{t("common:max")}</span>
+                    </button>
+                  )}
               </div>
             </div>
           </div>
