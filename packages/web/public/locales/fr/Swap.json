@@ -43,7 +43,7 @@
   "limit": {
     "belowMarketWarning": "Le cours de déclenchement est inférieur au cours du marché et votre ordre pourrait être exécuté immédiatement.",
     "buyTheDip": "Acheter sur la baisse",
-    "buyWhen": "Lorsque 1 {{symbol}} baisse à",
+    "buyWhen": "Acheter lorsque 1 {{symbol}} descend à",
     "executionFeeTooltip": "Les frais prélevés sur le produit de chaque transaction exécutée et reversés au protocole.",
     "expiresIn": "Expire dans",
     "expiryOption": {

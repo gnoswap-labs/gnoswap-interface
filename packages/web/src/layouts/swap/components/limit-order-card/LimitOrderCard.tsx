@@ -140,10 +140,13 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
   const baseToken = orderSide === "buy" ? tokenB : tokenA;
   const quoteToken = orderSide === "buy" ? tokenA : tokenB;
+  const sellAmountInputRef = useRef<HTMLInputElement>(null);
   const buyAmountInputRef = useRef<HTMLInputElement>(null);
   const [buyAmountFocused, setBuyAmountFocused] = useState(false);
   useEffect(() => {
-    if (orderSide === "buy" && !isLoading) buyAmountInputRef.current?.focus({ preventScroll: true });
+    if (!isLoading) {
+      (orderSide === "buy" ? buyAmountInputRef : sellAmountInputRef).current?.focus({ preventScroll: true });
+    }
   }, [isLoading, orderSide]);
   const infoRows: OrderInfoRow[] = useMemo(
     () => [
@@ -251,6 +254,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             />
           </LimitOrderSideSelect>
           <OrderSellInput
+            inputRef={sellAmountInputRef}
             token={tokenA}
             amount={sellAmount}
             amountUsd={sellAmountUsd}

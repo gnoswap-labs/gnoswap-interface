@@ -43,7 +43,7 @@
   "limit": {
     "belowMarketWarning": "El precio de activación está por debajo del precio de mercado y es posible que tu orden se ejecute al instante.",
     "buyTheDip": "Aprovecha la caída para comprar",
-    "buyWhen": "Cuando 1 {{symbol}} baja a",
+    "buyWhen": "Comprar cuando 1 {{symbol}} baje a",
     "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada y que se destina al protocolo.",
     "expiresIn": "Caduca en",
     "expiryOption": {

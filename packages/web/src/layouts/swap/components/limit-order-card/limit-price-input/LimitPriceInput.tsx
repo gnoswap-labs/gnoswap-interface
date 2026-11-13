@@ -55,7 +55,7 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
         <Trans
           defaults={
             orderSide === "buy"
-              ? t("Swap:limit.buyWhen", { defaultValue: "When 1 {{symbol}} drops to", symbol: "<token/>" })
+              ? t("Swap:limit.buyWhen", { defaultValue: "Buy when 1 {{symbol}} drops to", symbol: "<token/>" })
               : t("Swap:limit.sellWhen", { symbol: "<token/>" })
           }
           components={{

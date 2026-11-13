@@ -43,7 +43,7 @@
   "limit": {
     "belowMarketWarning": "Giá kích hoạt thấp hơn giá thị trường và lệnh của bạn có thể được khớp ngay lập tức.",
     "buyTheDip": "Mua khi giá giảm",
-    "buyWhen": "Khi 1 {{symbol}} giảm xuống còn",
+    "buyWhen": "Mua khi 1 {{symbol}} giảm xuống còn",
     "executionFeeTooltip": "Phí được khấu trừ từ số tiền thu được từ mỗi giao dịch đã được thực hiện và được chuyển vào giao thức.",
     "expiresIn": "Hết hạn trong",
     "expiryOption": {

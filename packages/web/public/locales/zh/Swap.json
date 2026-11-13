@@ -43,7 +43,7 @@
   "limit": {
     "belowMarketWarning": "触发价低于市场价，您的订单可能会立即成交。",
     "buyTheDip": "逢低买入",
-    "buyWhen": "当 1{{symbol}} 降至",
+    "buyWhen": "当 1 {{symbol}} 跌至以下价格时买入",
     "executionFeeTooltip": "从每笔成交订单的成交金额中扣除并上缴给协议的费用。",
     "expiresIn": "到期时间：",
     "expiryOption": {

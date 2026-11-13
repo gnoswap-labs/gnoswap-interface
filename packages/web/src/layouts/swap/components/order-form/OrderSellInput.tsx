@@ -34,6 +34,7 @@ interface OrderSellInputProps {
   /** True when the amount is derived (Limit Buy funding): shown, but not typed into. Max and the token picker stay live. */
   readOnly?: boolean;
   showMaxButton?: boolean;
+  inputRef?: React.Ref<HTMLInputElement>;
   className?: string;
   children?: React.ReactNode;
 }
@@ -53,6 +54,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   maxAmountReady = true,
   readOnly = false,
   showMaxButton = true,
+  inputRef,
   className = "first-section",
   children,
 }) => {
@@ -85,6 +87,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
     <div className={cx(className, { "is-focused": !readOnly && focused })}>
       <div className="amount-container">
         <input
+          ref={inputRef}
           className={cx("amount-text", { "amount-pending": !!pendingBalance })}
           value={pendingBalance ? "" : displayAmount}
           onChange={onChangeAmount}
