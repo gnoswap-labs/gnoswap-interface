@@ -14,8 +14,6 @@
       "title": "重要说明"
     }
   },
-  "fees": "费用",
-  "liquidity": "流动性",
   "overview": {
     "pooled": "池化",
     "unclaimed": "无人认领的费用"

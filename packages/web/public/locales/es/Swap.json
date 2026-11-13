@@ -42,6 +42,8 @@
   "header": "Intercambiar",
   "limit": {
     "belowMarketWarning": "El precio de activación está por debajo del precio de mercado y es posible que tu orden se ejecute al instante.",
+    "buyTheDip": "Aprovecha la caída para comprar",
+    "buyWhen": "Cuando 1 {{symbol}} baja a",
     "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada. El importe mínimo recibido se indica tras deducir dicha comisión.",
     "expiresIn": "Caduca en",
     "expiryOption": {
@@ -56,12 +58,13 @@
     "marketPrice": "Precio de mercado:",
     "minimumReceivedTooltip": "Importe mínimo que recibirás tras deducir las comisiones de ejecución, en función de tu precio límite y del deslizamiento seleccionado. Se muestra para una ejecución completa; en las ejecuciones parciales se aplica la misma proporción y se redondea al alza por cada ejecución.",
     "minTrading": "{{amount}} mínimo {{symbol}}",
+    "sellAtTarget": "Vender al precio objetivo",
     "sellWhen": "Vender cuando 1 {{symbol}} alcance"
   },
   "order": {
     "active": "Pedidos pendientes",
-    "cancelOrder": "Cancelar pedido",
     "cancelledAt": "Cancelado el",
+    "cancelOrder": "Cancelar pedido",
     "claimOrder": "Reclamación",
     "completedAt": "Finalizado el",
     "connectWallet": "Conecta tu monedero para ver tu pedido.",

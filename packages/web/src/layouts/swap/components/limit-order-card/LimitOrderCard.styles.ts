@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
 
-import { fonts } from "@constants/font.constant";
 import OrderInfoRows from "@components/order/order-info-rows/OrderInfoRows";
 import { media } from "@styles/media";
 
@@ -21,15 +20,16 @@ export const LimitOrderSideSelect = styled.div`
 
   .select-tab-wrapper {
     width: 100%;
-    padding: 4px;
-    border-radius: 8px;
+    align-items: stretch;
   }
 
   button {
     flex: 1;
-    min-height: 40px;
+    min-width: 0;
+    min-height: 36px;
+    padding: 6px 12px;
+    white-space: normal;
     cursor: pointer;
-    ${fonts.body10};
 
     &:disabled {
       cursor: default;
@@ -37,6 +37,10 @@ export const LimitOrderSideSelect = styled.div`
     &:focus-visible {
       outline: 2px solid ${({ theme }) => theme.color.border15};
       outline-offset: 2px;
+    }
+
+    ${media.mobile} {
+      min-height: 44px;
     }
   }
 `;

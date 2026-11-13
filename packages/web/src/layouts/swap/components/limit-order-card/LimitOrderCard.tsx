@@ -213,8 +213,14 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             <SelectTab
               selectType={orderSide}
               list={[
-                { key: "sell", display: t("Swap:limit.sell", { defaultValue: "Sell" }) },
-                { key: "buy", display: t("Swap:limit.buy", { defaultValue: "Buy" }) },
+                {
+                  key: "sell",
+                  display: t("Swap:limit.sellAtTarget", { defaultValue: "Sell at target" }),
+                },
+                {
+                  key: "buy",
+                  display: t("Swap:limit.buyTheDip", { defaultValue: "Buy the dip" }),
+                },
               ]}
               onClick={side => {
                 if (side === "sell" || side === "buy") changeOrderSide(side);
