@@ -12,7 +12,7 @@
     "every": "Cada",
     "everyTooltip": "El tiempo estimado que transcurrirá entre cada operación de tu orden. El tiempo real puede variar en función del tiempo de bloque.",
     "executionFee": "Comisión de ejecución",
-    "executionFeeTooltip": "La comisión que la orden DCA deduce del importe de cada operación ejecutada. La tasa que se muestra es la resultante tras aplicar esta comisión.",
+    "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada y que se destina al protocolo.",
     "intervalPhrase": {
       "day": "1 día",
       "hour": "1 hora",
@@ -44,7 +44,7 @@
     "belowMarketWarning": "El precio de activación está por debajo del precio de mercado y es posible que tu orden se ejecute al instante.",
     "buyTheDip": "Aprovecha la caída para comprar",
     "buyWhen": "Cuando 1 {{symbol}} baja a",
-    "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada. El importe mínimo recibido se indica tras deducir dicha comisión.",
+    "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada y que se destina al protocolo.",
     "expiresIn": "Caduca en",
     "expiryOption": {
       "oneDay": "1 día",

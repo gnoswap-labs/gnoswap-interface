@@ -12,7 +12,7 @@
     "every": "Every",
     "everyTooltip": "The estimated time that will elapse between each trade in your order. The actual time may vary depending on the block time.",
     "executionFee": "Execution Fee",
-    "executionFeeTooltip": "The fee the DCA order deducts from the output of each executed trade. The rate shown is after this fee.",
+    "executionFeeTooltip": "The fee deducted from the output of each filled trade that goes to the protocol.",
     "intervalPhrase": {
       "day": "1 day",
       "hour": "1 hour",
@@ -44,7 +44,7 @@
     "belowMarketWarning": "Trigger price is below market and your order may instantly fill.",
     "buyTheDip": "Buy the dip",
     "buyWhen": "When 1 {{symbol}} drops to",
-    "executionFeeTooltip": "The fee deducted from the output of each filled trade. Minimum received is shown after this fee.",
+    "executionFeeTooltip": "The fee deducted from the output of each filled trade that goes to the protocol.",
     "expiresIn": "Expires in",
     "expiryOption": {
       "oneDay": "1 Day",

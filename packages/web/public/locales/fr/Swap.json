@@ -12,7 +12,7 @@
     "every": "Chaque",
     "everyTooltip": "Le délai estimé entre chaque transaction de votre ordre. Le délai réel peut varier en fonction de la durée du bloc.",
     "executionFee": "Frais d'exécution",
-    "executionFeeTooltip": "Les frais que l'ordre DCA prélève sur le produit de chaque transaction exécutée. Le taux indiqué s'entend après déduction de ces frais.",
+    "executionFeeTooltip": "Les frais prélevés sur le produit de chaque transaction exécutée et reversés au protocole.",
     "intervalPhrase": {
       "day": "1 jour",
       "hour": "1 heure",
@@ -44,7 +44,7 @@
     "belowMarketWarning": "Le cours de déclenchement est inférieur au cours du marché et votre ordre pourrait être exécuté immédiatement.",
     "buyTheDip": "Acheter sur la baisse",
     "buyWhen": "Lorsque 1 {{symbol}} baisse à",
-    "executionFeeTooltip": "Les frais sont prélevés sur le montant de chaque transaction exécutée. Le montant minimum perçu est indiqué après déduction de ces frais.",
+    "executionFeeTooltip": "Les frais prélevés sur le produit de chaque transaction exécutée et reversés au protocole.",
     "expiresIn": "Expire dans",
     "expiryOption": {
       "oneDay": "1 jour",
