@@ -8,7 +8,7 @@ import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { DcaOrderModel, getDcaIntervalUnit } from "@models/order/dca-order-model";
 import {
   calculateDcaOrderEndAt,
-  formatOrderAmount,
+  formatOrderFullAmount,
   formatOrderDateTime,
   formatOrderRate,
   formatOrderRemainingTime,
@@ -82,17 +82,17 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
       {
         key: "sold",
         label: t("Swap:order.soldAmount"),
-        value: `${formatOrderAmount(order.soldAmount)} ${inputToken.displaySymbol}`,
+        value: `${formatOrderFullAmount(order.soldAmount, inputToken.decimals)} ${inputToken.displaySymbol}`,
       },
       {
         key: "purchased",
         label: t("Swap:order.purchasedAmount"),
-        value: `${formatOrderAmount(order.purchasedAmount)} ${outputToken.displaySymbol}`,
+        value: `${formatOrderFullAmount(order.purchasedAmount, outputToken.decimals)} ${outputToken.displaySymbol}`,
         roi,
       },
       { key: "rate", label: t("Swap:order.priceRateAvg"), value: formatOrderRate(order.priceRate) },
     ],
-    [inputToken.displaySymbol, order, outputToken.displaySymbol, roi, t],
+    [inputToken.decimals, inputToken.displaySymbol, order, outputToken.decimals, outputToken.displaySymbol, roi, t],
   );
 
   const overview = useMemo(
@@ -120,7 +120,7 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         <OrderPairLabel
           inputToken={inputToken}
           outputToken={outputToken}
-          inputAmount={formatOrderAmount(order.depositAmount)}
+          inputAmount={formatOrderFullAmount(order.depositAmount, inputToken.decimals)}
           linkUrl={txUrl}
         />
         {order.isActive ? (
@@ -148,19 +148,9 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
           <span className="value">{over}</span>
         </div>
       </div>
-      {order.isActive && (
-        <OrderStopButton
-          text={t("Swap:order.stopOrder")}
-          onClick={() => onClickStop(order)}
-        />
-      )}
+      {order.isActive && <OrderStopButton text={t("Swap:order.stopOrder")} onClick={() => onClickStop(order)} />}
       {/* Completion does not pay out: the output stays claimable until the owner (or a keeper) claims it. */}
-      {order.canClaim && (
-        <OrderStopButton
-          text={t("Swap:order.claimOrder")}
-          onClick={() => onClickClaim(order)}
-        />
-      )}
+      {order.canClaim && <OrderStopButton text={t("Swap:order.claimOrder")} onClick={() => onClickClaim(order)} />}
       <OrderHistoryToggle visible={order.executedCount > 0} renderHistory={() => renderHistory(order)} />
     </DcaOrderItemCardWrapper>
   );

@@ -33,6 +33,7 @@ const partiallyFilled: LimitOrderModel = {
   isActive: true,
   tokenIn: token("GNOT"),
   tokenOut: token("GNS"),
+  side: null,
   makingAmount: "100",
   takingAmount: "12.4308",
   slippageBps: 50,
@@ -69,7 +70,13 @@ const closed = (status: LimitOrderModel["status"], overrides: Partial<LimitOrder
 const readOverview = async (order: LimitOrderModel) => {
   render(
     <GnoswapThemeProvider>
-      <LimitOrderItemCard order={order} txUrl="" onClickCancel={jest.fn()} renderHistory={() => null} />
+      <LimitOrderItemCard
+        order={order}
+        marketPrice={null}
+        txUrl=""
+        onClickCancel={jest.fn()}
+        renderHistory={() => null}
+      />
     </GnoswapThemeProvider>,
   );
 
@@ -96,11 +103,12 @@ describe("LimitOrderItemCard overview", () => {
     expect(await readOverview(unfilled)).toEqual(["0 / 100 GNOT (0%)", "100 GNOT", "0 GNS"]);
   });
 
-  it.each<[LimitOrderModel["status"], Partial<LimitOrderModel>, string, string, number]>([
+  it.each<[LimitOrderModel["status"], Partial<LimitOrderModel>, string, string, string, number]>([
     [
       "COMPLETED",
       { filledInput: "100", userOutput: "12.495486", progress: 100 },
       "100 / 100 GNOT (100%)",
+      "0 GNOT",
       "12.495486 GNS",
       CLOSED_AT,
     ],
@@ -108,6 +116,7 @@ describe("LimitOrderItemCard overview", () => {
       "CANCELLED",
       { filledInput: "35", refundedInput: "65", userOutput: "4.37342" },
       "35 / 100 GNOT (35%)",
+      "65 GNOT",
       "4.37342 GNS",
       CLOSED_AT,
     ],
@@ -115,12 +124,29 @@ describe("LimitOrderItemCard overview", () => {
       "EXPIRED",
       { filledInput: "0", refundedInput: "100", userOutput: "0", progress: 0 },
       "0 / 100 GNOT (0%)",
+      "100 GNOT",
       "0 GNS",
       EXPIRES_AT,
     ],
-  ])("shows actual fill amounts and the event date for a %s order", async (status, fills, sold, purchased, date) => {
-    expect(await readOverview(closed(status, fills))).toEqual([sold, "0 GNOT", purchased, formatOrderDateTime(date)]);
-  });
+    [
+      "CANCELLED",
+      { filledInput: "0", refundedInput: "100", userOutput: "0", progress: 0 },
+      "0 / 100 GNOT (0%)",
+      "100 GNOT",
+      "0 GNS",
+      CLOSED_AT,
+    ],
+  ])(
+    "shows unfilled amounts including refunds and the event date for a %s order",
+    async (status, fills, sold, remaining, purchased, date) => {
+      expect(await readOverview(closed(status, fills))).toEqual([
+        sold,
+        remaining,
+        purchased,
+        formatOrderDateTime(date),
+      ]);
+    },
+  );
 
   it("shows unrefunded expired input and the expiry date even before cleanup closes the order", async () => {
     const expired = closed("EXPIRED", {
@@ -139,6 +165,17 @@ describe("LimitOrderItemCard overview", () => {
     ]);
   });
 
+  it("preserves a single raw unit of unfilled input above the JavaScript safe integer range", async () => {
+    const values = await readOverview(
+      closed("CANCELLED", {
+        makingAmount: "9007199254740993.000001",
+        filledInput: "9007199254740993",
+        refundedInput: "0.000001",
+      }),
+    );
+    expect(values[1]).toBe("0.000001 GNOT");
+  });
+
   it.each<LimitOrderModel["status"]>(["CANCELLED", "COMPLETED"])(
     "does not substitute the expiry for an unknown %s close date",
     async status => {
@@ -148,12 +185,34 @@ describe("LimitOrderItemCard overview", () => {
   );
 });
 
+describe("LimitOrderItemCard purchased amount", () => {
+  it.each([
+    { decimals: 6, amount: "1.079988" },
+    { decimals: 18, amount: "1.079988123456789012" },
+  ])("preserves $decimals token decimals in the summary metric", ({ decimals, amount }) => {
+    render(
+      <GnoswapThemeProvider>
+        <LimitOrderItemCard
+          order={{ ...partiallyFilled, tokenOut: { ...partiallyFilled.tokenOut, decimals }, userOutput: amount }}
+          marketPrice={null}
+          txUrl=""
+          onClickCancel={jest.fn()}
+          renderHistory={() => null}
+        />
+      </GnoswapThemeProvider>,
+    );
+
+    expect(screen.getByText(`${amount} GNS`)).toBeInTheDocument();
+  });
+});
+
 describe("LimitOrderItemCard execution fee", () => {
   const renderFee = (order: LimitOrderModel, tokenOutUsdPrice: string | null = null) => {
     render(
       <GnoswapThemeProvider>
         <LimitOrderItemCard
           order={order}
+          marketPrice={null}
           tokenOutUsdPrice={tokenOutUsdPrice}
           txUrl=""
           onClickCancel={jest.fn()}
@@ -181,5 +240,28 @@ describe("LimitOrderItemCard execution fee", () => {
 
   it("shows the fee without a USD value while the price is unknown", () => {
     expect(renderFee(closed("COMPLETED", { cumulativeExecutionFee: "0.018771" }))).toBe("0.018771 GNS");
+  });
+});
+
+describe("LimitOrderItemCard recorded side", () => {
+  it.each(["buy", "sell", null] as const)("uses the recorded %s perspective without inferring legacy intent", side => {
+    const { container } = render(
+      <GnoswapThemeProvider>
+        <LimitOrderItemCard
+          order={{ ...partiallyFilled, side, limitPrice: "0.125", takingAmount: "12.5" }}
+          marketPrice="0.1"
+          txUrl=""
+          onClickCancel={jest.fn()}
+          renderHistory={() => null}
+        />
+      </GnoswapThemeProvider>,
+    );
+    expect(container.querySelector(".order-side")?.textContent ?? null).toBe(
+      side ? `${side === "buy" ? "Buy GNS" : "Sell GNOT"}` : null,
+    );
+    const values = Array.from(container.querySelectorAll(".metric .value-text"), element => element.textContent);
+    expect(values.slice(0, 2)).toEqual(
+      side === "buy" ? ["10 GNOT", "8 GNOT"] : side === "sell" ? ["0.1 GNS", "0.125 GNS"] : ["0.1", "0.125"],
+    );
   });
 });

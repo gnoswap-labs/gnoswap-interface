@@ -255,9 +255,6 @@
       "title": "Envolver"
     }
   },
-  "confirmLimitOrder": {
-    "title": "Confirmar orden limitada"
-  },
   "confirmPlaceOrder": {
     "actualAmount": "Solo se realiza una orden en {{amount}} {{symbol}} para que cada operación venda la misma cantidad.",
     "title": "Confirmar pedido"

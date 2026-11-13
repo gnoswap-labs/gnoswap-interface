@@ -17,6 +17,7 @@ const ORDER: LimitOrderModel = {
   isActive: true,
   tokenIn: STORY_GNS_TOKEN,
   tokenOut: STORY_GNOT_TOKEN,
+  side: "sell",
   makingAmount: "100",
   takingAmount: "104",
   slippageBps: 50,
@@ -44,6 +45,7 @@ const meta = {
   component: LimitOrderItemCard,
   args: {
     order: ORDER,
+    marketPrice: "1",
     txUrl: "",
     tokenOutUsdPrice: "1.2",
     onClickCancel: () => undefined,

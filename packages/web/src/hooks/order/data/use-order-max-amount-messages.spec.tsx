@@ -65,8 +65,18 @@ jest.mock("@query/order", () => ({
 jest.mock("@query/pools", () => ({ useGetPoolList: () => ({ data: undefined, isError: false, refetch: jest.fn() }) }));
 // One input unit buys two output units.
 jest.mock("@query/router", () => ({
-  useGetRoutes: (request: { tokenAmount: string } | null) => ({
-    data: request ? { status: "SUCCESS", amount: BigNumber(request.tokenAmount).times(2).shiftedBy(6).toFixed(0) } : undefined,
+  useGetRoutes: (request: { tokenAmount: string; exactType: "EXACT_IN" | "EXACT_OUT" } | null) => ({
+    data: request
+      ? {
+          status: "SUCCESS",
+          amount: (request.exactType === "EXACT_OUT"
+            ? BigNumber(request.tokenAmount).dividedBy(2)
+            : BigNumber(request.tokenAmount).multipliedBy(2)
+          )
+            .shiftedBy(6)
+            .toFixed(0),
+        }
+      : undefined,
   }),
 }));
 
@@ -131,5 +141,28 @@ describe("order Max amount messages", () => {
     );
     expect(result.current.maxAmountDependsOn[0]).toBe(tokenB.path);
     expect(result.current.maxAmountDependsOn[1]).toBe("3");
+  });
+
+  it("simulates a Buy Max with the same affordable raw amounts that will be submitted", async () => {
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => {
+      result.current.changeTokenA(tokenA);
+      result.current.changeTokenB(tokenB);
+      result.current.restoreOrderSide("buy");
+      result.current.changeLimitPrice("3");
+    });
+    await result.current.makeMaxAmountMessages("5000000");
+    expect(mockMakeCreateLimitOrderMessages).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tokenIn: tokenA,
+        tokenOut: tokenB,
+        baseToken: tokenB,
+        makingAmount: "4999998",
+        takingAmount: "1666666",
+      }),
+    );
+    act(() => result.current.changeSellAmount("5"));
+    expect(result.current.sellAmount).toBe("4.999998");
+    expect(result.current.buyAmount).toBe("1.666666");
   });
 });

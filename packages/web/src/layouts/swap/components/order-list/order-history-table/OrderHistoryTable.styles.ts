@@ -38,6 +38,12 @@ export const OrderHistoryTableWrapper = styled.div`
     }
   }
 
+  .history-header .filled-price {
+    white-space: normal;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
   @keyframes order-history-highlight {
     0% {
       background-color: ${({ theme }) => theme.color.backgroundOpacity};

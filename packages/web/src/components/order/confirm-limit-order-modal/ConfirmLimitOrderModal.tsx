@@ -76,7 +76,7 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
   return (
     <OrderModalWrapper>
       <div className="modal-header">
-        <h6>{t("Modal:confirmLimitOrder.title")}</h6>
+        <h6>{t("Modal:confirmPlaceOrder.title")}</h6>
         <div className="close-wrap" onClick={close}>
           <IconClose className="close-icon" />
         </div>
@@ -106,7 +106,7 @@ const ConfirmLimitOrderModal: React.FC<ConfirmLimitOrderModalProps> = ({
       </div>
 
       <Button
-        text={t("Modal:confirmLimitOrder.title")}
+        text={t("Modal:confirmPlaceOrder.title")}
         style={{ hierarchy: ButtonHierarchy.Primary, fullWidth: true }}
         className="button-confirm"
         onClick={confirm}

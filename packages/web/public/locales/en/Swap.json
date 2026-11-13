@@ -24,7 +24,7 @@
     "minTrading": "Minimum {{amount}} {{symbol}} per order",
     "noWhitelistedPool": "Pair Not Supported",
     "orders": "Orders",
-    "orderSentence": "You’re selling <sell/> to buy <buy/> at market price every <hl>{{interval}}</hl> for <hl>{{rounds}} rounds</hl>.",
+    "orderSentence": "You’re selling <sell/> to buy <buy/> at market price every <hl>{{interval}}</hl> for <hl>{{rounds}} rounds</hl> (total <total/>).",
     "over": "Over",
     "overTooltip": "The number of individual trades that will be triggered as part of your order.",
     "placeOrder": "Place Order",
@@ -42,6 +42,8 @@
   "header": "Swap",
   "limit": {
     "belowMarketWarning": "Trigger price is below market and your order may instantly fill.",
+    "buyTheDip": "Buy the dip",
+    "buyWhen": "When 1 {{symbol}} drops to",
     "executionFeeTooltip": "The fee deducted from the output of each filled trade. Minimum received is shown after this fee.",
     "expiresIn": "Expires in",
     "expiryOption": {
@@ -56,18 +58,19 @@
     "marketPrice": "Market Price:",
     "minimumReceivedTooltip": "Minimum output you receive after execution fees, based on your limit price and selected slippage. Shown for a full fill; partial fills use the same ratio and round up per fill.",
     "minTrading": "Minimum {{amount}} {{symbol}}",
-    "sellWhen": "Sell when 1 {{symbol}} reaches",
-    "startToOrder": "Start to Order"
+    "sellAtTarget": "Sell at target",
+    "sellWhen": "Sell when 1 {{symbol}} reaches"
   },
   "order": {
     "active": "Open Orders",
-    "cancelOrder": "Cancel Order",
     "cancelledAt": "Cancelled At",
+    "cancelOrder": "Cancel Order",
     "claimOrder": "Claim",
     "completedAt": "Completed At",
     "connectWallet": "Please connect your wallet to view your order.",
     "expiredAt": "Expired At",
     "expiresAt": "Expires At",
+    "filledPrice": "Filled Price",
     "nextTrade": "Next Trade",
     "noOrders": "No orders found.",
     "ongoing": "Ongoing",

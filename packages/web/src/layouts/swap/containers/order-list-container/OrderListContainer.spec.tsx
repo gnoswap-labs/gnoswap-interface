@@ -15,7 +15,11 @@ jest.mock("@hooks/common/use-window-size", () => ({
 jest.mock("@hooks/common/use-gnoscan-url", () => ({ useGnoscanUrl: () => ({ getTxUrl: (hash: string) => hash }) }));
 jest.mock("@hooks/order/data/use-order-token-usd-price", () => ({ useOrderTokenUsdPrice: () => () => null }));
 jest.mock("@hooks/order/data/use-stop-order-handler", () => ({
-  useStopOrderHandler: () => ({ openStopDcaOrder: jest.fn(), openCancelLimitOrder: jest.fn(), claimDcaOrder: jest.fn() }),
+  useStopOrderHandler: () => ({
+    openStopDcaOrder: jest.fn(),
+    openCancelLimitOrder: jest.fn(),
+    claimDcaOrder: jest.fn(),
+  }),
 }));
 jest.mock("@query/order", () => ({
   useGetDcaOrders: (...args: unknown[]) => mockUseGetDcaOrders(...args),
@@ -28,7 +32,7 @@ jest.mock("../../components/order-list/order-card/DcaOrderItemCard", () => ({
     <div data-testid="order-card">{`${order.packagePath}:${order.orderId}`}</div>
   ),
 }));
-jest.mock("../../components/order-list/order-card/LimitOrderItemCard", () => ({
+jest.mock("./LimitOrderItemCardContainer", () => ({
   __esModule: true,
   default: ({ order }: { order: { packagePath: string; orderId: string } }) => (
     <div data-testid="order-card">{`${order.packagePath}:${order.orderId}`}</div>
@@ -38,14 +42,15 @@ jest.mock("../../components/order-list/order-card/LimitOrderItemCard", () => ({
 type Totals = { active?: number; past?: number };
 
 // Each request is answered from the totals of its tab; a one-item page is a total lookup.
-const answer =
-  (totals: Totals) =>
-  (request: { status: "active" | "past" }, options?: { enabled?: boolean }) => {
-    const total = totals[request.status];
-    if (options?.enabled === false || total === undefined) return { data: undefined, isLoading: true };
+const answer = (totals: Totals) => (request: { status: "active" | "past" }, options?: { enabled?: boolean }) => {
+  const total = totals[request.status];
+  if (options?.enabled === false || total === undefined) return { data: undefined, isLoading: true };
 
-    return { data: { items: [], pageInfo: { currentPage: 1, totalItems: total, totalPages: total ? 1 : 0 } }, isLoading: false };
+  return {
+    data: { items: [], pageInfo: { currentPage: 1, totalItems: total, totalPages: total ? 1 : 0 } },
+    isLoading: false,
   };
+};
 
 const renderContainer = (kind: "dca" | "limit", totals: Totals, connected = true) => {
   mockUseWallet.mockReturnValue({ connected, account: connected ? { address: "g1owner" } : null });

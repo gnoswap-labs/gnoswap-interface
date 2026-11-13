@@ -58,6 +58,10 @@ export const LimitPriceControl = styled.div`
     ${fonts.body3};
     color: ${({ theme }) => theme.color.text01};
     background: transparent;
+    &::placeholder {
+      color: ${({ theme }) => theme.color.text01};
+      opacity: 0.5;
+    }
     ${media.mobile} {
       ${fonts.body7};
     }

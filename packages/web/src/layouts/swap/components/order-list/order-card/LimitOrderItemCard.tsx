@@ -8,14 +8,17 @@ import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { LimitOrderModel } from "@models/order/limit-order-model";
 import {
+  calculatePriceDeviation,
   formatBps,
   formatOrderAmount,
   formatOrderDateTime,
   formatOrderFee,
   formatOrderFeeUsd,
   formatOrderFullAmount,
+  formatOrderPriceDeviation,
   formatOrderRate,
   formatOrderTimeUntil,
+  invertOrderRate,
 } from "@utils/order-format-utils";
 
 import OrderProgressBar from "../order-progress-bar/OrderProgressBar";
@@ -24,6 +27,8 @@ import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "
 
 export interface LimitOrderItemCardProps {
   order: LimitOrderModel;
+  /** Current output per input, quoted for the order's original making amount. Null without a quote. */
+  marketPrice: string | null;
   /** Current USD price of the order's output token, to value the execution fee. Null while unknown. */
   tokenOutUsdPrice?: string | null;
   txUrl: string;
@@ -42,6 +47,7 @@ const STATUS_LABEL_KEY: Record<LimitOrderModel["status"], string> = {
 
 const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   order,
+  marketPrice,
   tokenOutUsdPrice = null,
   txUrl,
   onClickCancel,
@@ -53,23 +59,57 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   const { tokenIn, tokenOut } = order;
   const executionFeeUsd = formatOrderFeeUsd(order.cumulativeExecutionFee, tokenOutUsdPrice);
   const expiresIn = order.isActive ? formatOrderTimeUntil(order.expiresAt, locale, nowUnixSeconds) : null;
+  const baseToken = order.side === "buy" ? tokenOut : tokenIn;
+  const quoteToken = order.side === "buy" ? tokenIn : tokenOut;
+  const displayedMarketPrice = order.side === "buy" ? invertOrderRate(marketPrice) : marketPrice;
+  const displayedLimitPrice =
+    order.side === "buy"
+      ? BigNumber(order.takingAmount).isGreaterThan(0)
+        ? BigNumber(order.makingAmount).dividedBy(order.takingAmount).toFixed()
+        : null
+      : order.limitPrice;
 
-  const metrics: OrderMetric[] = useMemo(
-    () => [
+  const metrics: OrderMetric[] = useMemo(() => {
+    const deviation = formatOrderPriceDeviation(
+      calculatePriceDeviation(displayedLimitPrice, displayedMarketPrice),
+      locale,
+    );
+    const price = (rate: string | null) =>
+      `${formatOrderRate(rate)}${order.side && rate !== null ? ` ${quoteToken.displaySymbol}` : ""}`;
+    return [
       {
-        key: "sold",
-        label: t("Swap:order.soldAmount"),
-        value: `${formatOrderAmount(order.filledInput)} ${tokenIn.displaySymbol}`,
+        key: "marketPrice",
+        label: t("Swap:limit.currentMarketPrice", { defaultValue: "Market Price" }),
+        value: price(displayedMarketPrice),
+      },
+      {
+        key: "limitPrice",
+        label: t("Swap:limit.triggerPrice", { defaultValue: "Limit Trigger Price" }),
+        value: price(displayedLimitPrice),
+        annotation: deviation ? `(≈ ${deviation})` : undefined,
       },
       {
         key: "purchased",
         label: t("Swap:order.purchasedAmount"),
-        value: `${formatOrderAmount(order.userOutput)} ${tokenOut.displaySymbol}`,
+        value: `${formatOrderFullAmount(order.userOutput, tokenOut.decimals)} ${tokenOut.displaySymbol}`,
+        annotation: t("Swap:order.filledShare", {
+          defaultValue: "{{percent}}% filled",
+          percent: formatOrderAmount(order.progress),
+        }),
       },
-      { key: "limitPrice", label: t("Swap:limit.limitPrice"), value: formatOrderRate(order.limitPrice) },
-    ],
-    [order, t, tokenIn.displaySymbol, tokenOut.displaySymbol],
-  );
+    ];
+  }, [
+    displayedLimitPrice,
+    displayedMarketPrice,
+    locale,
+    order.progress,
+    order.side,
+    order.userOutput,
+    quoteToken.displaySymbol,
+    t,
+    tokenOut.decimals,
+    tokenOut.displaySymbol,
+  ]);
 
   const overview = useMemo(() => {
     const inputAmount = (amount: string) =>
@@ -78,12 +118,14 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
       `${formatOrderFullAmount(amount, tokenOut.decimals)} ${tokenOut.displaySymbol}`;
 
     const sold = formatOrderFullAmount(order.filledInput, tokenIn.decimals);
+    // Refunded funds are still historically unfilled; remainingInput only tracks funds in escrow.
+    const unfilled = BigNumber(order.makingAmount).minus(order.filledInput).toFixed();
     const rows = [
       {
         label: t("Swap:order.soldAmount"),
         value: `${sold} / ${inputAmount(order.makingAmount)} (${formatOrderAmount(order.progress)}%)`,
       },
-      { label: t("Swap:order.remainingAmount"), value: inputAmount(order.remainingInput) },
+      { label: t("Swap:order.remainingAmount"), value: inputAmount(unfilled) },
       { label: t("Swap:order.purchasedAmount"), value: outputAmount(order.userOutput) },
     ];
 
@@ -92,8 +134,8 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         order.status === "EXPIRED"
           ? t("Swap:order.expiredAt")
           : order.status === "CANCELLED"
-          ? t("Swap:order.cancelledAt")
-          : t("Swap:order.completedAt");
+            ? t("Swap:order.cancelledAt")
+            : t("Swap:order.completedAt");
       rows.push({
         label,
         value: formatOrderDateTime(order.status === "EXPIRED" ? order.expiresAt : order.closedAt),
@@ -105,13 +147,21 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   return (
     <LimitOrderItemCardWrapper className={cx({ active: order.isActive })}>
       <div className="card-header">
-        <OrderPairLabel
-          inputToken={tokenIn}
-          outputToken={tokenOut}
-          inputAmount={formatOrderFullAmount(order.makingAmount, tokenIn.decimals)}
-          outputAmount={formatOrderFullAmount(order.takingAmount, tokenOut.decimals)}
-          linkUrl={txUrl}
-        />
+        <div className="order-identity">
+          {order.side && (
+            <span className="order-side">
+              {t(`Swap:limit.${order.side}`, { defaultValue: order.side === "buy" ? "Buy" : "Sell" })}{" "}
+              {baseToken.displaySymbol}
+            </span>
+          )}
+          <OrderPairLabel
+            inputToken={tokenIn}
+            outputToken={tokenOut}
+            inputAmount={formatOrderFullAmount(order.makingAmount, tokenIn.decimals)}
+            outputAmount={formatOrderFullAmount(order.takingAmount, tokenOut.decimals)}
+            linkUrl={txUrl}
+          />
+        </div>
         <div className="card-status-group">
           <span className={cx("card-status", { ongoing: order.isActive })}>{t(STATUS_LABEL_KEY[order.status])}</span>
           {!order.isActive && <span className="card-status-time">{formatOrderDateTime(order.closedAt)}</span>}

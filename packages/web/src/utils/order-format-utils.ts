@@ -17,7 +17,7 @@ export function trimFractionZeros(value: string): string {
 }
 
 /**
- * Amounts in order cards and history rows: two decimals rounded down, trailing
+ * Amounts in order cards: two decimals rounded down, trailing
  * zeros dropped, `<0.01` below that and K/M/B above a thousand. `0` when empty.
  */
 export function formatOrderAmount(amount: BigNumber.Value | null | undefined): string {
@@ -67,6 +67,13 @@ export function formatOrderRate(rate: BigNumber.Value | null | undefined): strin
   if (value.isZero()) return "0";
 
   return trimFractionZeros(formatTokenAmount(value.toFixed(), { decimals: 6, minLimit: 0.000001, isKMB: true }));
+}
+
+/** Inverts a positive output/input rate for a Buy order's quote/base view. */
+export function invertOrderRate(rate: string | null): string | null {
+  if (rate === null) return null;
+  const value = BigNumber(rate);
+  return value.isFinite() && value.isGreaterThan(0) ? BigNumber(1).dividedBy(value).toFixed() : null;
 }
 
 /** Unix seconds as local `YYYY-MM-DD HH:mm:ss`. */

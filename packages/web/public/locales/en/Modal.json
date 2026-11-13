@@ -255,9 +255,6 @@
       "title": "Wrap"
     }
   },
-  "confirmLimitOrder": {
-    "title": "Confirm Limit Order"
-  },
   "confirmPlaceOrder": {
     "actualAmount": "Only {{amount}} {{symbol}} is ordered so every trade sells the same amount.",
     "title": "Confirm Place Order"

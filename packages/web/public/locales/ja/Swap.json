@@ -24,7 +24,7 @@
     "minTrading": "1注文あたりの最低注文数量：{{amount}} 、{{symbol}} ",
     "noWhitelistedPool": "この組み合わせはサポートされていません",
     "orders": "注文",
-    "orderSentence": "市場価格で、<sell/>を売って<buy/>を購入する取引を、<hl>{{interval}}</hl>ごとに<hl>{{rounds}} rounds</hl>行います。",
+    "orderSentence": "市場価格で<sell/>を売って<buy/>を購入します。これを<hl>{{interval}}</hl>ごとに<hl>{{rounds}}ラウンド</hl>実行します（合計<total/>）。",
     "over": "以上",
     "overTooltip": "注文の一環として発動される個別の取引の数。",
     "placeOrder": "注文する",
@@ -42,6 +42,8 @@
   "header": "スワップ",
   "limit": {
     "belowMarketWarning": "トリガー価格は市場価格を下回っているため、注文が即座に約定する可能性があります。",
+    "buyTheDip": "値下がり時に買いを入れる",
+    "buyWhen": "1 {{symbol}} が次の価格に下落したら",
     "executionFeeTooltip": "この手数料は、約定した各取引の収益から差し引かれます。この手数料を差し引いた後の最低受取額が表示されます。",
     "expiresIn": "残り",
     "expiryOption": {
@@ -56,18 +58,19 @@
     "marketPrice": "市場価格：",
     "minimumReceivedTooltip": "指値価格および選択したスリッページに基づいて、執行手数料を差し引いた後に受け取る最低の売却額です。これは全量約定の場合の表示です。一部約定の場合は、同じ比率を適用し、約定ごとに切り上げられます。",
     "minTrading": "{{amount}} 以上{{symbol}}",
-    "sellWhen": "1 {{symbol}} が次の価格に達したら売却",
-    "startToOrder": "注文を開始する"
+    "sellAtTarget": "目標価格で売る",
+    "sellWhen": "1 {{symbol}} が次の価格に達したら売却"
   },
   "order": {
     "active": "未決済注文",
-    "cancelOrder": "注文をキャンセルする",
     "cancelledAt": "キャンセル日時",
+    "cancelOrder": "注文をキャンセルする",
     "claimOrder": "主張",
     "completedAt": "完了日時",
     "connectWallet": "ご注文内容を確認するには、ウォレットを接続してください。",
     "expiredAt": "失効日時",
     "expiresAt": "有効期限",
+    "filledPrice": "約定価格",
     "nextTrade": "次の取引",
     "noOrders": "注文が見つかりませんでした。",
     "ongoing": "進行中",

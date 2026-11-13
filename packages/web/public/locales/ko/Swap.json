@@ -24,7 +24,7 @@
     "minTrading": "주문당 최소 {{amount}} {{symbol}} ",
     "noWhitelistedPool": "해당 조합은 지원되지 않습니다",
     "orders": "회",
-    "orderSentence": "매 <hl>{{interval}}</hl>마다 <hl>{{rounds}}회</hl> 시장가로 <sell/>을(를) 매도해 <buy/>을(를) 매수합니다.",
+    "orderSentence": "매 <hl>{{interval}}</hl>마다 <hl>{{rounds}}회</hl> 시장가로 <sell/>을(를) 매도해 <buy/>을(를) 매수합니다(총 <total/>).",
     "over": "횟수",
     "overTooltip": "주문의 일환으로 실행될 개별 거래의 수입니다.",
     "placeOrder": "주문하기",
@@ -42,6 +42,8 @@
   "header": "스왑",
   "limit": {
     "belowMarketWarning": "트리거 가격이 시장가보다 낮으므로, 귀하의 주문이 즉시 체결될 수 있습니다.",
+    "buyTheDip": "하락 시 매수하기",
+    "buyWhen": "1 {{symbol}} 가격이 다음 가격까지 하락하면",
     "executionFeeTooltip": "각 체결의 수령 수량에서 차감되는 수수료입니다. 최소 수령량은 이 수수료를 차감한 후의 수량입니다.",
     "expiresIn": "만료까지 남은 기간:",
     "expiryOption": {
@@ -56,18 +58,19 @@
     "marketPrice": "시장 가격:",
     "minimumReceivedTooltip": "지정가 및 선택한 슬리피지를 기준으로, 실행 수수료를 차감한 후 받게 되는 최소 수익액입니다. 이 수치는 전량 체결된 경우를 기준으로 표시되며, 부분 체결의 경우 동일한 비율을 적용하고 체결 건당 올림 처리됩니다.",
     "minTrading": "최소 {{amount}} {{symbol}}",
-    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도",
-    "startToOrder": "주문 시작하기"
+    "sellAtTarget": "목표가에 매도",
+    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도"
   },
   "order": {
     "active": "진행 중인 주문",
-    "cancelOrder": "주문 취소",
     "cancelledAt": "취소 일시",
+    "cancelOrder": "주문 취소",
     "claimOrder": "주장",
     "completedAt": "완료 일시",
     "connectWallet": "주문을 확인하시려면 지갑을 연결해 주세요.",
     "expiredAt": "만료 일시",
     "expiresAt": "만료일",
+    "filledPrice": "체결가",
     "nextTrade": "다음 거래",
     "noOrders": "주문이 없습니다.",
     "ongoing": "진행 중",

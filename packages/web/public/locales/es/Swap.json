@@ -24,7 +24,7 @@
     "minTrading": "{{amount}} o mínimo de {{symbol}} por pedido",
     "noWhitelistedPool": "Par no compatible",
     "orders": "Pedidos",
-    "orderSentence": "Estás vendiendo <sell/> para comprar <buy/> al precio de mercado cada <hl>{{interval}}</hl> durante <hl>{{rounds}} rondas</hl>.",
+    "orderSentence": "Estás vendiendo <sell/> para comprar <buy/> al precio de mercado cada <hl>{{interval}}</hl> durante <hl>{{rounds}} rondas</hl> (total <total/>).",
     "over": "Más de",
     "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",
     "placeOrder": "Realizar pedido",
@@ -42,6 +42,8 @@
   "header": "Intercambiar",
   "limit": {
     "belowMarketWarning": "El precio de activación está por debajo del precio de mercado y es posible que tu orden se ejecute al instante.",
+    "buyTheDip": "Aprovecha la caída para comprar",
+    "buyWhen": "Cuando 1 {{symbol}} baja a",
     "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada. El importe mínimo recibido se indica tras deducir dicha comisión.",
     "expiresIn": "Caduca en",
     "expiryOption": {
@@ -56,18 +58,19 @@
     "marketPrice": "Precio de mercado:",
     "minimumReceivedTooltip": "Importe mínimo que recibirás tras deducir las comisiones de ejecución, en función de tu precio límite y del deslizamiento seleccionado. Se muestra para una ejecución completa; en las ejecuciones parciales se aplica la misma proporción y se redondea al alza por cada ejecución.",
     "minTrading": "{{amount}} mínimo {{symbol}}",
-    "sellWhen": "Vender cuando 1 {{symbol}} alcance",
-    "startToOrder": "Empezar a hacer el pedido"
+    "sellAtTarget": "Vender al precio objetivo",
+    "sellWhen": "Vender cuando 1 {{symbol}} alcance"
   },
   "order": {
     "active": "Pedidos pendientes",
-    "cancelOrder": "Cancelar pedido",
     "cancelledAt": "Cancelado el",
+    "cancelOrder": "Cancelar pedido",
     "claimOrder": "Reclamación",
     "completedAt": "Finalizado el",
     "connectWallet": "Conecta tu monedero para ver tu pedido.",
     "expiredAt": "Caducado el",
     "expiresAt": "Vence el",
+    "filledPrice": "Precio de ejecución",
     "nextTrade": "Próxima operación",
     "noOrders": "No se han encontrado pedidos.",
     "ongoing": "En curso",

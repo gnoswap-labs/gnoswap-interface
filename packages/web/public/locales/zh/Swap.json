@@ -24,7 +24,7 @@
     "minTrading": "每笔订单的最低金额为{{amount}} ，{{symbol}} ",
     "noWhitelistedPool": "该货币对不支持",
     "orders": "订单",
-    "orderSentence": "您将每隔 <hl>{{interval}}</hl> 按市价卖出 <sell/>，买入 <buy/>，共进行 <hl>{{rounds}} 轮</hl>。",
+    "orderSentence": "您将以市价卖出 <sell/> 买入 <buy/>，每隔 <hl>{{interval}}</hl> 执行一次，持续 <hl>{{rounds}} 轮</hl>（总计 <total/>）。",
     "over": "结束",
     "overTooltip": "作为您的订单的一部分，将被触发的单笔交易数量。",
     "placeOrder": "下单",
@@ -42,6 +42,8 @@
   "header": "交换",
   "limit": {
     "belowMarketWarning": "触发价低于市场价，您的订单可能会立即成交。",
+    "buyTheDip": "逢低买入",
+    "buyWhen": "当 1{{symbol}} 降至",
     "executionFeeTooltip": "该费用将从每笔成交交易的收益中扣除。扣除该费用后的最低到手金额将显示在此处。",
     "expiresIn": "到期时间：",
     "expiryOption": {
@@ -56,18 +58,19 @@
     "marketPrice": "市场价格：",
     "minimumReceivedTooltip": "扣除交易手续费后您能获得的最低收益，该金额基于您的限价和所选滑点。此处显示的是全额成交的情况；部分成交时，将采用相同的比率，并按每笔成交向上取整。",
     "minTrading": "{{amount}} 以上{{symbol}}",
-    "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出",
-    "startToOrder": "开始下单"
+    "sellAtTarget": "按目标价卖出",
+    "sellWhen": "当 1 {{symbol}} 达到以下价格时卖出"
   },
   "order": {
     "active": "未结订单",
-    "cancelOrder": "取消订单",
     "cancelledAt": "已取消于",
+    "cancelOrder": "取消订单",
     "claimOrder": "主张",
     "completedAt": "完成于",
     "connectWallet": "请将您的钱包连接到本平台，以便查看您的订单。",
     "expiredAt": "到期时间：",
     "expiresAt": "到期时间",
+    "filledPrice": "成交价",
     "nextTrade": "下一笔交易",
     "noOrders": "未找到任何订单。",
     "ongoing": "进行中",

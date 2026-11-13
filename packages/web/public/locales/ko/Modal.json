@@ -255,9 +255,6 @@
       "title": "래핑"
     }
   },
-  "confirmLimitOrder": {
-    "title": "지정가 주문 확인"
-  },
   "confirmPlaceOrder": {
     "actualAmount": "{{amount}} {{symbol}} 만 주문되어 있으므로, 모든 거래에서 동일한 수량이 매도됩니다.",
     "title": "주문 확정"

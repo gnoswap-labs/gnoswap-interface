@@ -14,8 +14,6 @@
       "title": "중요 참고 사항"
     }
   },
-  "fees": "수수료",
-  "liquidity": "유동성",
   "overview": {
     "pooled": "제공된",
     "unclaimed": "미청구 수수료"

@@ -9,6 +9,8 @@ export interface LimitOrderItem {
   status: LimitOrderStatus;
   tokenIn: string;
   tokenOut: string;
+  /** Canonical token path selected at creation; absent for legacy orders. */
+  baseToken?: string | null;
   makingAmount: string;
   takingAmount: string;
   slippageBps: number;

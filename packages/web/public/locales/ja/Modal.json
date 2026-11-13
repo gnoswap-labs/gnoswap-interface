@@ -255,9 +255,6 @@
       "title": "ラップ"
     }
   },
-  "confirmLimitOrder": {
-    "title": "指値注文の確認"
-  },
   "confirmPlaceOrder": {
     "actualAmount": "{{amount}} {{symbol}} の注文のみが、すべての取引で同量の売りが成立するように設定されています。",
     "title": "注文の確認・注文確定"

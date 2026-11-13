@@ -207,6 +207,16 @@ describe("order-mapper", () => {
     expect(order.progress).toBeCloseTo(33.333, 2);
     expect(order.slippageBps).toBe(50);
     expect(order.minimumReceived).toBe("3.795726");
+    for (const [baseToken, side] of [
+      [item.tokenIn, "sell"],
+      [item.tokenOut, "buy"],
+      [undefined, null],
+      [null, null],
+      ["", null],
+      ["unrelated-token", null],
+    ] as const) {
+      expect(mapLimitOrderItemToModel({ ...item, baseToken }, tokens).side).toBe(side);
+    }
     const completed = mapLimitOrderItemToModel(
       {
         ...item,

@@ -59,6 +59,8 @@ export interface CreateDcaOrderMessageRequest {
 export interface CreateLimitOrderMessageRequest {
   tokenIn: TokenModel;
   tokenOut: TokenModel;
+  /** Asset whose Buy/Sell perspective is recorded on-chain. */
+  baseToken: TokenModel;
   /** Raw integer amount of `tokenIn`. */
   makingAmount: string;
   /** Raw integer amount of `tokenOut`. */
@@ -175,7 +177,7 @@ export async function makeCreateLimitOrderMessagesWithApproves(
   request: CreateLimitOrderMessageRequest,
   fetchAllowance?: FetchAllowance,
 ): Promise<TransactionMessage[]> {
-  const { tokenIn, tokenOut, makingAmount, takingAmount, slippageBps, expiresAt, caller } = request;
+  const { tokenIn, tokenOut, baseToken, makingAmount, takingAmount, slippageBps, expiresAt, caller } = request;
   const tokenInPath = getSwapTokenPath(tokenIn);
   const tokenOutPath = getSwapTokenPath(tokenOut);
 
@@ -185,7 +187,15 @@ export async function makeCreateLimitOrderMessagesWithApproves(
       packagePath: PACKAGE_LIMIT_ORDER_PATH,
       send: "",
       func: OrderMessageFunctionType.CreateOrder,
-      args: [tokenInPath, tokenOutPath, makingAmount, takingAmount, `${slippageBps}`, `${expiresAt}`],
+      args: [
+        tokenInPath,
+        tokenOutPath,
+        makingAmount,
+        takingAmount,
+        `${slippageBps}`,
+        `${expiresAt}`,
+        getSwapTokenPath(baseToken),
+      ],
       caller,
     }),
   ];

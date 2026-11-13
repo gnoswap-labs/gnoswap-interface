@@ -9,7 +9,7 @@ import useDebounce from "@hooks/common/use-debounce";
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useConnectWalletModal } from "@hooks/wallet/ui/use-connect-wallet-modal";
 import { LIMIT_EXPIRY_OPTIONS } from "@models/order/limit-order-model";
-import { SWAP_CARD_TYPE } from "@models/order/order-type";
+import { LimitOrderSide, SWAP_CARD_TYPE } from "@models/order/order-type";
 import { LimitOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
 import { useGetLimitConfig } from "@query/order";
@@ -18,13 +18,20 @@ import { DexEvent } from "@repositories/common";
 import { CreateLimitOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
 import { calculateLimitMinimumReceived } from "@utils/order-amount-utils";
-import { calculatePriceDeviation, formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
+import {
+  calculatePriceDeviation,
+  formatBps,
+  formatOrderDateTime,
+  formatOrderRate,
+  trimFractionZeros,
+} from "@utils/order-format-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
 import { getOrderButtonText, useOrderFormCommon } from "./use-order-form-common";
 import {
   applyLimitPricePreset,
+  calculateMakingAmount,
   calculateTakingAmount,
   calculateUsdValue,
   DEFAULT_MIN_MAKING_AMOUNT,
@@ -42,12 +49,6 @@ import { useOrderTransaction } from "./use-order-transaction";
 const INPUT_DEBOUNCE_MS = 300;
 const QUOTE_REFETCH_INTERVAL = 10_000;
 
-function floorToDecimals(value: BigNumber.Value, decimals: number): string {
-  const number = BigNumber(value);
-  if (!number.isFinite() || number.isLessThanOrEqualTo(0)) return "";
-  return number.decimalPlaces(decimals, BigNumber.ROUND_DOWN).toFixed();
-}
-
 /** Drops the digits a token cannot hold (`0.1234567` → `0.123456` for 6 decimals); other input is kept as is. */
 function truncateToDecimals(value: string, decimals: number): string {
   const [, fraction] = value.split(".");
@@ -63,7 +64,9 @@ export const useLimitOrderHandler = () => {
   const { submit } = useOrderTransaction();
 
   const [swapValue, setSwapValue] = useAtom(SwapState.swap);
-  const [sellAmount, setSellAmount] = useAtom(OrderState.limitSellAmount);
+  const [fundingAmountInput, setFundingAmountInput] = useAtom(OrderState.limitSellAmount);
+  const [buyAmountInput, setBuyAmountInput] = useAtom(OrderState.limitBuyAmount);
+  const [orderSide, setOrderSide] = useAtom(OrderState.limitOrderSide);
   const [limitPrice, setLimitPrice] = useAtom(OrderState.limitPrice);
   const [pricedPairKey, setPricedPairKey] = useAtom(OrderState.limitPricePairKey);
   const [pricePreset, setPricePreset] = useAtom(OrderState.limitPricePreset);
@@ -71,6 +74,21 @@ export const useLimitOrderHandler = () => {
 
   const tokenA = swapValue.tokenA ?? null;
   const tokenB = swapValue.tokenB ?? null;
+
+  const changeSellAmount = useCallback(
+    (value: string) => {
+      setFundingAmountInput(value);
+      setBuyAmountInput("");
+    },
+    [setBuyAmountInput, setFundingAmountInput],
+  );
+  const changeBuyAmount = useCallback(
+    (value: string) => {
+      setBuyAmountInput(value);
+      setFundingAmountInput("");
+    },
+    [setBuyAmountInput, setFundingAmountInput],
+  );
 
   const {
     connected,
@@ -83,7 +101,6 @@ export const useLimitOrderHandler = () => {
     tokenBBalance,
     isSameToken,
     formatUsd,
-    formatRate,
   } = useOrderFormCommon(tokenA, tokenB);
 
   const { data: config, isLoading: isLoadingConfig } = useGetLimitConfig();
@@ -99,22 +116,39 @@ export const useLimitOrderHandler = () => {
     }
   }, [expiry, expiryOptions, setExpiry]);
 
-  // Market price, quoted at the amount being sold so it reflects the price impact of this order.
-  const debouncedSellAmount = useDebounce(sellAmount, INPUT_DEBOUNCE_MS);
-  const quoteAmount = BigNumber(debouncedSellAmount || 0).isGreaterThan(0) ? debouncedSellAmount : "1";
+  // Typed Buy quantities use an exact-output quote. Max and old `amount=` links
+  // remain funding budgets, so neither their quote nor their amount depends on the limit price.
+  const isBuyQuantity = orderSide === "buy" && (buyAmountInput !== "" || fundingAmountInput === "");
+  const debouncedFundingAmount = useDebounce(fundingAmountInput, INPUT_DEBOUNCE_MS);
+  const debouncedBuyAmount = useDebounce(buyAmountInput, INPUT_DEBOUNCE_MS);
+  const quotedAmount = isBuyQuantity ? debouncedBuyAmount : debouncedFundingAmount;
+  const quoteAmount = BigNumber(quotedAmount || 0).isGreaterThan(0) ? quotedAmount : "1";
+  const quoteExactType = isBuyQuantity ? "EXACT_OUT" : "EXACT_IN";
   const { data: routes } = useGetRoutes(
     tokenA && tokenB && !isSameToken
-      ? { inputToken: tokenA, outputToken: tokenB, tokenAmount: quoteAmount, exactType: "EXACT_IN" }
+      ? { inputToken: tokenA, outputToken: tokenB, tokenAmount: quoteAmount, exactType: quoteExactType }
       : null,
     { refetchInterval: QUOTE_REFETCH_INTERVAL },
   );
   const hasLiquidity = !isSameToken && routes?.status !== "NO_LIQUIDITY";
-  const marketPrice = useMemo(() => {
-    if (!tokenB || routes?.status !== "SUCCESS") return null;
-    const output = makeDisplayTokenAmountString(tokenB, routes.amount);
-    if (!output) return null;
-    return formatLimitPriceInput(BigNumber(output).dividedBy(quoteAmount)) || null;
-  }, [quoteAmount, routes, tokenB]);
+  const quotedMarketPrice = useMemo(() => {
+    if (!tokenA || !tokenB || routes?.status !== "SUCCESS") return null;
+    const quotedToken = quoteExactType === "EXACT_OUT" ? tokenA : tokenB;
+    const amount = makeDisplayTokenAmountString(quotedToken, routes.amount);
+    if (!amount) return null;
+    const price =
+      quoteExactType === "EXACT_OUT"
+        ? BigNumber(amount).dividedBy(quoteAmount)
+        : orderSide === "buy"
+          ? BigNumber(quoteAmount).dividedBy(amount)
+          : BigNumber(amount).dividedBy(quoteAmount);
+    return price.isFinite() && price.isGreaterThan(0) ? price.toFixed() : null;
+  }, [orderSide, quoteAmount, quoteExactType, routes, tokenA, tokenB]);
+  const marketPrice = useMemo(
+    () => (quotedMarketPrice ? formatLimitPriceInput(quotedMarketPrice) || null : null),
+    [quotedMarketPrice],
+  );
+  const defaultPreset = orderSide === "buy" ? -10 : 10;
 
   // Preserve manual prices (including an empty edit), but keep presets tied to
   // fresh router quotes. Pair ownership survives switching to Swap or DCA.
@@ -135,41 +169,70 @@ export const useLimitOrderHandler = () => {
       return;
     }
     if (limitPrice) {
-      // The price of another pair: start again from its market price +10%.
+      // A new pair starts from a fresh quote in the selected Buy/Sell perspective.
       setLimitPrice("");
       setPricedPairKey(null);
-      setPricePreset(10);
+      setPricePreset(defaultPreset);
       return;
     }
     if (marketPrice) {
       setPricedPairKey(pairKey);
-      setPricePreset(10);
-      setLimitPrice(applyLimitPricePreset(marketPrice, 10));
+      setPricePreset(defaultPreset);
+      setLimitPrice(applyLimitPricePreset(marketPrice, defaultPreset));
     }
-  }, [limitPrice, marketPrice, pairKey, pricePreset, pricedPairKey, setLimitPrice, setPricePreset, setPricedPairKey]);
+  }, [
+    defaultPreset,
+    limitPrice,
+    marketPrice,
+    pairKey,
+    pricePreset,
+    pricedPairKey,
+    setLimitPrice,
+    setPricePreset,
+    setPricedPairKey,
+  ]);
 
   const isValidPrice = BigNumber(limitPrice || 0).isGreaterThan(0);
 
-  const buyAmount = useMemo(() => {
-    if (!tokenB || !isValidPrice || !sellAmount) return "";
-    return floorToDecimals(BigNumber(sellAmount).multipliedBy(limitPrice), tokenB.decimals);
-  }, [isValidPrice, limitPrice, sellAmount, tokenB]);
+  useEffect(() => {
+    if (!tokenA || !fundingAmountInput) return;
+    const truncated = truncateToDecimals(fundingAmountInput, tokenA.decimals);
+    if (truncated !== fundingAmountInput) setFundingAmountInput(truncated);
+  }, [fundingAmountInput, setFundingAmountInput, tokenA]);
+  useEffect(() => {
+    if (!tokenB || !buyAmountInput) return;
+    const truncated = truncateToDecimals(buyAmountInput, tokenB.decimals);
+    if (truncated !== buyAmountInput) setBuyAmountInput(truncated);
+  }, [buyAmountInput, setBuyAmountInput, tokenB]);
 
+  const fundingBudget = tokenA ? (makeRawTokenAmount(tokenA, fundingAmountInput || "0") ?? "0") : "0";
+  const takingAmount =
+    tokenA && tokenB && isValidPrice
+      ? isBuyQuantity
+        ? (makeRawTokenAmount(tokenB, buyAmountInput || "0") ?? "0")
+        : calculateTakingAmount(fundingBudget, limitPrice, tokenA, tokenB, orderSide)
+      : "0";
+  const makingAmount =
+    orderSide === "buy"
+      ? tokenA && tokenB && isValidPrice
+        ? calculateMakingAmount(takingAmount, limitPrice, tokenA, tokenB)
+        : "0"
+      : fundingBudget;
+  const enteredAmount = isBuyQuantity ? buyAmountInput : fundingAmountInput;
+  const sellAmount =
+    orderSide === "buy"
+      ? tokenA && isValidPrice && enteredAmount
+        ? (makeDisplayTokenAmountString(tokenA, makingAmount) ?? "")
+        : ""
+      : fundingAmountInput;
+  const hasRawAmounts = BigNumber(makingAmount).isGreaterThan(0) && BigNumber(takingAmount).isGreaterThan(0);
+  const buyAmount = isBuyQuantity
+    ? buyAmountInput
+    : tokenB && isValidPrice && fundingAmountInput
+      ? (makeDisplayTokenAmountString(tokenB, takingAmount) ?? "")
+      : "";
   const sellUsd = useMemo(() => calculateUsdValue(sellAmount, getUsdPrice(tokenA)), [getUsdPrice, sellAmount, tokenA]);
   const buyUsd = useMemo(() => calculateUsdValue(buyAmount, getUsdPrice(tokenB)), [buyAmount, getUsdPrice, tokenB]);
-
-  // A sell amount restored from a link, or kept from a token with more decimals, can hold digits the
-  // input token cannot represent; trim them so the form shows what will be sent.
-  useEffect(() => {
-    if (!tokenA || !sellAmount) return;
-    const truncated = truncateToDecimals(sellAmount, tokenA.decimals);
-    if (truncated !== sellAmount) setSellAmount(truncated);
-  }, [sellAmount, setSellAmount, tokenA]);
-
-  const makingAmount = tokenA ? (makeRawTokenAmount(tokenA, sellAmount || "0") ?? "0") : "0";
-  const takingAmount =
-    tokenA && tokenB && isValidPrice ? calculateTakingAmount(makingAmount, limitPrice, tokenA, tokenB) : "0";
-  const hasRawAmounts = BigNumber(makingAmount).isGreaterThan(0) && BigNumber(takingAmount).isGreaterThan(0);
   /** The sell amount as sent: the raw making amount in display units. */
   const sentSellAmount = tokenA ? (makeDisplayTokenAmountString(tokenA, makingAmount) ?? "0") : "0";
 
@@ -183,7 +246,7 @@ export const useLimitOrderHandler = () => {
   // Checked on the raw amounts whenever a positive amount is entered: one that rounds down to a
   // raw 0 (or a raw 0 output) must not reach Place Order.
   const isAmountTooLow =
-    BigNumber(sellAmount || 0).isGreaterThan(0) &&
+    BigNumber(enteredAmount || 0).isGreaterThan(0) &&
     isValidPrice &&
     isLimitAmountTooLow(makingAmount, takingAmount, minMakingAmount);
   const minTradingText = tokenA
@@ -199,13 +262,14 @@ export const useLimitOrderHandler = () => {
     isPaused: !!config?.halted?.execute,
     hasTokens: !!tokenA && !!tokenB,
     // Without a price there is nothing to order yet.
-    amount: isValidPrice ? sellAmount : "",
+    amount: isValidPrice ? enteredAmount : "",
+    requiredAmount: sellAmount,
     balance: tokenABalance,
     hasLiquidity,
     isAmountTooLow,
   });
 
-  const buttonText = getOrderButtonText(buttonState, t, t("Swap:limit.startToOrder"));
+  const buttonText = getOrderButtonText(buttonState, t, t("Swap:dca.placeOrder"));
 
   const maxSlippageBps = config?.maxSlippageBps ?? MAX_LIMIT_SLIPPAGE_BPS;
   const slippageBps = toLimitSlippageBps(slippage, maxSlippageBps);
@@ -216,15 +280,22 @@ export const useLimitOrderHandler = () => {
   const minimumReceived = useMemo(
     () =>
       tokenB && hasRawAmounts
-        ? makeDisplayTokenAmountString(tokenB, calculateLimitMinimumReceived(takingAmount, slippageBps)) ?? ""
+        ? (makeDisplayTokenAmountString(tokenB, calculateLimitMinimumReceived(takingAmount, slippageBps)) ?? "")
         : "",
     [hasRawAmounts, slippageBps, takingAmount, tokenB],
   );
 
   const createRequest = useMemo((): Omit<CreateLimitOrderRequest, "expiresAt"> | null => {
     if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !hasRawAmounts) return null;
-    return { tokenIn: tokenA, tokenOut: tokenB, makingAmount, takingAmount, slippageBps };
-  }, [buttonState, hasRawAmounts, makingAmount, slippageBps, takingAmount, tokenA, tokenB]);
+    return {
+      tokenIn: tokenA,
+      tokenOut: tokenB,
+      baseToken: orderSide === "buy" ? tokenB : tokenA,
+      makingAmount,
+      takingAmount,
+      slippageBps,
+    };
+  }, [buttonState, hasRawAmounts, makingAmount, orderSide, slippageBps, takingAmount, tokenA, tokenB]);
 
   /**
    * The CreateOrder messages for a native making amount of `rawAmount` at the
@@ -235,23 +306,27 @@ export const useLimitOrderHandler = () => {
   const makeMaxAmountMessages = useCallback(
     async (rawAmount: string) => {
       if (!tokenA || !tokenB || isSameToken || !maxAmountPrice) return [];
-      const maxTakingAmount = calculateTakingAmount(rawAmount, maxAmountPrice, tokenA, tokenB);
+      const maxTakingAmount = calculateTakingAmount(rawAmount, maxAmountPrice, tokenA, tokenB, orderSide);
       if (!BigNumber(maxTakingAmount).isGreaterThan(0)) return [];
+      const maxMakingAmount =
+        orderSide === "buy" ? calculateMakingAmount(maxTakingAmount, maxAmountPrice, tokenA, tokenB) : rawAmount;
+      if (!BigNumber(maxMakingAmount).isGreaterThan(0)) return [];
       return orderRepository.makeCreateLimitOrderMessages({
         tokenIn: tokenA,
         tokenOut: tokenB,
-        makingAmount: rawAmount,
+        baseToken: orderSide === "buy" ? tokenB : tokenA,
+        makingAmount: maxMakingAmount,
         takingAmount: maxTakingAmount,
         slippageBps,
         expiresAt: Math.floor(Date.now() / 1000) + expiry,
       });
     },
-    [expiry, isSameToken, maxAmountPrice, orderRepository, slippageBps, tokenA, tokenB],
+    [expiry, isSameToken, maxAmountPrice, orderRepository, orderSide, slippageBps, tokenA, tokenB],
   );
   // What else the Max estimate was priced for, so an answer for another order is not written back.
   const maxAmountDependsOn = useMemo(
-    () => [tokenB?.path, maxAmountPrice, expiry, slippageBps],
-    [expiry, maxAmountPrice, slippageBps, tokenB?.path],
+    () => [tokenB?.path, maxAmountPrice, expiry, slippageBps, orderSide],
+    [expiry, maxAmountPrice, orderSide, slippageBps, tokenB?.path],
   );
 
   const expiryLabel = useCallback(
@@ -264,6 +339,8 @@ export const useLimitOrderHandler = () => {
 
   const summary: LimitOrderSummary | null = useMemo(() => {
     if (!tokenA || !tokenB) return null;
+    const baseToken = orderSide === "buy" ? tokenB : tokenA;
+    const quoteToken = orderSide === "buy" ? tokenA : tokenB;
     return {
       tokenIn: tokenA,
       tokenOut: tokenB,
@@ -272,8 +349,10 @@ export const useLimitOrderHandler = () => {
       buyAmount: makeDisplayTokenAmountString(tokenB, takingAmount) ?? "0",
       buyAmountUsd: formatUsd(buyUsd),
       minimumReceived,
-      limitPrice: formatRate(isValidPrice ? limitPrice : null).text,
-      limitPriceDeviation: calculatePriceDeviation(limitPrice, marketPrice),
+      limitPrice: isValidPrice
+        ? `1 ${baseToken.displaySymbol} = ${formatOrderRate(limitPrice)} ${quoteToken.displaySymbol}`
+        : "-",
+      limitPriceDeviation: calculatePriceDeviation(limitPrice, quotedMarketPrice),
       expiresAt: formatOrderDateTime(Math.floor(Date.now() / 1000) + expiry),
       expiryDurationSec: expiry,
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
@@ -283,11 +362,11 @@ export const useLimitOrderHandler = () => {
     buyUsd,
     expiry,
     executionFee,
-    formatRate,
     formatUsd,
     isValidPrice,
     limitPrice,
-    marketPrice,
+    orderSide,
+    quotedMarketPrice,
     minimumReceived,
     sellUsd,
     sentSellAmount,
@@ -297,13 +376,42 @@ export const useLimitOrderHandler = () => {
     tokenB,
   ]);
 
-  /** A new pair starts again from its market price. */
-  const resetPairInputs = useCallback(() => {
-    // Re-seed from the market price even when the resulting pair is unchanged.
-    setPricedPairKey(null);
-    setLimitPrice("");
-    setPricePreset(10);
-  }, [setLimitPrice, setPricePreset, setPricedPairKey]);
+  /** Changing a pair or intent requires a new quote and a price in the correct units. */
+  const resetPairInputs = useCallback(
+    (side: LimitOrderSide = orderSide) => {
+      setPricedPairKey(null);
+      setLimitPrice("");
+      setPricePreset(side === "buy" ? -10 : 10);
+    },
+    [orderSide, setLimitPrice, setPricePreset, setPricedPairKey],
+  );
+
+  const changeOrderSide = useCallback(
+    (side: LimitOrderSide) => {
+      if (side === orderSide) return;
+      resetPairInputs(side);
+      setOrderSide(side);
+      // The base asset stays the same, while funding and receiving tokens reverse.
+      // Do not reinterpret an amount entered in a different token denomination.
+      setFundingAmountInput("");
+      setBuyAmountInput("");
+      setSwapValue(prev => ({ ...prev, tokenA: prev.tokenB, tokenB: prev.tokenA }));
+    },
+    [orderSide, resetPairInputs, setBuyAmountInput, setFundingAmountInput, setOrderSide, setSwapValue],
+  );
+
+  // Shared links already contain the actual input/output pair; do not reverse it again.
+  const restoreOrderSide = useCallback(
+    (side: LimitOrderSide) => {
+      if (side !== orderSide) {
+        resetPairInputs(side);
+        setFundingAmountInput("");
+        setBuyAmountInput("");
+      }
+      setOrderSide(side);
+    },
+    [orderSide, resetPairInputs, setBuyAmountInput, setFundingAmountInput, setOrderSide],
+  );
 
   const changeTokenA = useCallback(
     (token: TokenModel) => {
@@ -374,13 +482,15 @@ export const useLimitOrderHandler = () => {
     () =>
       copyUrl({
         type: SWAP_CARD_TYPE.LIMIT,
+        side: orderSide,
         from: tokenA?.path,
         to: tokenB?.path,
-        amount: sellAmount,
+        amount: orderSide === "sell" ? sellAmount : undefined,
+        buyAmount: orderSide === "buy" ? buyAmount : undefined,
         price: limitPrice,
         expiry,
       }),
-    [copyUrl, expiry, limitPrice, sellAmount, tokenA?.path, tokenB?.path],
+    [buyAmount, copyUrl, expiry, limitPrice, orderSide, sellAmount, tokenA?.path, tokenB?.path],
   );
 
   const placeOrder = useCallback(() => {
@@ -404,10 +514,22 @@ export const useLimitOrderHandler = () => {
           expiresAt: Math.floor(Date.now() / 1000) + expiry,
         }),
       onBroadcast: () => {
-        setSellAmount("");
+        setFundingAmountInput("");
+        setBuyAmountInput("");
       },
     });
-  }, [createRequest, expiry, orderRepository, sentSellAmount, setSellAmount, submit, takingAmount, tokenA, tokenB]);
+  }, [
+    createRequest,
+    expiry,
+    orderRepository,
+    sentSellAmount,
+    setBuyAmountInput,
+    setFundingAmountInput,
+    submit,
+    takingAmount,
+    tokenA,
+    tokenB,
+  ]);
 
   const closeConfirmModalRef = useRef<() => void>(() => undefined);
 
@@ -448,6 +570,9 @@ export const useLimitOrderHandler = () => {
   }, [buttonState, openConnectWallet, openModal, switchNetwork]);
 
   return {
+    orderSide,
+    changeOrderSide,
+    restoreOrderSide,
     tokenA,
     tokenB,
     tokenABalance,
@@ -462,7 +587,9 @@ export const useLimitOrderHandler = () => {
     minimumReceived,
     executionFee,
     limitPrice,
-    limitPriceUsd: formatUsd(isValidPrice ? calculateUsdValue(limitPrice, getUsdPrice(tokenB)) : null),
+    limitPriceUsd: formatUsd(
+      isValidPrice ? calculateUsdValue(limitPrice, getUsdPrice(orderSide === "buy" ? tokenA : tokenB)) : null,
+    ),
     marketPrice,
     selectedPreset: pricePreset,
     expiry,
@@ -479,7 +606,8 @@ export const useLimitOrderHandler = () => {
     changeTokenA,
     changeTokenB,
     switchTokens,
-    changeSellAmount: setSellAmount,
+    changeSellAmount,
+    changeBuyAmount,
     changeLimitPrice,
     stepPrice,
     applyPreset,
