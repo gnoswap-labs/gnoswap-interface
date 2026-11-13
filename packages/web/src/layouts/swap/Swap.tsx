@@ -11,7 +11,7 @@ import SwapInfoTransactionListContainer from "./containers/swap-info-transaction
 import Footer from "@components/common/footer/Footer";
 
 const Swap: React.FC = () => {
-  // One market price query serves both the Limit form and its order list.
+  // The form and visible orders share each pair's market-price cache.
   return (
     <LimitMarketPriceProvider>
       <SwapLayout

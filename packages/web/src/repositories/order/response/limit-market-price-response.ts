@@ -7,10 +7,6 @@ export interface LimitPoolMarketPrice {
   updatedBlockTime: number;
 }
 
-export interface LimitMarketPriceResult extends LimitMarketPricePair {
+export interface LimitMarketPriceResponse extends LimitMarketPricePair {
   price: LimitPoolMarketPrice | null;
-}
-
-export interface LimitMarketPricesResponse {
-  items: LimitMarketPriceResult[];
 }

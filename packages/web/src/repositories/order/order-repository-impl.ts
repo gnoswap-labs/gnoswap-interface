@@ -25,7 +25,7 @@ import {
   GetOrderHistoryRequest,
   GetOrdersRequest,
   OrderGasRequest,
-  GetLimitMarketPricesRequest,
+  LimitMarketPricePair,
 } from "./request";
 import {
   DcaConfigResponse,
@@ -36,7 +36,7 @@ import {
   LimitConfigResponse,
   LimitFillItem,
   LimitOrderItem,
-  LimitMarketPricesResponse,
+  LimitMarketPriceResponse,
   OrderAPIResponse,
   OrderPagedResponse,
 } from "./response";
@@ -93,23 +93,12 @@ export class OrderRepositoryImpl implements OrderRepository {
     return this.get<LimitConfigResponse>("orders/limit/config");
   };
 
-  public getLimitMarketPrices = async (request: GetLimitMarketPricesRequest): Promise<LimitMarketPricesResponse> => {
-    if (!this.networkClient) {
-      throw new CommonError("FAILED_INITIALIZE_PROVIDER");
-    }
-
-    const response = await this.networkClient.post<
-      GetLimitMarketPricesRequest,
-      OrderAPIResponse<LimitMarketPricesResponse>
-    >({
-      url: "orders/limit/market-prices",
-      body: request,
-    });
-    if (response.status < 200 || response.status >= 300) {
-      throw new Error(response.message);
-    }
-
-    return response.data.data;
+  public getLimitMarketPrice = async ({
+    tokenIn,
+    tokenOut,
+  }: LimitMarketPricePair): Promise<LimitMarketPriceResponse> => {
+    const params = new URLSearchParams({ tokenIn, tokenOut });
+    return this.get<LimitMarketPriceResponse>(`orders/limit/market-price?${params.toString()}`);
   };
 
   public getLimitOrders = async (request: GetOrdersRequest): Promise<OrderPagedResponse<LimitOrderItem>> => {

@@ -1,8 +1,6 @@
 import { LimitMarketPricePair } from "@repositories/order/request";
 import { checkGnotPath } from "@utils/common";
 
-const MAX_PAIRS_PER_REQUEST = 100;
-
 const normalizePath = (path: string) => checkGnotPath(path);
 
 export const getLimitMarketPricePairKey = ({ tokenIn, tokenOut }: LimitMarketPricePair): string =>
@@ -24,12 +22,4 @@ export const canonicalizeLimitMarketPricePairs = (pairs: readonly LimitMarketPri
     if (a.tokenOut !== b.tokenOut) return a.tokenOut < b.tokenOut ? -1 : 1;
     return 0;
   });
-};
-
-export const chunkLimitMarketPricePairs = (pairs: readonly LimitMarketPricePair[]): LimitMarketPricePair[][] => {
-  const chunks: LimitMarketPricePair[][] = [];
-  for (let start = 0; start < pairs.length; start += MAX_PAIRS_PER_REQUEST) {
-    chunks.push(pairs.slice(start, start + MAX_PAIRS_PER_REQUEST));
-  }
-  return chunks;
 };

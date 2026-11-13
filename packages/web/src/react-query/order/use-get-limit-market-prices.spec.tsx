@@ -1,133 +1,117 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import React from "react";
-
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import { LimitMarketPricePair } from "@repositories/order/request";
-import { LimitPoolMarketPrice } from "@repositories/order/response";
+import { LimitMarketPriceResponse, LimitPoolMarketPrice } from "@repositories/order/response";
 import { getLimitMarketPricePairKey } from "@utils/limit-market-price-utils";
-
 import { useGetLimitMarketPrices } from "./use-get-limit-market-prices";
 
-const mockGetLimitMarketPrices = jest.fn();
-
+const mockGetLimitMarketPrice = jest.fn<Promise<LimitMarketPriceResponse>, [LimitMarketPricePair]>();
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
-  useGnoswapContext: () => ({ orderRepository: { getLimitMarketPrices: mockGetLimitMarketPrices } }),
+  useGnoswapContext: () => ({ orderRepository: { getLimitMarketPrice: mockGetLimitMarketPrice } }),
 }));
-
 const price: LimitPoolMarketPrice = {
   outputPerInput: "0.00000000000000000041",
   poolPath: "pool/a:b",
   updatedBlockHeight: 123,
   updatedBlockTime: 456,
 };
-
+const forward = { tokenIn: WRAPPED_GNOT_PATH, tokenOut: "gno.land/r/demo/a" };
+const reverse = { tokenIn: forward.tokenOut, tokenOut: forward.tokenIn };
+let client: QueryClient;
 const createWrapper = () => {
-  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  client = new QueryClient({ defaultOptions: { queries: { retry: false, refetchOnMount: false } } });
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={client}>{children}</QueryClientProvider>
   );
-  return { queryClient, wrapper };
 };
+beforeEach(() => mockGetLimitMarketPrice.mockReset());
+afterEach(() => {
+  client.clear();
+  jest.useRealTimers();
+});
 
-describe("useGetLimitMarketPrices", () => {
-  beforeEach(() => mockGetLimitMarketPrices.mockReset());
-  afterEach(() => jest.useRealTimers());
-
-  it("deduplicates native aliases, keeps reverse directions separate and retains precise rates", async () => {
-    const a = "gno.land/r/demo/a";
-    mockGetLimitMarketPrices.mockImplementation(async ({ pairs }: { pairs: LimitMarketPricePair[] }) => ({
-      items: pairs.map(pair => ({ ...pair, price })),
-    }));
-    const { wrapper } = createWrapper();
-    const { result } = renderHook(
-      () =>
-        useGetLimitMarketPrices([
-          { tokenIn: "ugnot", tokenOut: a },
-          { tokenIn: WRAPPED_GNOT_PATH, tokenOut: a },
-          { tokenIn: a, tokenOut: WRAPPED_GNOT_PATH },
-        ]),
-      { wrapper },
+describe("useGetLimitMarketPrices individual GET cache", () => {
+  it("deduplicates native aliases while preserving reverse directions and full rate precision", async () => {
+    mockGetLimitMarketPrice.mockImplementation(async pair => ({ ...pair, price }));
+    const { result } = renderHook(() => useGetLimitMarketPrices([{ ...forward, tokenIn: "ugnot" }, forward, reverse]), {
+      wrapper: createWrapper(),
+    });
+    await waitFor(() =>
+      expect(Object.values(result.current.data).map(item => item?.outputPerInput)).toEqual([
+        price.outputPerInput,
+        price.outputPerInput,
+      ]),
     );
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(1);
-    expect(mockGetLimitMarketPrices.mock.calls[0][0].pairs).toEqual([
-      { tokenIn: a, tokenOut: WRAPPED_GNOT_PATH },
-      { tokenIn: WRAPPED_GNOT_PATH, tokenOut: a },
-    ]);
-    expect(Object.keys(result.current.data ?? {})).toHaveLength(2);
-    expect(Object.values(result.current.data ?? {}).map(value => value?.outputPerInput)).toEqual([
-      "0.00000000000000000041",
-      "0.00000000000000000041",
-    ]);
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(2);
+    expect(mockGetLimitMarketPrice.mock.calls.map(([pair]) => pair)).toEqual(
+      expect.arrayContaining([forward, reverse]),
+    );
   });
 
-  it("splits more than 100 unique pairs and maps results by returned direction rather than position", async () => {
-    const pairs = Array.from({ length: 101 }, (_, index) => ({
-      tokenIn: `gno.land/r/demo/in-${index}`,
-      tokenOut: `gno.land/r/demo/out-${index}`,
-    }));
-    mockGetLimitMarketPrices.mockImplementation(async ({ pairs: requestPairs }: { pairs: LimitMarketPricePair[] }) => ({
-      items: [...requestPairs].reverse().map(pair => ({ ...pair, price })),
-    }));
-    const { wrapper } = createWrapper();
-    const { result } = renderHook(() => useGetLimitMarketPrices(pairs), { wrapper });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(2);
-    expect(mockGetLimitMarketPrices.mock.calls.map(([request]) => request.pairs.length)).toEqual([100, 1]);
-    expect(result.current.data?.[getLimitMarketPricePairKey(pairs[100])]).toEqual(price);
-    expect(Object.values(result.current.data ?? {})).toHaveLength(101);
+  it("reuses unchanged and recently removed pairs when the visible pair set changes", async () => {
+    mockGetLimitMarketPrice.mockImplementation(async pair => ({ ...pair, price }));
+    const { result, rerender } = renderHook(
+      ({ pairs }: { pairs: LimitMarketPricePair[] }) => useGetLimitMarketPrices(pairs),
+      {
+        wrapper: createWrapper(),
+        initialProps: { pairs: [] as LimitMarketPricePair[] },
+      },
+    );
+    expect(mockGetLimitMarketPrice).not.toHaveBeenCalled();
+    rerender({ pairs: [forward] });
+    await waitFor(() => expect(result.current.data[getLimitMarketPricePairKey(forward)]).toEqual(price));
+    rerender({ pairs: [forward, reverse] });
+    await waitFor(() => expect(result.current.data[getLimitMarketPricePairKey(reverse)]).toEqual(price));
+    rerender({ pairs: [reverse] });
+    expect(result.current.data[getLimitMarketPricePairKey(forward)]).toBeUndefined();
+    rerender({ pairs: [forward, reverse] });
+    expect(result.current.data[getLimitMarketPricePairKey(forward)]).toEqual(price);
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(2);
   });
-  it("refreshes market prices every ten seconds", async () => {
+
+  it("isolates an unavailable or failed pair without hiding another pair and recovers independently", async () => {
+    let state: "success" | "null" | "error" = "success";
+    mockGetLimitMarketPrice.mockImplementation(async pair => {
+      if (pair.tokenIn === forward.tokenIn) {
+        if (state === "error") throw new Error("pair unavailable");
+        if (state === "null") return { ...pair, price: null };
+      }
+      return { ...pair, price };
+    });
+    const { result } = renderHook(() => useGetLimitMarketPrices([forward, reverse]), { wrapper: createWrapper() });
+    const forwardKey = getLimitMarketPricePairKey(forward),
+      reverseKey = getLimitMarketPricePairKey(reverse);
+    await waitFor(() => expect(result.current.data[forwardKey]).toEqual(price));
+    for (const next of ["null", "error"] as const) {
+      state = next;
+      await act(() => client.refetchQueries({ type: "active" }));
+      await waitFor(() => expect(result.current.data[forwardKey]).toBeNull());
+      expect(result.current.data[reverseKey]).toEqual(price);
+    }
+    state = "success";
+    await act(() => client.refetchQueries({ type: "active" }));
+    await waitFor(() => expect(result.current.data[forwardKey]).toEqual(price));
+    expect(result.current.data[reverseKey]).toEqual(price);
+  });
+
+  it("refreshes a stale pair immediately when its page returns despite the app's mount defaults", async () => {
     jest.useFakeTimers();
-    mockGetLimitMarketPrices.mockResolvedValue({ items: [{ tokenIn: "a", tokenOut: "b", price }] });
-    const { wrapper } = createWrapper();
-    renderHook(() => useGetLimitMarketPrices([{ tokenIn: "a", tokenOut: "b" }]), { wrapper });
-
-    await act(async () => {
-      await Promise.resolve();
-    });
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(1);
-
-    act(() => jest.advanceTimersByTime(9_999));
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(1);
-
-    await act(async () => {
-      jest.advanceTimersByTime(1);
-      await Promise.resolve();
-    });
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(2);
-  });
-
-  it("does no request for an empty pair set and represents omitted or unrelated results as null", async () => {
-    mockGetLimitMarketPrices.mockResolvedValue({
-      items: [{ tokenIn: "unrequested", tokenOut: "pair", price }],
-    });
-    const { wrapper } = createWrapper();
+    let currentPrice = price;
+    mockGetLimitMarketPrice.mockImplementation(async pair => ({ ...pair, price: currentPrice }));
     const { result, rerender } = renderHook(({ pairs }) => useGetLimitMarketPrices(pairs), {
-      wrapper,
-      initialProps: { pairs: [] as LimitMarketPricePair[] },
+      wrapper: createWrapper(),
+      initialProps: { pairs: [forward] },
     });
-
-    expect(mockGetLimitMarketPrices).not.toHaveBeenCalled();
-    rerender({ pairs: [{ tokenIn: "known", tokenOut: "pair" }] });
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-
-    expect(result.current.data?.[getLimitMarketPricePairKey({ tokenIn: "known", tokenOut: "pair" })]).toBeNull();
-  });
-
-  it("propagates repository failures", async () => {
-    const failure = new Error("market price unavailable");
-    mockGetLimitMarketPrices.mockRejectedValue(failure);
-    const { wrapper } = createWrapper();
-    const { result } = renderHook(() => useGetLimitMarketPrices([{ tokenIn: "a", tokenOut: "b" }]), { wrapper });
-
-    await waitFor(() => expect(result.current.isError).toBe(true));
-
-    expect(result.current.error).toBe(failure);
+    const key = getLimitMarketPricePairKey(forward);
+    await waitFor(() => expect(result.current.data[key]).toEqual(price));
+    rerender({ pairs: [] });
+    act(() => jest.advanceTimersByTime(10_001));
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(1);
+    currentPrice = { ...price, outputPerInput: "0.2" };
+    rerender({ pairs: [forward] });
+    await waitFor(() => expect(result.current.data[key]?.outputPerInput).toBe("0.2"));
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(2);
   });
 });

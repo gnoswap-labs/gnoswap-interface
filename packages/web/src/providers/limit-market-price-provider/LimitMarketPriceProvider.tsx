@@ -26,8 +26,8 @@ const useLimitMarketPriceContext = (hookName: string): LimitMarketPriceContextVa
 };
 
 /**
- * Prices the Limit form's pair and the Limit orders on screen with one shared pool spot price query, so the form and
- * the cards always read the same refresh. It only runs while the Limit card is open.
+ * Shares each directed pair's pool spot price between the Limit form and visible orders.
+ * Queries refresh only while the Limit card is open.
  */
 export const LimitMarketPriceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
@@ -40,18 +40,17 @@ export const LimitMarketPriceProvider: React.FC<{ children: React.ReactNode }> =
     if (!tokenA || !tokenB) return orderPairs;
     return [{ tokenIn: getSwapTokenPath(tokenA), tokenOut: getSwapTokenPath(tokenB) }, ...orderPairs];
   }, [registeredPairs, tokenA, tokenB]);
-  const { data, isError } = useGetLimitMarketPrices(pairs, { enabled: isLimitOpen });
+  const { data } = useGetLimitMarketPrices(pairs, { enabled: isLimitOpen });
 
   const getPrice = useCallback(
     (pair: LimitMarketPricePair | null) => {
-      // Prices kept from before a failed refresh are no longer current.
-      if (!pair || !data || isError) return null;
+      if (!pair || !data) return null;
       const rate = data[getLimitMarketPricePairKey(pair)]?.outputPerInput;
       if (!rate) return null;
       const value = BigNumber(rate);
       return value.isFinite() && value.isGreaterThan(0) ? rate : null;
     },
-    [data, isError],
+    [data],
   );
 
   const setRegisteredPairs = useCallback(

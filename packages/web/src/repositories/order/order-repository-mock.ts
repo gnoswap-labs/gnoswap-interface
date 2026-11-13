@@ -16,7 +16,7 @@ import { OrderRepository } from "./order-repository";
 import {
   GetDcaPairRequest,
   GetDcaScheduleRequest,
-  GetLimitMarketPricesRequest,
+  LimitMarketPricePair,
   GetOrderHistoryRequest,
   GetOrdersRequest,
 } from "./request";
@@ -28,7 +28,7 @@ import {
   DcaScheduleResponse,
   LimitConfigResponse,
   LimitFillItem,
-  LimitMarketPricesResponse,
+  LimitMarketPriceResponse,
   LimitOrderItem,
   OrderPagedResponse,
 } from "./response";
@@ -105,17 +105,11 @@ export class OrderRepositoryMock implements OrderRepository {
     return this.delay(MockLimitConfigResponse.data);
   }
 
-  getLimitMarketPrices({ pairs }: GetLimitMarketPricesRequest): Promise<LimitMarketPricesResponse> {
-    const fixtureByKey = new Map(
-      MockLimitMarketPricesResponse.items.map(item => [getLimitMarketPricePairKey(item), item.price] as const),
+  getLimitMarketPrice(pair: LimitMarketPricePair): Promise<LimitMarketPriceResponse> {
+    const item = MockLimitMarketPricesResponse.items.find(
+      fixture => getLimitMarketPricePairKey(fixture) === getLimitMarketPricePairKey(pair),
     );
-
-    return this.delay({
-      items: pairs.map(pair => ({
-        ...pair,
-        price: fixtureByKey.get(getLimitMarketPricePairKey(pair)) ?? null,
-      })),
-    });
+    return this.delay({ ...pair, price: item?.price ?? null });
   }
 
   getLimitOrders(request: GetOrdersRequest): Promise<OrderPagedResponse<LimitOrderItem>> {

@@ -51,14 +51,3 @@ describe("OrderRepositoryImpl DCA pair settings", () => {
     ]);
   });
 });
-
-describe("OrderRepositoryImpl limit market prices", () => {
-  it("rejects unsuccessful HTTP responses", async () => {
-    const post = jest.fn().mockResolvedValue({ status: 503, message: "unavailable", data: {} });
-    const repository = new OrderRepositoryImpl({ post } as unknown as NetworkClient, null, null);
-
-    await expect(
-      repository.getLimitMarketPrices({ pairs: [{ tokenIn: "token/a", tokenOut: "token/b" }] }),
-    ).rejects.toThrow("unavailable");
-  });
-});

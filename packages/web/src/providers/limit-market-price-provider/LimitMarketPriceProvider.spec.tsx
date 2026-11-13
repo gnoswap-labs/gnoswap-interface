@@ -6,8 +6,8 @@ import React from "react";
 import { GNOT_TOKEN } from "@common/values/token-constant";
 import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import type { TokenModel } from "@models/token/token-model";
-import type { GetLimitMarketPricesRequest, LimitMarketPricePair } from "@repositories/order/request";
-import type { LimitMarketPricesResponse } from "@repositories/order/response";
+import type { LimitMarketPricePair } from "@repositories/order/request";
+import type { LimitMarketPriceResponse } from "@repositories/order/response";
 import { SwapState } from "@states/index";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
 
@@ -18,11 +18,11 @@ import {
 } from "./LimitMarketPriceProvider";
 
 let mockQuery: Record<string, string> = {};
-const mockGetLimitMarketPrices = jest.fn<Promise<LimitMarketPricesResponse>, [GetLimitMarketPricesRequest]>();
+const mockGetLimitMarketPrice = jest.fn<Promise<LimitMarketPriceResponse>, [LimitMarketPricePair]>();
 
 jest.mock("@hooks/common/use-custom-router", () => ({ __esModule: true, default: () => ({ query: mockQuery }) }));
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
-  useGnoswapContext: () => ({ orderRepository: { getLimitMarketPrices: mockGetLimitMarketPrices } }),
+  useGnoswapContext: () => ({ orderRepository: { getLimitMarketPrice: mockGetLimitMarketPrice } }),
 }));
 jest.mock("@constants/order.constant", () => ({ ENABLED_SWAP_CARD_TYPES: ["swap", "dca", "limit"] }));
 
@@ -55,13 +55,11 @@ const RATES: Record<string, string> = {
 };
 
 /** The market price API's answer to a request. */
-const answer = ({ pairs }: GetLimitMarketPricesRequest): LimitMarketPricesResponse => ({
-  items: pairs.map(({ tokenIn, tokenOut }) => {
-    const outputPerInput = RATES[`${tokenIn}>${tokenOut}`];
-    const pool = { poolPath: `${tokenIn}:${tokenOut}:3000`, updatedBlockHeight: 1, updatedBlockTime: 1 };
-    return { tokenIn, tokenOut, price: outputPerInput ? { ...pool, outputPerInput } : null };
-  }),
-});
+const answer = ({ tokenIn, tokenOut }: LimitMarketPricePair): LimitMarketPriceResponse => {
+  const outputPerInput = RATES[`${tokenIn}>${tokenOut}`];
+  const pool = { poolPath: `${tokenIn}:${tokenOut}:3000`, updatedBlockHeight: 1, updatedBlockTime: 1 };
+  return { tokenIn, tokenOut, price: outputPerInput ? { ...pool, outputPerInput } : null };
+};
 
 /** Reads the Limit form's pair, as the Limit form does. */
 const FormPrice: React.FC = () => {
@@ -109,11 +107,10 @@ const setup = (formTokens: [TokenModel, TokenModel]) => {
 
 const formPrice = () => screen.getByLabelText("form market price").textContent;
 const orderPrices = () => screen.queryAllByRole("listitem").map(item => item.textContent);
-const lastRequestedPairs = () => mockGetLimitMarketPrices.mock.calls.at(-1)?.[0].pairs;
 
 beforeEach(() => {
   mockQuery = { type: "limit" };
-  mockGetLimitMarketPrices.mockReset().mockImplementation(async request => answer(request));
+  mockGetLimitMarketPrice.mockReset().mockImplementation(async request => answer(request));
 });
 
 afterEach(() => {
@@ -122,7 +119,7 @@ afterEach(() => {
 });
 
 describe("LimitMarketPriceProvider", () => {
-  it("prices the form pair and the orders on screen in one request, once per directed pair", async () => {
+  it("shares the form and order prices with one request per directed pair", async () => {
     const { rerender } = setup([tokenA, tokenB]);
     await waitFor(() => expect(formPrice()).toBe("10"));
 
@@ -136,9 +133,8 @@ describe("LimitMarketPriceProvider", () => {
     await waitFor(() => expect(orderPrices()).toEqual(["10", "0.1", "0.5", "0.5"]));
 
     expect(formPrice()).toBe("10");
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(2);
-    expect(lastRequestedPairs()).toHaveLength(3);
-    expect(lastRequestedPairs()).toEqual(
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(3);
+    expect(mockGetLimitMarketPrice.mock.calls.map(([request]) => request)).toEqual(
       expect.arrayContaining([
         pair(tokenA, tokenB),
         pair(tokenB, tokenA),
@@ -154,17 +150,19 @@ describe("LimitMarketPriceProvider", () => {
 
     rerender([pair(tokenA, tokenC)]);
     await waitFor(() => expect(orderPrices()).toEqual(["20"]));
-    expect(lastRequestedPairs()).toEqual([pair(tokenA, tokenB), pair(tokenA, tokenC)]);
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(3);
 
     // The list closes.
     rerender();
-    await waitFor(() => expect(lastRequestedPairs()).toEqual([pair(tokenA, tokenB)]));
+    expect(orderPrices()).toEqual([]);
+    expect(formPrice()).toBe("10");
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(3);
   });
 
   it("never shows another pair's price while a switched form pair loads", async () => {
     const answers: (() => void)[] = [];
-    mockGetLimitMarketPrices.mockImplementation(request => {
-      const { promise, resolve } = Promise.withResolvers<LimitMarketPricesResponse>();
+    mockGetLimitMarketPrice.mockImplementation(request => {
+      const { promise, resolve } = Promise.withResolvers<LimitMarketPriceResponse>();
       answers.push(() => resolve(answer(request)));
       return promise;
     });
@@ -192,12 +190,12 @@ describe("LimitMarketPriceProvider", () => {
     await waitFor(() => expect(orderPrices()).toEqual(["-", "0.1"]));
     expect(formPrice()).toBe("10");
 
-    mockGetLimitMarketPrices.mockRejectedValue(new Error("market price API unavailable"));
+    mockGetLimitMarketPrice.mockRejectedValue(new Error("market price API unavailable"));
     await act(() => client.refetchQueries({ type: "active" }));
     await waitFor(() => expect(formPrice()).toBe("-"));
     expect(orderPrices()).toEqual(["-", "-"]);
 
-    mockGetLimitMarketPrices.mockImplementation(async request => answer(request));
+    mockGetLimitMarketPrice.mockImplementation(async request => answer(request));
     await act(() => client.refetchQueries({ type: "active" }));
     await waitFor(() => expect(formPrice()).toBe("10"));
     expect(orderPrices()).toEqual(["-", "0.1"]);
@@ -214,18 +212,18 @@ describe("LimitMarketPriceProvider", () => {
     mockQuery = { type: "dca" };
     const { rerender } = setup([tokenA, tokenB]);
     await advance(30_000);
-    expect(mockGetLimitMarketPrices).not.toHaveBeenCalled();
+    expect(mockGetLimitMarketPrice).not.toHaveBeenCalled();
 
     mockQuery = { type: "limit" };
     rerender();
     await advance(0);
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(1);
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(1);
     await advance(10_000);
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(2);
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(2);
 
     mockQuery = { type: "swap" };
     rerender();
     await advance(30_000);
-    expect(mockGetLimitMarketPrices).toHaveBeenCalledTimes(2);
+    expect(mockGetLimitMarketPrice).toHaveBeenCalledTimes(2);
   });
 });
