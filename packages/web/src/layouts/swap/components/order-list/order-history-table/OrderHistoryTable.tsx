@@ -9,9 +9,9 @@ import IconOpenLink from "@components/common/icons/IconOpenLink";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import Pagination from "@components/common/pagination/Pagination";
 import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
-import { OrderHistoryModel } from "@models/order/order-type";
+import { OrderHistoryModel, OrderKind } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
-import { formatOrderAmount } from "@utils/order-format-utils";
+import { formatOrderFullAmount, formatOrderRate } from "@utils/order-format-utils";
 
 import { OrderHistoryTableWrapper } from "./OrderHistoryTable.styles";
 
@@ -19,6 +19,7 @@ const HIGHLIGHT_DURATION = 1_000;
 const CLOCK_INTERVAL = 1_000;
 
 export interface OrderHistoryTableProps {
+  kind: OrderKind;
   items: OrderHistoryModel[];
   inputToken: TokenModel;
   outputToken: TokenModel;
@@ -36,6 +37,7 @@ export function formatHistoryTime(time: number, now: number): string {
 
 /** Executions (DCA) or fills (limit) of an order, ten per page. Rows added while open are highlighted. */
 const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
+  kind,
   items,
   inputToken,
   outputToken,
@@ -81,33 +83,46 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
     <OrderHistoryTableWrapper>
       <div className="history-row history-header">
         <span className="cell left">{t("Swap:order.time")}</span>
-        <span className="cell">{t("Swap:order.rate")}</span>
+        <span className={cx("cell", { "filled-price": kind === "limit" })}>
+          {t(kind === "limit" ? "Swap:order.filledPrice" : "Swap:order.rate")}
+        </span>
         <span className="cell">{t("Swap:order.sold")}</span>
         <span className="cell">{t("Swap:order.purchased")}</span>
       </div>
-      {items.map(item => (
-        <div key={item.key} className={cx("history-row", { highlight: highlighted.has(item.key) })}>
-          <span className="cell left">
-            <DateTimeTooltip date={new Date(item.time * 1000)}>
-              <span>{formatHistoryTime(item.time, now)}</span>
-            </DateTimeTooltip>
-            <Link className="time-link" href={getTxUrl(item.txHash)} target="_blank" aria-label="Transaction link">
-              <IconOpenLink size="10px" className="path-link-icon" />
-            </Link>
-          </span>
-          <span className="cell">
-            <span>{item.rate === null ? "-" : formatOrderAmount(item.rate)}</span>
-          </span>
-          <span className="cell">
-            <span>{formatOrderAmount(item.soldAmount)}</span>
-            <MissingLogo symbol={inputToken.symbol} url={inputToken.logoURI} width={compact ? 12 : 14} />
-          </span>
-          <span className="cell">
-            <span>{formatOrderAmount(item.purchasedAmount)}</span>
-            <MissingLogo symbol={outputToken.symbol} url={outputToken.logoURI} width={compact ? 12 : 14} />
-          </span>
-        </div>
-      ))}
+      {items.map(item => {
+        const soldAmount = formatOrderFullAmount(item.soldAmount, inputToken.decimals);
+        const purchasedAmount = formatOrderFullAmount(item.purchasedAmount, outputToken.decimals);
+        return (
+          <div key={item.key} className={cx("history-row", { highlight: highlighted.has(item.key) })}>
+            <span className="cell left">
+              <DateTimeTooltip date={new Date(item.time * 1000)}>
+                <span>{formatHistoryTime(item.time, now)}</span>
+              </DateTimeTooltip>
+              <Link className="time-link" href={getTxUrl(item.txHash)} target="_blank" aria-label="Transaction link">
+                <IconOpenLink size="10px" className="path-link-icon" />
+              </Link>
+            </span>
+            <span
+              className="cell"
+              title={
+                item.rate === null
+                  ? undefined
+                  : `1 ${inputToken.displaySymbol} = ${item.rate} ${outputToken.displaySymbol}`
+              }
+            >
+              <span>{formatOrderRate(item.rate)}</span>
+            </span>
+            <span className="cell" title={`${soldAmount} ${inputToken.displaySymbol}`}>
+              <span>{soldAmount}</span>
+              <MissingLogo symbol={inputToken.symbol} url={inputToken.logoURI} width={compact ? 12 : 14} />
+            </span>
+            <span className="cell" title={`${purchasedAmount} ${outputToken.displaySymbol}`}>
+              <span>{purchasedAmount}</span>
+              <MissingLogo symbol={outputToken.symbol} url={outputToken.logoURI} width={compact ? 12 : 14} />
+            </span>
+          </div>
+        );
+      })}
       {totalPages > 1 && (
         <div className="pagination">
           <Pagination

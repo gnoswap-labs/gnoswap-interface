@@ -67,6 +67,7 @@
     "connectWallet": "Conecta tu monedero para ver tu pedido.",
     "expiredAt": "Caducado el",
     "expiresAt": "Vence el",
+    "filledPrice": "Precio de ejecución",
     "nextTrade": "Próxima operación",
     "noOrders": "No se han encontrado pedidos.",
     "ongoing": "En curso",

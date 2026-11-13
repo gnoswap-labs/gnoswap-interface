@@ -85,6 +85,7 @@ const PastOrderList: React.FC = () => {
             onClickClaim={fn()}
             renderHistory={order => (
               <OrderHistoryTable
+                kind="dca"
                 items={HISTORY}
                 inputToken={order.inputToken}
                 outputToken={order.outputToken}

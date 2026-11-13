@@ -67,6 +67,7 @@
     "connectWallet": "Please connect your wallet to view your order.",
     "expiredAt": "Expired At",
     "expiresAt": "Expires At",
+    "filledPrice": "Filled Price",
     "nextTrade": "Next Trade",
     "noOrders": "No orders found.",
     "ongoing": "Ongoing",

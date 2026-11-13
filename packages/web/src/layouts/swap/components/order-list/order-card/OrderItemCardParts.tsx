@@ -22,7 +22,9 @@ export const OrderMetrics: React.FC<{ metrics: OrderMetric[] }> = ({ metrics }) 
       <div key={metric.key} className="metric">
         <span className="metric-label">{metric.label}</span>
         <span className="metric-value">
-          <span className="value-text">{metric.value}</span>
+          <span className="value-text" title={metric.value}>
+            {metric.value}
+          </span>
           {metric.roi && <span className={cx("roi", { negative: metric.roi.isNegative })}>{metric.roi.text}</span>}
           {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
         </span>

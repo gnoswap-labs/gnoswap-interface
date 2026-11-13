@@ -67,6 +67,7 @@
     "connectWallet": "请将您的钱包连接到本平台，以便查看您的订单。",
     "expiredAt": "到期时间：",
     "expiresAt": "到期时间",
+    "filledPrice": "成交价",
     "nextTrade": "下一笔交易",
     "noOrders": "未找到任何订单。",
     "ongoing": "进行中",

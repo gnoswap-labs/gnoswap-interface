@@ -40,6 +40,7 @@ const renderTable = (props: Partial<React.ComponentProps<typeof OrderHistoryTabl
   render(
     <GnoswapThemeProvider>
       <OrderHistoryTable
+        kind="dca"
         items={[row(1)]}
         inputToken={token("GNS")}
         outputToken={token("GNOT")}
@@ -61,21 +62,63 @@ describe("OrderHistoryTable", () => {
     jest.useRealTimers();
   });
 
-  it("formats rate, sold and purchased with two decimals rounded down", () => {
+  it("preserves exchange-rate precision and token precision in history amounts", () => {
     renderTable();
 
     expect(screen.getByText("10m ago")).toBeInTheDocument();
-    expect(screen.getByText("1.15")).toBeInTheDocument();
-    expect(screen.getByText("165.15")).toBeInTheDocument();
-    expect(screen.getByText("152.15")).toBeInTheDocument();
+    expect(screen.getByText("1.151437")).toBeInTheDocument();
+    expect(screen.getByText("165.159")).toBeInTheDocument();
+    expect(screen.getByText("152.1599")).toBeInTheDocument();
   });
 
-  it("applies the lower bound and K/M/B without trailing zeros", () => {
+  it("preserves small DCA rates and shows unabridged historical amounts", () => {
     renderTable({ items: [row(1, { rate: "0.004", soldAmount: "12500", purchasedAmount: "2500000" })] });
 
-    expect(screen.getByText("<0.01")).toBeInTheDocument();
-    expect(screen.getByText("12.5K")).toBeInTheDocument();
-    expect(screen.getByText("2.5M")).toBeInTheDocument();
+    expect(screen.getByText("0.004")).toBeInTheDocument();
+    expect(screen.getByText("12,500")).toBeInTheDocument();
+    expect(screen.getByText("2,500,000")).toBeInTheDocument();
+  });
+
+  it("preserves distinct actual prices for partial Limit fills instead of rounding them to amount precision", () => {
+    const { container } = renderTable({
+      kind: "limit",
+      items: [
+        row(1, { rate: "0.1234567", soldAmount: "100", purchasedAmount: "12.34567" }),
+        row(2, { rate: "0.1245678", soldAmount: "50", purchasedAmount: "6.22839" }),
+      ],
+    });
+    const prices = Array.from(
+      container.querySelectorAll(".history-row:not(.history-header)"),
+      row => row.children[1].textContent,
+    );
+    expect(prices).toEqual(["0.123456", "0.124567"]);
+  });
+
+  it.each([
+    { decimals: 6, amount: "1.079988" },
+    { decimals: 18, amount: "1.079988123456789012" },
+  ])("preserves all $decimals output-token decimals instead of truncating filled amounts", ({ decimals, amount }) => {
+    const { container } = renderTable({
+      kind: "limit",
+      outputToken: { ...token("ATOM"), decimals },
+      items: [row(1, { rate: amount, soldAmount: "1", purchasedAmount: amount })],
+    });
+
+    expect(
+      container.querySelector(".history-row:not(.history-header)")?.children[3].firstElementChild?.textContent,
+    ).toBe(amount);
+    expect(screen.getByTitle(`${amount} ATOM`)).toBeInTheDocument();
+  });
+
+  it("preserves nonzero history amounts smaller than six decimal places", () => {
+    renderTable({
+      kind: "limit",
+      outputToken: { ...token("ATOM"), decimals: 18 },
+      items: [row(1, { purchasedAmount: "0.000000123456789012" })],
+    });
+
+    expect(screen.getByText("0.000000123456789012")).toBeInTheDocument();
+    expect(screen.getByTitle("0.000000123456789012 ATOM")).toBeInTheDocument();
   });
 
   it("links every row to its transaction on Gnoscan", () => {
@@ -93,6 +136,7 @@ describe("OrderHistoryTable", () => {
     rerender(
       <GnoswapThemeProvider>
         <OrderHistoryTable
+          kind="dca"
           items={[row(1)]}
           inputToken={token("GNS")}
           outputToken={token("GNOT")}
@@ -113,6 +157,7 @@ describe("OrderHistoryTable", () => {
     rerender(
       <GnoswapThemeProvider>
         <OrderHistoryTable
+          kind="dca"
           items={[row(2), row(1)]}
           inputToken={token("GNS")}
           outputToken={token("GNOT")}
@@ -129,6 +174,7 @@ describe("OrderHistoryTable", () => {
     const table = (page: number, dataPage = page, isPreviousData = false) => (
       <GnoswapThemeProvider>
         <OrderHistoryTable
+          kind="dca"
           items={Array.from({ length: 10 }, (_, index) => row((dataPage - 1) * 10 + index))}
           inputToken={token("GNS")}
           outputToken={token("GNOT")}

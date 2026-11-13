@@ -97,7 +97,15 @@ const dcaOrder: DcaOrderModel = {
 };
 
 type Flow = "cancel" | "refund" | "stop";
-const Preview = ({ flow }: { flow: Flow }) => {
+const Preview = ({
+  flow,
+  outputDecimals = token.decimals,
+  priceRate = null,
+}: {
+  flow: Flow;
+  outputDecimals?: number;
+  priceRate?: string | null;
+}) => {
   const { openCancelLimitOrder, openStopDcaOrder } = useStopOrderHandler();
   const content = useAtomValue(CommonState.modalContent);
   return (
@@ -105,8 +113,13 @@ const Preview = ({ flow }: { flow: Flow }) => {
       <button
         onClick={() =>
           flow === "stop"
-            ? openStopDcaOrder(dcaOrder)
-            : openCancelLimitOrder({ ...limitOrder, status: flow === "refund" ? "EXPIRED" : "OPEN" })
+            ? openStopDcaOrder({ ...dcaOrder, outputToken: { ...token, decimals: outputDecimals }, priceRate })
+            : openCancelLimitOrder({
+                ...limitOrder,
+                tokenOut: { ...token, decimals: outputDecimals },
+                priceRate,
+                status: flow === "refund" ? "EXPIRED" : "OPEN",
+              })
         }
       >
         Preview
@@ -142,3 +155,20 @@ describe.each<Flow>(["cancel", "refund", "stop"])("%s confirmation USD amounts",
     ).toHaveTextContent(sold);
   });
 });
+
+it.each<Flow>(["cancel", "refund", "stop"])(
+  "preserves the %s confirmation price independently of output-token decimals",
+  flow => {
+    mockTokenPrices = {};
+    render(
+      <Provider>
+        <ThemeProvider theme={getTheme("dark")}>
+          <Preview flow={flow} outputDecimals={2} priceRate="1.079988" />
+        </ThemeProvider>
+      </Provider>,
+    );
+    fireEvent.click(screen.getByText("Preview"));
+
+    expect(screen.getByText("1 TOKEN = 1.079988 TOKEN")).toBeInTheDocument();
+  },
+);

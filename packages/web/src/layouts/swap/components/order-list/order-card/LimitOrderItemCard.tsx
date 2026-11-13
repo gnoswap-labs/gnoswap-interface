@@ -76,14 +76,23 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
       {
         key: "purchased",
         label: t("Swap:order.purchasedAmount"),
-        value: `${formatOrderAmount(order.userOutput)} ${tokenOut.displaySymbol}`,
+        value: `${formatOrderFullAmount(order.userOutput, tokenOut.decimals)} ${tokenOut.displaySymbol}`,
         annotation: t("Swap:order.filledShare", {
           defaultValue: "{{percent}}% filled",
           percent: formatOrderAmount(order.progress),
         }),
       },
     ];
-  }, [locale, marketPrice, order.limitPrice, order.progress, order.userOutput, t, tokenOut.displaySymbol]);
+  }, [
+    locale,
+    marketPrice,
+    order.limitPrice,
+    order.progress,
+    order.userOutput,
+    t,
+    tokenOut.decimals,
+    tokenOut.displaySymbol,
+  ]);
 
   const overview = useMemo(() => {
     const inputAmount = (amount: string) =>

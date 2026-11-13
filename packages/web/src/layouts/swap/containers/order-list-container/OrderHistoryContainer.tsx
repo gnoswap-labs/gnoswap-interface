@@ -26,6 +26,7 @@ export const DcaOrderHistoryContainer: React.FC<{ order: DcaOrderModel }> = ({ o
 
   return (
     <OrderHistoryTable
+      kind="dca"
       items={data.items}
       inputToken={order.inputToken}
       outputToken={order.outputToken}
@@ -55,6 +56,7 @@ export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = 
 
   return (
     <OrderHistoryTable
+      kind="limit"
       items={data.items}
       inputToken={order.tokenIn}
       outputToken={order.tokenOut}

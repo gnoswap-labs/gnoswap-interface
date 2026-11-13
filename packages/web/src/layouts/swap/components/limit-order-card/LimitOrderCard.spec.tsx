@@ -116,6 +116,12 @@ it("keeps the estimated Buy amount read-only without changing the sell amount", 
   expect(changeSellAmount).not.toHaveBeenCalled();
 });
 
+it("shows the market price beyond two decimals", () => {
+  renderCard({ marketPrice: "1.079988" });
+
+  expect(screen.getByText(/1\.079988/)).toBeInTheDocument();
+});
+
 describe("LimitOrderCard Max", () => {
   beforeEach(() => mockEstimateMaxNativeAmount.mockReset());
 

@@ -67,6 +67,7 @@
     "connectWallet": "Veuillez connecter votre portefeuille pour consulter votre commande.",
     "expiredAt": "Expiré le",
     "expiresAt": "Date d'expiration :",
+    "filledPrice": "Prix d'exécution",
     "nextTrade": "Prochaine transaction",
     "noOrders": "Aucune commande trouvée.",
     "ongoing": "En cours",
