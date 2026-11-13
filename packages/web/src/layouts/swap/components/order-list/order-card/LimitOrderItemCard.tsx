@@ -86,16 +86,16 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         key: "limitPrice",
         label: t("Swap:limit.triggerPrice", { defaultValue: "Limit Trigger Price" }),
         value: price(displayedLimitPrice),
-        annotation: deviation ? `(≈ ${deviation})` : undefined,
+        annotation: deviation ? `(${deviation})` : undefined,
       },
       {
         key: "purchased",
-        label: t("Swap:order.purchasedAmount"),
-        value: `${formatOrderFullAmount(order.userOutput, tokenOut.decimals)} ${tokenOut.displaySymbol}`,
-        annotation: t("Swap:order.filledShare", {
+        label: t("Swap:order.purchased"),
+        value: formatOrderFullAmount(order.userOutput, tokenOut.decimals),
+        annotation: `(${t("Swap:order.filledShare", {
           defaultValue: "{{percent}}% filled",
           percent: formatOrderAmount(order.progress),
-        }),
+        })})`,
       },
     ];
   }, [
@@ -108,7 +108,6 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     quoteToken.displaySymbol,
     t,
     tokenOut.decimals,
-    tokenOut.displaySymbol,
   ]);
 
   const overview = useMemo(() => {
@@ -168,7 +167,7 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         </div>
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
-      <OrderMetrics metrics={metrics} />
+      <OrderMetrics metrics={metrics} truncateFractions />
       <div className="card-order-terms">
         <div className="card-sub-info">
           <span>{t("Swap:swapInfo.slippageSet")}</span>

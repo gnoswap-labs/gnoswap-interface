@@ -16,20 +16,34 @@ export interface OrderMetric {
   roi?: { text: string; isNegative: boolean } | null;
 }
 
-export const OrderMetrics: React.FC<{ metrics: OrderMetric[] }> = ({ metrics }) => (
+export const OrderMetrics: React.FC<{ metrics: OrderMetric[]; truncateFractions?: boolean }> = ({
+  metrics,
+  truncateFractions = false,
+}) => (
   <div className="card-metrics">
-    {metrics.map(metric => (
-      <div key={metric.key} className="metric">
-        <span className="metric-label">{metric.label}</span>
-        <span className="metric-value">
-          <span className="value-text" title={metric.value}>
-            {metric.value}
+    {metrics.map(metric => {
+      const fraction = truncateFractions ? metric.value.match(/^([<>]?[\d,]+\.)(\d+)(.*)$/) : null;
+      return (
+        <div key={metric.key} className="metric">
+          <span className="metric-label">{metric.label}</span>
+          <span className="metric-value">
+            <span className="value-text" title={metric.value}>
+              {fraction ? (
+                <>
+                  <span className="value-whole">{fraction[1]}</span>
+                  <span className="value-fraction">{fraction[2]}</span>
+                  {fraction[3] && <span className="value-suffix">{fraction[3]}</span>}
+                </>
+              ) : (
+                metric.value
+              )}
+            </span>
+            {metric.roi && <span className={cx("roi", { negative: metric.roi.isNegative })}>{metric.roi.text}</span>}
+            {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
           </span>
-          {metric.roi && <span className={cx("roi", { negative: metric.roi.isNegative })}>{metric.roi.text}</span>}
-          {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
-        </span>
-      </div>
-    ))}
+        </div>
+      );
+    })}
   </div>
 );
 

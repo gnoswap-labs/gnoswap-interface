@@ -1,6 +1,5 @@
 import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
-import { media } from "@styles/media";
 import mixins from "@styles/mixins";
 
 import { OrderItemCardWrapper } from "./OrderItemCard.styles";
@@ -18,26 +17,42 @@ export const LimitOrderItemCardWrapper = styled(OrderItemCardWrapper)`
   }
 
   .card-metrics {
-    grid-template-columns: repeat(3, minmax(max-content, 1fr));
-    overflow-x: auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.5fr);
   }
 
   .metric .metric-label {
     white-space: normal;
   }
 
-  ${media.mobile} {
-    .card-metrics .metric-value {
-      ${fonts.p3};
-    }
+  .card-metrics .metric-value {
+    ${fonts.body11};
+    min-width: 0;
+  }
 
-    .card-metrics .metric-annotation {
-      ${fonts.p6};
-    }
+  .card-metrics .value-text {
+    display: flex;
+    overflow: visible;
+    text-overflow: clip;
+  }
+
+  .value-whole,
+  .value-suffix {
+    flex-shrink: 0;
+  }
+
+  .value-suffix {
+    white-space: pre;
+  }
+
+  .value-fraction {
+    min-width: 1ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .metric-annotation {
-    ${fonts.p2};
+    ${fonts.p4};
     color: ${({ theme }) => theme.color.text04};
     flex-shrink: 0;
     white-space: nowrap;
