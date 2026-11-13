@@ -152,6 +152,12 @@ describe("use-order-handler.utils", () => {
     expect(calculateTakingAmount("1", "0.5", { decimals: 0 }, { decimals: 0 })).toBe("0");
   });
 
+  it("divides Buy prices before rounding, including differing decimals and fractional output", () => {
+    expect(calculateTakingAmount("18000000", "6", { decimals: 6 }, { decimals: 6 }, "buy")).toBe("3000000");
+    expect(calculateTakingAmount("6000000", "6", { decimals: 6 }, { decimals: 18 }, "buy")).toBe("1000000000000000000");
+    expect(calculateTakingAmount("1", "6", { decimals: 0 }, { decimals: 0 }, "buy")).toBe("0");
+  });
+
   describe("calculateLimitMinimumReceived", () => {
     it("rounds the owner-net floor up instead of promising an amount below the contract minimum", () => {
       expect(calculateLimitMinimumReceived("152", 50)).toBe("152");

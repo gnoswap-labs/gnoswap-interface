@@ -46,6 +46,8 @@ const PRICED = { amount: "8500000", reserve: {}, simulated: true };
 const renderCard = (props: Partial<LimitOrderCardProps> = {}) => {
   const changeSellAmount = jest.fn();
   const defaults: LimitOrderCardProps = {
+    orderSide: "sell",
+    changeOrderSide: jest.fn(),
     swapType: "limit",
     changeSwapType: jest.fn(),
     copied: false,

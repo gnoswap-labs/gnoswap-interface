@@ -3,7 +3,7 @@ import { atom } from "jotai";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 import { DCA_INTERVAL } from "@models/order/dca-order-model";
 import { DEFAULT_LIMIT_EXPIRY } from "@models/order/limit-order-model";
-import { OrderListTab } from "@models/order/order-type";
+import { LimitOrderSide, OrderListTab } from "@models/order/order-type";
 
 /** DCA form. The token pair is shared with the swap form through `SwapState.swap`. */
 export const dcaSellAmount = atom<string>("");
@@ -17,10 +17,13 @@ export const dcaExecutionCount = atom<string>("2");
 /** Limit form. */
 export const limitSellAmount = atom<string>("");
 
-/** Output per input. Empty until the market price is known. */
+/** Client-only intent; never changes the order realm's request schema. */
+export const limitOrderSide = atom<LimitOrderSide>("sell");
+
+/** Quote tokens per base token: output/input for Sell, input/output for Buy. */
 export const limitPrice = atom<string>("");
 
-/** Percentage over the live router quote; null keeps a manually entered price. */
+/** Percentage from the live base-token price; null keeps a manually entered price. */
 export const limitPricePreset = atom<number | null>(10);
 
 /**

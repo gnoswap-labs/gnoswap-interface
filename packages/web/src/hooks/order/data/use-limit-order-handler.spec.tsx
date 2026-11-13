@@ -172,6 +172,53 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.limitPriceUsd).toBe("-");
   });
 
+  it("keeps the base asset while Buy reverses funding, applies a discount, and calculates the submitted output", async () => {
+    mockGetUsdPrice.mockImplementation(token => (token?.path === tokenB.path ? "2" : "99"));
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+    act(() => result.current.changeSellAmount("3"));
+
+    act(() => result.current.changeOrderSide("buy"));
+    expect(result.current.tokenA).toEqual(tokenB);
+    expect(result.current.tokenB).toEqual(tokenA);
+    expect(result.current.sellAmount).toBe("");
+    expect(result.current.marketPrice).toBe("10");
+    expect(result.current.limitPrice).toBe("9");
+
+    act(() => result.current.applyPreset(-5));
+    expect(result.current.limitPrice).toBe("9.5");
+    act(() => result.current.changeLimitPrice("6."));
+    expect(result.current.limitPrice).toBe("6.");
+    act(() => result.current.changeSellAmount("18"));
+    expect(result.current.buyAmount).toBe("3");
+    expect(result.current.limitPriceUsd).toBe("$12");
+    const summary = (mockRenderConfirmModal?.() as React.ReactElement).props.summary as LimitOrderSummary;
+    expect(summary).toMatchObject({ tokenIn: tokenB, tokenOut: tokenA, sellAmount: "18", buyAmount: "3" });
+
+    act(() => result.current.changeOrderSide("sell"));
+    expect(result.current.tokenA).toEqual(tokenA);
+    expect(result.current.tokenB).toEqual(tokenB);
+    expect(result.current.sellAmount).toBe("");
+    expect(result.current.limitPrice).toBe("11");
+  });
+
+  it("restores a Buy link without reversing its input/output tokens again", async () => {
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => {
+      result.current.changeTokenA(tokenB);
+      result.current.changeTokenB(tokenA);
+      result.current.restoreOrderSide("buy");
+      result.current.setLimitPrice("6");
+      result.current.changeSellAmount("18");
+    });
+    await waitFor(() => expect(result.current.buyAmount).toBe("3"));
+    expect(result.current.tokenA).toEqual(tokenB);
+    expect(result.current.tokenB).toEqual(tokenA);
+    expect(result.current.limitPrice).toBe("6");
+  });
+
   it.each([
     ["changeTokenB", (handler: ReturnType<typeof useLimitOrderHandler>) => handler.changeTokenB(tokenC)],
     ["changeTokenA", (handler: ReturnType<typeof useLimitOrderHandler>) => handler.changeTokenA(tokenD)],

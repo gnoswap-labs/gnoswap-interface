@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import IconWallet from "@components/common/icons/IconWallet";
 import SelectPairButton from "@components/common/select-pair-button/SelectPairButton";
+import SelectTab from "@components/common/select-tab/SelectTab";
 import { ValueAnnotation } from "@components/order/common/OrderValueAnnotation.styles";
 import { OrderInfoRow } from "@components/order/order-info-rows/OrderInfoRows";
 import { OrderSelectOption } from "@components/order/order-select-box/OrderSelectBox";
@@ -11,7 +12,7 @@ import { MaxNativeAmountParams, useMaxNativeAmount } from "@hooks/gas";
 import { OrderButtonState } from "@hooks/order/data/use-order-handler.utils";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
-import { SwapCardType } from "@models/order/order-type";
+import { LimitOrderSide, SwapCardType } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
 import { formatOrderDateTime, formatOrderRelativeDuration } from "@utils/order-format-utils";
 
@@ -22,11 +23,13 @@ import { SwapCardWrapper } from "../swap-card/SwapCard.styles";
 import { ContentWrapper } from "../swap-card/swap-card-content/SwapCardContent.styles";
 import SwapCardHeader from "../swap-card/swap-card-header/SwapCardHeader";
 import LimitExpirySelect from "./limit-expiry-select/LimitExpirySelect";
-import { LimitOrderInfoRows } from "./LimitOrderCard.styles";
+import { LimitOrderInfoRows, LimitOrderSideSelect } from "./LimitOrderCard.styles";
 import LimitPriceInput from "./limit-price-input/LimitPriceInput";
 import LimitPriceWarning from "./limit-price-input/LimitPriceWarning";
 
 export interface LimitOrderCardProps {
+  orderSide: LimitOrderSide;
+  changeOrderSide: (side: LimitOrderSide) => void;
   swapType: SwapCardType;
   changeSwapType: (type: SwapCardType) => void;
   copied: boolean;
@@ -81,6 +84,8 @@ export interface LimitOrderCardProps {
 }
 
 const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
+  orderSide,
+  changeOrderSide,
   swapType,
   changeSwapType,
   copied,
@@ -127,6 +132,8 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   const nowUnixSeconds = useOrderClock();
   const expiresIn = formatOrderRelativeDuration(expiry, locale);
   const buyBalanceDisplay = useTokenBalanceDisplay(tokenBBalance, connectedWallet);
+  const baseToken = orderSide === "buy" ? tokenB : tokenA;
+  const quoteToken = orderSide === "buy" ? tokenA : tokenB;
   const infoRows: OrderInfoRow[] = useMemo(
     () => [
       { key: "slippage", label: t("Swap:swapInfo.slippageSet"), value: `${slippage}%` },
@@ -202,6 +209,18 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
         <OrderCardSkeleton />
       ) : (
         <ContentWrapper>
+          <LimitOrderSideSelect role="group" aria-label="Order side">
+            <SelectTab
+              selectType={orderSide}
+              list={[
+                { key: "sell", display: t("Swap:limit.sell", { defaultValue: "Sell" }) },
+                { key: "buy", display: t("Swap:limit.buy", { defaultValue: "Buy" }) },
+              ]}
+              onClick={side => {
+                if (side === "sell" || side === "buy") changeOrderSide(side);
+              }}
+            />
+          </LimitOrderSideSelect>
           <OrderSellInput
             token={tokenA}
             amount={sellAmount}
@@ -243,9 +262,10 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             </div>
           </div>
           <LimitPriceInput
-            inputSymbol={tokenA?.displaySymbol ?? "-"}
-            inputLogoURI={tokenA?.logoURI}
-            outputSymbol={tokenB?.displaySymbol ?? "-"}
+            orderSide={orderSide}
+            inputSymbol={baseToken?.displaySymbol ?? "-"}
+            inputLogoURI={baseToken?.logoURI}
+            outputSymbol={quoteToken?.displaySymbol ?? "-"}
             value={limitPrice}
             valueUsd={limitPriceUsd}
             marketPrice={marketPrice}
@@ -254,7 +274,7 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
             stepPrice={stepPrice}
             applyPreset={applyPreset}
           />
-          <LimitPriceWarning value={limitPrice} marketPrice={marketPrice} />
+          <LimitPriceWarning orderSide={orderSide} value={limitPrice} marketPrice={marketPrice} />
           <LimitExpirySelect expiry={expiry} options={expiryOptions} changeExpiry={changeExpiry} />
           <LimitOrderInfoRows rows={infoRows} />
         </ContentWrapper>

@@ -5,12 +5,14 @@ import IconAdd from "@components/common/icons/IconAdd";
 import IconRemove from "@components/common/icons/IconRemove";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { LIMIT_PRICE_PRESETS } from "@hooks/order/data/use-order-handler.utils";
+import { LimitOrderSide } from "@models/order/order-type";
 import { formatPrice } from "@utils/new-number-utils";
 import { subscriptFormat } from "@utils/number-utils";
 
 import { LimitPriceControl, LimitPriceField, LimitPricePresets } from "./LimitPriceInput.styles";
 
 interface LimitPriceInputProps {
+  orderSide: LimitOrderSide;
   inputSymbol: string;
   inputLogoURI?: string;
   outputSymbol: string;
@@ -21,12 +23,13 @@ interface LimitPriceInputProps {
   changeValue: (value: string) => void;
   /** Moves the price by one step (0.1%) up or down. */
   stepPrice: (direction: 1 | -1) => void;
-  /** 0 selects the market price; otherwise a percentage above it. */
+  /** Market, or a signed percentage from the base asset's market price. */
   applyPreset: (percent: number) => void;
 }
 
-/** Output per input the order asks for, with −/+ steps and Market / +1% / +5% / +10% presets. */
+/** Price of one base asset in quote tokens, independent of the actual swap direction. */
 const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
+  orderSide,
   inputSymbol,
   inputLogoURI,
   outputSymbol,
@@ -48,7 +51,11 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
     <LimitPriceField>
       <span className="sell-when">
         <Trans
-          defaults={t("Swap:limit.sellWhen", { symbol: "<token/>" })}
+          defaults={
+            orderSide === "buy"
+              ? t("Swap:limit.buyWhen", { defaultValue: "Buy when 1 {{symbol}} drops to", symbol: "<token/>" })
+              : t("Swap:limit.sellWhen", { symbol: "<token/>" })
+          }
           components={{
             token: (
               <span className="sell-token">
@@ -111,18 +118,21 @@ const LimitPriceInput: React.FC<LimitPriceInputProps> = ({
           >
             {t("Swap:limit.market")}
           </button>
-          {LIMIT_PRICE_PRESETS.map(percent => (
-            <button
-              type="button"
-              key={percent}
-              className="preset-button"
-              aria-pressed={selectedPreset === percent}
-              onClick={() => applyPreset(percent)}
-              disabled={!marketPrice}
-            >
-              {`+${percent}%`}
-            </button>
-          ))}
+          {LIMIT_PRICE_PRESETS.map(preset => {
+            const percent = orderSide === "buy" ? -preset : preset;
+            return (
+              <button
+                type="button"
+                key={percent}
+                className="preset-button"
+                aria-pressed={selectedPreset === percent}
+                onClick={() => applyPreset(percent)}
+                disabled={!marketPrice}
+              >
+                {`${percent > 0 ? "+" : ""}${percent}%`}
+              </button>
+            );
+          })}
         </div>
       </LimitPricePresets>
     </LimitPriceField>

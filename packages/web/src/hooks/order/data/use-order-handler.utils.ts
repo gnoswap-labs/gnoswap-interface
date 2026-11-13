@@ -2,6 +2,7 @@ import BigNumber from "bignumber.js";
 
 import { DCA_INTERVAL_UNITS, DcaIntervalUnit } from "@models/order/dca-order-model";
 import { LIMIT_EXPIRY_OPTIONS, LimitExpiryKey } from "@models/order/limit-order-model";
+import { LimitOrderSide } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
 
 /**
@@ -241,17 +242,17 @@ export function toLimitSlippageBps(slippagePercent: number, maxSlippageBps = MAX
   return Math.min(maxSlippageBps, Math.round(slippagePercent * 100));
 }
 
-/** Raw output the owner must receive: `floor(making × limitPrice)` with both decimals applied. */
+/** Raw output at the displayed price, rounded down after applying both token decimals. */
 export function calculateTakingAmount(
   rawMakingAmount: string,
   limitPrice: string,
   tokenIn: Pick<TokenModel, "decimals">,
   tokenOut: Pick<TokenModel, "decimals">,
+  side: LimitOrderSide = "sell",
 ): string {
-  const taking = BigNumber(rawMakingAmount || 0)
-    .shiftedBy(-tokenIn.decimals)
-    .multipliedBy(limitPrice || 0)
-    .shiftedBy(tokenOut.decimals);
+  const making = BigNumber(rawMakingAmount || 0).shiftedBy(tokenOut.decimals - tokenIn.decimals);
+  // Divide directly for Buy: multiplying by a rounded reciprocal can lose a raw output unit.
+  const taking = side === "buy" ? making.dividedBy(limitPrice || 0) : making.multipliedBy(limitPrice || 0);
   if (!taking.isFinite() || taking.isLessThanOrEqualTo(0)) return "0";
   return taking.toFixed(0, BigNumber.ROUND_FLOOR);
 }

@@ -36,6 +36,8 @@ export const Default: Story = {
     </div>
   ),
   args: {
+    orderSide: "sell",
+    changeOrderSide: fn(),
     swapType: "limit",
     changeSwapType: fn(),
     copied: false,
@@ -105,6 +107,7 @@ export const InteractivePresets: Story = {
       limitPrice,
       args.tokenA ?? STORY_GNS_TOKEN,
       outputToken,
+      args.orderSide,
     );
     const buyAmount = BigNumber(rawTakingAmount).shiftedBy(-outputToken.decimals).toFixed();
     const minimumReceived = BigNumber(rawTakingAmount).isGreaterThan(0)

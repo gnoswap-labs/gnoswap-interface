@@ -17,11 +17,12 @@ interface LimitOrderContainerProps {
 const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, changeSwapType }) => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const handler = useLimitOrderHandler();
-  const { changeSellAmount, setLimitPrice, changeExpiry } = handler;
+  const { changeSellAmount, setLimitPrice, changeExpiry, restoreOrderSide } = handler;
 
   // A shared link may carry `amount`, `price` and `expiry`.
   const applyQuery = useCallback(
     (query: Record<string, string | string[] | undefined>) => {
+      restoreOrderSide(getQueryString(query.side) === "buy" ? "buy" : "sell");
       const amount = getQueryString(query.amount);
       const price = getQueryString(query.price);
       const expiry = Number(getQueryString(query.expiry));
@@ -29,12 +30,14 @@ const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, cha
       if (price && BigNumber(price).isGreaterThan(0)) setLimitPrice(price);
       if (Number.isInteger(expiry) && expiry > 0) changeExpiry(expiry);
     },
-    [changeExpiry, changeSellAmount, setLimitPrice],
+    [changeExpiry, changeSellAmount, restoreOrderSide, setLimitPrice],
   );
   useOrderQueryTokens(applyQuery);
 
   return (
     <LimitOrderCard
+      orderSide={handler.orderSide}
+      changeOrderSide={handler.changeOrderSide}
       swapType={swapType}
       changeSwapType={changeSwapType}
       copied={handler.copied}
