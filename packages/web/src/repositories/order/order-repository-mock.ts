@@ -7,10 +7,19 @@ import MockDcaOrdersPastResponse from "./mock/dca-orders-past.json";
 import MockDcaScheduleResponse from "./mock/dca-schedule.json";
 import MockLimitConfigResponse from "./mock/limit-config.json";
 import MockLimitFillsResponse from "./mock/limit-fills.json";
+import MockLimitMarketPricesResponse from "./mock/limit-market-prices.json";
 import MockLimitOrdersActiveResponse from "./mock/limit-orders-active.json";
 import MockLimitOrdersPastResponse from "./mock/limit-orders-past.json";
+import { getLimitMarketPricePairKey } from "@utils/limit-market-price-utils";
+
 import { OrderRepository } from "./order-repository";
-import { GetDcaPairRequest, GetDcaScheduleRequest, GetOrderHistoryRequest, GetOrdersRequest } from "./request";
+import {
+  GetDcaPairRequest,
+  GetDcaScheduleRequest,
+  LimitMarketPricePair,
+  GetOrderHistoryRequest,
+  GetOrdersRequest,
+} from "./request";
 import {
   DcaConfigResponse,
   DcaExecutionItem,
@@ -19,6 +28,7 @@ import {
   DcaScheduleResponse,
   LimitConfigResponse,
   LimitFillItem,
+  LimitMarketPriceResponse,
   LimitOrderItem,
   OrderPagedResponse,
 } from "./response";
@@ -93,6 +103,13 @@ export class OrderRepositoryMock implements OrderRepository {
 
   getLimitConfig(): Promise<LimitConfigResponse> {
     return this.delay(MockLimitConfigResponse.data);
+  }
+
+  getLimitMarketPrice(pair: LimitMarketPricePair): Promise<LimitMarketPriceResponse> {
+    const item = MockLimitMarketPricesResponse.items.find(
+      fixture => getLimitMarketPricePairKey(fixture) === getLimitMarketPricePairKey(pair),
+    );
+    return this.delay({ ...pair, price: item?.price ?? null });
   }
 
   getLimitOrders(request: GetOrdersRequest): Promise<OrderPagedResponse<LimitOrderItem>> {

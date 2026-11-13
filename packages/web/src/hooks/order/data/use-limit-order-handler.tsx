@@ -12,6 +12,7 @@ import { LIMIT_EXPIRY_OPTIONS } from "@models/order/limit-order-model";
 import { LimitOrderSide, SWAP_CARD_TYPE } from "@models/order/order-type";
 import { LimitOrderSummary } from "@models/order/order-summary";
 import { TokenModel } from "@models/token/token-model";
+import { useLimitMarketPrices } from "@providers/limit-market-price-provider/LimitMarketPriceProvider";
 import { useGetLimitConfig } from "@query/order";
 import { useGetRoutes } from "@query/router";
 import { DexEvent } from "@repositories/common";
@@ -23,6 +24,7 @@ import {
   formatBps,
   formatOrderDateTime,
   formatOrderRate,
+  invertOrderRate,
   trimFractionZeros,
 } from "@utils/order-format-utils";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
@@ -134,6 +136,7 @@ export const useLimitOrderHandler = () => {
 
   // Typed Buy quantities use an exact-output quote. Max and old `amount=` links
   // remain funding budgets, so neither their quote nor their amount depends on the limit price.
+  // The router quote only checks that the order can be filled; it never prices the form.
   const isBuyQuantity = orderSide === "buy" && (buyAmountInput !== "" || fundingAmountInput === "");
   const debouncedFundingAmount = useDebounce(fundingAmountInput, INPUT_DEBOUNCE_MS);
   const debouncedBuyAmount = useDebounce(buyAmountInput, INPUT_DEBOUNCE_MS);
@@ -147,34 +150,33 @@ export const useLimitOrderHandler = () => {
     { refetchInterval: QUOTE_REFETCH_INTERVAL },
   );
   const hasLiquidity = !isSameToken && routes?.status !== "NO_LIQUIDITY";
-  const quotedMarketPrice = useMemo(() => {
-    if (!tokenA || !tokenB || routes?.status !== "SUCCESS") return null;
-    const quotedToken = quoteExactType === "EXACT_OUT" ? tokenA : tokenB;
-    const amount = makeDisplayTokenAmountString(quotedToken, routes.amount);
-    if (!amount) return null;
-    const price =
-      quoteExactType === "EXACT_OUT"
-        ? BigNumber(amount).dividedBy(quoteAmount)
-        : orderSide === "buy"
-          ? BigNumber(quoteAmount).dividedBy(amount)
-          : BigNumber(amount).dividedBy(quoteAmount);
-    return price.isFinite() && price.isGreaterThan(0) ? price.toFixed() : null;
-  }, [orderSide, quoteAmount, quoteExactType, routes, tokenA, tokenB]);
+
+  // The pool's spot rate is the same for any order size. A Buy prices its base, the output token, so the
+  // rate is inverted at full precision; only the price field and the display round it.
+  const { getPrice } = useLimitMarketPrices();
+  const spotRate = getPrice(
+    tokenA && tokenB ? { tokenIn: getSwapTokenPath(tokenA), tokenOut: getSwapTokenPath(tokenB) } : null,
+  );
+  const spotMarketPrice = useMemo(
+    () => (orderSide === "buy" ? invertOrderRate(spotRate) : spotRate),
+    [orderSide, spotRate],
+  );
+  /** The market price as the limit price field takes it, which the Market preset fills in. */
   const marketPrice = useMemo(
-    () => (quotedMarketPrice ? formatLimitPriceInput(quotedMarketPrice) || null : null),
-    [quotedMarketPrice],
+    () => (spotMarketPrice ? formatLimitPriceInput(spotMarketPrice) || null : null),
+    [spotMarketPrice],
   );
   const defaultPreset = orderSide === "buy" ? -10 : 10;
 
   // Preserve manual prices (including an empty edit), but keep presets tied to
-  // fresh router quotes. Pair ownership survives switching to Swap or DCA.
+  // the latest market price. Pair ownership survives switching to Swap or DCA.
   const pairKey = tokenA && tokenB ? `${tokenA.path}|${tokenB.path}` : null;
 
   useEffect(() => {
     if (!pairKey) return;
     if (pricedPairKey === pairKey) {
-      if (pricePreset !== null && marketPrice) {
-        const nextPrice = pricePreset === 0 ? marketPrice : applyLimitPricePreset(marketPrice, pricePreset);
+      if (pricePreset !== null && spotMarketPrice) {
+        const nextPrice = applyLimitPricePreset(spotMarketPrice, pricePreset);
         if (nextPrice !== limitPrice) setLimitPrice(nextPrice);
       }
       return;
@@ -185,27 +187,27 @@ export const useLimitOrderHandler = () => {
       return;
     }
     if (limitPrice) {
-      // A new pair starts from a fresh quote in the selected Buy/Sell perspective.
+      // A new pair starts from a fresh market price in the selected Buy/Sell perspective.
       setLimitPrice("");
       setPricedPairKey(null);
       setPricePreset(defaultPreset);
       return;
     }
-    if (marketPrice) {
+    if (spotMarketPrice) {
       setPricedPairKey(pairKey);
       setPricePreset(defaultPreset);
-      setLimitPrice(applyLimitPricePreset(marketPrice, defaultPreset));
+      setLimitPrice(applyLimitPricePreset(spotMarketPrice, defaultPreset));
     }
   }, [
     defaultPreset,
     limitPrice,
-    marketPrice,
     pairKey,
     pricePreset,
     pricedPairKey,
     setLimitPrice,
     setPricePreset,
     setPricedPairKey,
+    spotMarketPrice,
   ]);
 
   const isValidPrice = BigNumber(limitPrice || 0).isGreaterThan(0);
@@ -304,13 +306,7 @@ export const useLimitOrderHandler = () => {
   );
 
   const createRequest = useMemo((): Omit<CreateLimitOrderRequest, "expiresAt"> | null => {
-    if (
-      buttonState !== "PLACE_ORDER" ||
-      !tokenA ||
-      !tokenB ||
-      !hasRawAmounts ||
-      hasWhitelistedPool !== true
-    ) {
+    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !hasRawAmounts || hasWhitelistedPool !== true) {
       return null;
     }
     return {
@@ -388,7 +384,7 @@ export const useLimitOrderHandler = () => {
       limitPrice: isValidPrice
         ? `1 ${baseToken.displaySymbol} = ${formatOrderRate(limitPrice)} ${quoteToken.displaySymbol}`
         : "-",
-      limitPriceDeviation: calculatePriceDeviation(limitPrice, quotedMarketPrice),
+      limitPriceDeviation: calculatePriceDeviation(limitPrice, spotMarketPrice),
       expiresAt: formatOrderDateTime(Math.floor(Date.now() / 1000) + expiry),
       expiryDurationSec: expiry,
       slippage: `${trimFractionZeros(BigNumber(slippageBps).dividedBy(100).toFixed(2))}%`,
@@ -402,7 +398,7 @@ export const useLimitOrderHandler = () => {
     isValidPrice,
     limitPrice,
     orderSide,
-    quotedMarketPrice,
+    spotMarketPrice,
     minimumReceived,
     sellUsd,
     sentSellAmount,
@@ -500,18 +496,18 @@ export const useLimitOrderHandler = () => {
   const stepPrice = useCallback(
     (direction: 1 | -1) => {
       setPricePreset(null);
-      setLimitPrice(prev => stepLimitPrice(prev || marketPrice || "", direction));
+      setLimitPrice(prev => stepLimitPrice(prev || spotMarketPrice || "", direction));
     },
-    [marketPrice, setLimitPrice, setPricePreset],
+    [setLimitPrice, setPricePreset, spotMarketPrice],
   );
 
   const applyPreset = useCallback(
     (percent: number) => {
-      if (!marketPrice) return;
+      if (!spotMarketPrice) return;
       setPricePreset(percent);
-      setLimitPrice(percent === 0 ? marketPrice : applyLimitPricePreset(marketPrice, percent));
+      setLimitPrice(applyLimitPricePreset(spotMarketPrice, percent));
     },
-    [marketPrice, setLimitPrice, setPricePreset],
+    [setLimitPrice, setPricePreset, spotMarketPrice],
   );
 
   const copyURL = useCallback(

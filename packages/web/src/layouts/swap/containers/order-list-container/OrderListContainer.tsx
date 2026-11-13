@@ -1,5 +1,5 @@
 import { useAtom } from "jotai";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
 import { SWAP_HISTORY_REFETCH_INTERVAL } from "@constants/swap.constant";
@@ -9,17 +9,30 @@ import { useWindowSize } from "@hooks/common/use-window-size";
 import { useOrderTokenUsdPrice } from "@hooks/order/data/use-order-token-usd-price";
 import { useStopOrderHandler } from "@hooks/order/data/use-stop-order-handler";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { LimitOrderModel } from "@models/order/limit-order-model";
 import { OrderKind, OrderListTab, SWAP_CARD_TYPE, SwapCardType, toEnabledSwapCardType } from "@models/order/order-type";
+import {
+  useLimitMarketPrices,
+  useRegisterLimitMarketPricePairs,
+} from "@providers/limit-market-price-provider/LimitMarketPriceProvider";
 import { useGetDcaOrders, useGetLimitOrders } from "@query/order";
+import { LimitMarketPricePair } from "@repositories/order/request";
 import { OrderState } from "@states/index";
 import { formatOrderRoi } from "@utils/order-format-utils";
+import { getSwapTokenPath } from "@utils/swap-route-utils";
 
 import DcaOrderItemCard from "../../components/order-list/order-card/DcaOrderItemCard";
+import LimitOrderItemCard from "../../components/order-list/order-card/LimitOrderItemCard";
 import OrderList from "../../components/order-list/OrderList";
 import { DcaOrderHistoryContainer, LimitOrderHistoryContainer } from "./OrderHistoryContainer";
-import LimitOrderItemCardContainer from "./LimitOrderItemCardContainer";
 
 const ORDER_PAGE_SIZE = 10;
+
+/** The pair a Limit order is priced by, in its actual swap direction. */
+const toMarketPricePair = ({ tokenIn, tokenOut }: LimitOrderModel): LimitMarketPricePair => ({
+  tokenIn: getSwapTokenPath(tokenIn),
+  tokenOut: getSwapTokenPath(tokenOut),
+});
 
 /**
  * Whether the account has any order of the kind, from the totals of its Active
@@ -41,7 +54,7 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   const { connected, account } = useWallet();
   const [tab, setTab] = useAtom(OrderState.orderListTab);
 
-  const address = connected ? account?.address ?? "" : "";
+  const address = connected ? (account?.address ?? "") : "";
 
   // The list only appears once the account has an order of this kind, active or past.
   // One-item pages of both tabs give their totals whichever tab is open.
@@ -90,6 +103,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
   const { getTxUrl } = useGnoscanUrl();
   const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder } = useStopOrderHandler();
   const getUsdPrice = useOrderTokenUsdPrice();
+  const { getPrice } = useLimitMarketPrices();
   const [page, setPage] = useState(1);
 
   const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
@@ -116,6 +130,11 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
     if (isOutOfRange) setPage(lastPage);
   }, [isOutOfRange, lastPage]);
 
+  // Only the Limit orders on screen are priced, in the query the Limit form shares.
+  const visibleLimitOrders = kind === "limit" ? limitOrders.data?.items : undefined;
+  const visibleLimitPairs = useMemo(() => (visibleLimitOrders ?? []).map(toMarketPricePair), [visibleLimitOrders]);
+  useRegisterLimitMarketPricePairs(visibleLimitPairs);
+
   // Order IDs restart with each realm deployment, so a card is identified by its realm and ID.
   const items = (() => {
     if (kind === "dca") {
@@ -133,9 +152,10 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
     }
 
     return (limitOrders.data?.items ?? []).map(order => (
-      <LimitOrderItemCardContainer
+      <LimitOrderItemCard
         key={`${order.packagePath}:${order.orderId}`}
         order={order}
+        marketPrice={getPrice(toMarketPricePair(order))}
         tokenOutUsdPrice={getUsdPrice(order.tokenOut)}
         txUrl={getTxUrl(order.createdTxHash)}
         onClickCancel={openCancelLimitOrder}

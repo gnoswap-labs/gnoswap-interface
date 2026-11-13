@@ -201,12 +201,6 @@ describe("LimitOrderCard amount fields", () => {
   });
 });
 
-it("shows the market price beyond two decimals", () => {
-  renderCard({ marketPrice: "1.079988" });
-
-  expect(screen.getByText(/1\.079988/)).toBeInTheDocument();
-});
-
 describe("LimitOrderCard Max", () => {
   beforeEach(() => mockEstimateMaxNativeAmount.mockReset());
 

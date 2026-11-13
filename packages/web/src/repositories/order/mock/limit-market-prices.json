@@ -1,0 +1,24 @@
+{
+  "items": [
+    {
+      "tokenIn": "gno.land/r/gnoswap/gns",
+      "tokenOut": "gno.land/r/gnoland/wugnot.wugnot",
+      "price": {
+        "outputPerInput": "1.25",
+        "poolPath": "gno.land/r/gnoland/wugnot.wugnot:gno.land/r/gnoswap/gns:10000",
+        "updatedBlockHeight": 1000000,
+        "updatedBlockTime": 1793660400
+      }
+    },
+    {
+      "tokenIn": "gno.land/r/gnoland/wugnot.wugnot",
+      "tokenOut": "gno.land/r/gnoswap/gns",
+      "price": {
+        "outputPerInput": "0.8",
+        "poolPath": "gno.land/r/gnoland/wugnot.wugnot:gno.land/r/gnoswap/gns:10000",
+        "updatedBlockHeight": 1000000,
+        "updatedBlockTime": 1793660400
+      }
+    }
+  ]
+}
