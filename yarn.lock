@@ -5,9 +5,9 @@ __metadata:
   version: 10
   cacheKey: 10
 
-"@adena-wallet/sdk@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@adena-wallet/sdk@npm:0.1.2"
+"@adena-wallet/sdk@npm:^0.1.3":
+  version: 0.1.3
+  resolution: "@adena-wallet/sdk@npm:0.1.3"
   dependencies:
     "@babel/runtime": "npm:7.29.14"
     "@bufbuild/protobuf": "npm:2.15.0"
@@ -18,7 +18,7 @@ __metadata:
     "@gnolang/tm2-js-client": "npm:3.3.0"
     "@web3auth/no-modal": "npm:11.4.3"
     viem: "npm:2.57.19"
-  checksum: 10/148287ca42ff91751892759dfd32cc905ab01f5546654bd3d7fa11896d0f77e27fc4d14aa524d8ba2d3e93a2f53b7ff2437ccf472db02f55b30be5112ef5b043
+  checksum: 10/1dfbcdbce4875698eab4ee470c1d30bc6fbd9b1f12d0119f55926d0eefe9c7ef57692b25b4c71de395f606ae81c8c40ee59be161f5f43078a9c945341fbf2a0f
   languageName: node
   linkType: hard
 
@@ -2788,7 +2788,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@gnoswap-labs/web@workspace:packages/web"
   dependencies:
-    "@adena-wallet/sdk": "npm:^0.1.2"
+    "@adena-wallet/sdk": "npm:^0.1.3"
     "@babel/core": "npm:^7.22.0"
     "@babel/preset-env": "npm:7.20.2"
     "@babel/preset-typescript": "npm:7.21.0"
