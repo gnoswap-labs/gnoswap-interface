@@ -1,4 +1,5 @@
 import { cx } from "@emotion/css";
+import BigNumber from "bignumber.js";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -22,6 +23,8 @@ export interface OrderHistoryTableProps {
   items: OrderHistoryModel[];
   inputToken: TokenModel;
   outputToken: TokenModel;
+  /** Known Limit base orientation. Omitted for legacy orders and DCA. */
+  rateBase?: "input" | "output";
   currentPage: number;
   totalPages: number;
   changePage: (page: number) => void;
@@ -39,6 +42,7 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   items,
   inputToken,
   outputToken,
+  rateBase,
   currentPage,
   totalPages,
   changePage,
@@ -50,6 +54,21 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
   const [now, setNow] = useState(() => Date.now());
   const [highlighted, setHighlighted] = useState<Set<string>>(new Set());
   const previousSnapshot = useRef<{ page: number; keys: Set<string> } | null>(null);
+  const rateUnit = rateBase
+    ? rateBase === "output"
+      ? `${inputToken.displaySymbol}/${outputToken.displaySymbol}`
+      : `${outputToken.displaySymbol}/${inputToken.displaySymbol}`
+    : null;
+  const formatRate = (item: OrderHistoryModel) => {
+    if (item.rate === null) return "-";
+    const displayedRate =
+      rateBase === "output"
+        ? BigNumber(item.purchasedAmount).isGreaterThan(0)
+          ? BigNumber(item.soldAmount).dividedBy(item.purchasedAmount).toFixed()
+          : null
+        : item.rate;
+    return displayedRate === null ? "-" : formatOrderAmount(displayedRate);
+  };
 
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), CLOCK_INTERVAL);
@@ -81,7 +100,10 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
     <OrderHistoryTableWrapper>
       <div className="history-row history-header">
         <span className="cell left">{t("Swap:order.time")}</span>
-        <span className="cell">{t("Swap:order.rate")}</span>
+        <span className="cell">
+          {t("Swap:order.rate")}
+          {rateUnit && ` (${rateUnit})`}
+        </span>
         <span className="cell">{t("Swap:order.sold")}</span>
         <span className="cell">{t("Swap:order.purchased")}</span>
       </div>
@@ -96,7 +118,7 @@ const OrderHistoryTable: React.FC<OrderHistoryTableProps> = ({
             </Link>
           </span>
           <span className="cell">
-            <span>{item.rate === null ? "-" : formatOrderAmount(item.rate)}</span>
+            <span>{formatRate(item)}</span>
           </span>
           <span className="cell">
             <span>{formatOrderAmount(item.soldAmount)}</span>

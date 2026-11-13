@@ -45,6 +45,7 @@ const limitOrder: LimitOrderModel = {
   isActive: true,
   tokenIn: token,
   tokenOut: token,
+  side: null,
   makingAmount: "2",
   takingAmount: "2.2",
   slippageBps: 50,

@@ -19,6 +19,8 @@ export interface CreateDcaOrderRequest extends OrderGasRequest {
 export interface CreateLimitOrderRequest extends OrderGasRequest {
   tokenIn: TokenModel;
   tokenOut: TokenModel;
+  /** Input token for Sell, output token for Buy. */
+  baseToken: TokenModel;
   /** Raw integer amount of `tokenIn` to sell. */
   makingAmount: string;
   /** Raw integer amount of `tokenOut` the owner must receive. */

@@ -157,6 +157,7 @@ describe("order.message.ts", () => {
       const messages = await makeCreateLimitOrderMessagesWithApproves({
         tokenIn: gnsToken,
         tokenOut: wugnotToken,
+        baseToken: gnsToken,
         makingAmount: "3000000",
         takingAmount: "3814800",
         slippageBps: 50,
@@ -169,7 +170,39 @@ describe("order.message.ts", () => {
       expect(messages[1]).toMatchObject({
         pkg_path: "limit_path",
         func: "CreateOrder",
-        args: ["gno.land/r/gnoswap/gns", "gno.land/r/gnoland/wugnot", "3000000", "3814800", "50", "1745866400"],
+        args: [
+          "gno.land/r/gnoswap/gns",
+          "gno.land/r/gnoland/wugnot",
+          "3000000",
+          "3814800",
+          "50",
+          "1745866400",
+          "gno.land/r/gnoswap/gns",
+        ],
+      });
+    });
+
+    it("records wrapped GNOT as the base when buying the native display token", async () => {
+      const messages = await makeCreateLimitOrderMessagesWithApproves({
+        tokenIn: gnsToken,
+        tokenOut: gnotToken,
+        baseToken: gnotToken,
+        makingAmount: "3000000",
+        takingAmount: "3814800",
+        slippageBps: 50,
+        expiresAt: 1745866400,
+        caller,
+      });
+      expect(messages[messages.length - 1]).toMatchObject({
+        args: [
+          "gno.land/r/gnoswap/gns",
+          "gno.land/r/gnoland/wugnot",
+          "3000000",
+          "3814800",
+          "50",
+          "1745866400",
+          "gno.land/r/gnoland/wugnot",
+        ],
       });
     });
 
@@ -177,6 +210,7 @@ describe("order.message.ts", () => {
       const messages = await makeCreateLimitOrderMessagesWithApproves({
         tokenIn: gnotToken,
         tokenOut: gnsToken,
+        baseToken: gnsToken,
         makingAmount: "5000000",
         takingAmount: "4000000",
         slippageBps: 1000,
@@ -203,6 +237,7 @@ describe("order.message.ts", () => {
           {
             tokenIn: gnotToken,
             tokenOut: gnsToken,
+            baseToken: gnotToken,
             makingAmount: "500",
             takingAmount: "500",
             slippageBps: 1000,

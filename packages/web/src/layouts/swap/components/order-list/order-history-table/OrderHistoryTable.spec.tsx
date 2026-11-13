@@ -61,6 +61,28 @@ describe("OrderHistoryTable", () => {
     jest.useRealTimers();
   });
 
+  it("shows Buy fill prices per output base without swapping actual sold and purchased amounts", () => {
+    renderTable({
+      inputToken: token("GNOT"),
+      outputToken: token("GNS"),
+      rateBase: "output",
+      items: [row(1, { rate: "0.125", soldAmount: "16", purchasedAmount: "2" })],
+    });
+    expect(screen.getByText("8")).toBeInTheDocument();
+    expect(screen.getByText("16")).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
+    expect(screen.getByText(/GNOT\/GNS/)).toBeInTheDocument();
+  });
+
+  it("keeps a missing or zero Buy fill rate unknown rather than displaying infinity", () => {
+    const { container } = renderTable({
+      rateBase: "output",
+      items: [row(1, { rate: null }), row(2, { rate: "0", purchasedAmount: "0" })],
+    });
+    expect(container.querySelectorAll(".history-row:not(.history-header) .cell:nth-child(2)")[0].textContent).toBe("-");
+    expect(container.querySelectorAll(".history-row:not(.history-header) .cell:nth-child(2)")[1].textContent).toBe("-");
+  });
+
   it("formats rate, sold and purchased with two decimals rounded down", () => {
     renderTable();
 

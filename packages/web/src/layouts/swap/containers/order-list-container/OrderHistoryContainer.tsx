@@ -58,6 +58,7 @@ export const LimitOrderHistoryContainer: React.FC<{ order: LimitOrderModel }> = 
       items={data.items}
       inputToken={order.tokenIn}
       outputToken={order.tokenOut}
+      rateBase={order.side ? (order.side === "buy" ? "output" : "input") : undefined}
       currentPage={page}
       totalPages={data.pageInfo.totalPages}
       changePage={setPage}

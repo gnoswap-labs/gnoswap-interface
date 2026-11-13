@@ -238,8 +238,15 @@ export const useLimitOrderHandler = () => {
 
   const createRequest = useMemo((): Omit<CreateLimitOrderRequest, "expiresAt"> | null => {
     if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !hasRawAmounts) return null;
-    return { tokenIn: tokenA, tokenOut: tokenB, makingAmount, takingAmount, slippageBps };
-  }, [buttonState, hasRawAmounts, makingAmount, slippageBps, takingAmount, tokenA, tokenB]);
+    return {
+      tokenIn: tokenA,
+      tokenOut: tokenB,
+      baseToken: orderSide === "buy" ? tokenB : tokenA,
+      makingAmount,
+      takingAmount,
+      slippageBps,
+    };
+  }, [buttonState, hasRawAmounts, makingAmount, orderSide, slippageBps, takingAmount, tokenA, tokenB]);
 
   /**
    * The CreateOrder messages for a native making amount of `rawAmount` at the
@@ -255,6 +262,7 @@ export const useLimitOrderHandler = () => {
       return orderRepository.makeCreateLimitOrderMessages({
         tokenIn: tokenA,
         tokenOut: tokenB,
+        baseToken: orderSide === "buy" ? tokenB : tokenA,
         makingAmount: rawAmount,
         takingAmount: maxTakingAmount,
         slippageBps,
