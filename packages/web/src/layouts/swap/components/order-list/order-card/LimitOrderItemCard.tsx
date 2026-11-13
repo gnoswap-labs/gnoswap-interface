@@ -92,12 +92,14 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
       `${formatOrderFullAmount(amount, tokenOut.decimals)} ${tokenOut.displaySymbol}`;
 
     const sold = formatOrderFullAmount(order.filledInput, tokenIn.decimals);
+    // Refunded funds are still historically unfilled; remainingInput only tracks funds in escrow.
+    const unfilled = BigNumber(order.makingAmount).minus(order.filledInput).toFixed();
     const rows = [
       {
         label: t("Swap:order.soldAmount"),
         value: `${sold} / ${inputAmount(order.makingAmount)} (${formatOrderAmount(order.progress)}%)`,
       },
-      { label: t("Swap:order.remainingAmount"), value: inputAmount(order.remainingInput) },
+      { label: t("Swap:order.remainingAmount"), value: inputAmount(unfilled) },
       { label: t("Swap:order.purchasedAmount"), value: outputAmount(order.userOutput) },
     ];
 
