@@ -4,6 +4,8 @@ import BigNumber from "bignumber.js";
 import { createStore, Provider as JotaiProvider } from "jotai";
 import React from "react";
 
+import { GNOT_TOKEN } from "@common/values/token-constant";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
 import type { LimitOrderSummary } from "@models/order/order-summary";
 import type { TokenModel } from "@models/token/token-model";
 import { useGetRoutes } from "@query/router";
@@ -23,13 +25,14 @@ jest.mock("@components/order/confirm-limit-order-modal/ConfirmLimitOrderModal", 
   default: () => null,
 }));
 let mockRenderConfirmModal: (() => JSX.Element) | undefined;
+const mockSubmit = jest.fn();
 jest.mock("../ui/use-confirm-order-modal", () => ({
   useConfirmOrderModal: (renderContent: () => JSX.Element) => {
     mockRenderConfirmModal = renderContent;
-    return { openModal: jest.fn(), closeModal: jest.fn() };
+    return { opened: false, openModal: jest.fn(), closeModal: jest.fn() };
   },
 }));
-jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: jest.fn() }) }));
+jest.mock("./use-order-transaction", () => ({ useOrderTransaction: () => ({ submit: mockSubmit }) }));
 const mockGetUsdPrice = jest.fn<string | null, [TokenModel | null]>(() => null);
 let mockFundingBalance = "1000";
 jest.mock("./use-order-form-common", () => ({
@@ -48,9 +51,16 @@ jest.mock("./use-order-form-common", () => ({
     formatRate: () => ({ text: "-", usd: "-" }),
   }),
 }));
-let mockLimitConfig: { maxSlippageBps?: number } | undefined;
+let mockLimitConfig: { maxSlippageBps?: number; whitelistedPools?: string[] } | undefined;
+let mockLimitConfigError = false;
+const mockRefetchLimitConfig = jest.fn();
 jest.mock("@query/order", () => ({
-  useGetLimitConfig: () => ({ data: mockLimitConfig, isLoading: false }),
+  useGetLimitConfig: () => ({
+    data: mockLimitConfig,
+    isLoading: false,
+    isError: mockLimitConfigError,
+    refetch: mockRefetchLimitConfig,
+  }),
 }));
 jest.mock("@query/router", () => ({ useGetRoutes: jest.fn() }));
 
@@ -83,7 +93,10 @@ const wrapper = ({ children }: { children: React.ReactNode }) => <JotaiProvider>
 
 describe("useLimitOrderHandler", () => {
   beforeEach(() => {
-    mockLimitConfig = undefined;
+    mockLimitConfig = { whitelistedPools: [`${tokenA.path}:${tokenB.path}:3000`] };
+    mockLimitConfigError = false;
+    mockRefetchLimitConfig.mockReset();
+    mockSubmit.mockReset();
     mockFundingBalance = "1000";
     mockRenderConfirmModal = undefined;
     mockGetUsdPrice.mockReset().mockReturnValue(null);
@@ -100,6 +113,114 @@ describe("useLimitOrderHandler", () => {
         .shiftedBy((exactOut ? request.inputToken : request.outputToken).decimals)
         .toFixed(0, exactOut ? BigNumber.ROUND_CEIL : BigNumber.ROUND_FLOOR);
       return { data: { status: "SUCCESS", amount } } as unknown as UseQueryResult<GetRoutesResponse, Error>;
+    });
+  });
+
+  describe("whitelisted pool eligibility", () => {
+    const renderReadyOrder = async (outputToken = tokenB, side: "buy" | "sell" = "sell") => {
+      const hook = renderHook(() => useLimitOrderHandler(), { wrapper });
+      act(() => hook.result.current.changeTokenA(tokenA));
+      act(() => hook.result.current.changeTokenB(outputToken));
+      if (side === "buy") act(() => hook.result.current.changeOrderSide("buy"));
+      act(() => {
+        hook.result.current.changeLimitPrice("10");
+        hook.result.current.changeSellAmount("10");
+      });
+      await act(async () => Promise.resolve());
+      return hook;
+    };
+
+    it("allows a direct whitelisted pair in Sell orientation", async () => {
+      const { result } = await renderReadyOrder();
+      expect(result.current.buttonState).toBe("PLACE_ORDER");
+    });
+
+    it("allows a direct whitelisted pair in Buy orientation", async () => {
+      const { result } = await renderReadyOrder(tokenB, "buy");
+      expect(result.current.buttonState).toBe("PLACE_ORDER");
+    });
+
+    it("submits a confirmation while the direct pair remains whitelisted", async () => {
+      const { result } = await renderReadyOrder();
+      const confirm = (mockRenderConfirmModal?.() as React.ReactElement<{ confirm: () => void }>).props.confirm;
+
+      expect(result.current.buttonState).toBe("PLACE_ORDER");
+      act(() => confirm());
+      expect(mockSubmit).toHaveBeenCalledTimes(1);
+    });
+
+    it("does not submit a confirmation after its pair is removed from the current whitelist", async () => {
+      const { result, rerender } = await renderReadyOrder();
+      const confirm = (mockRenderConfirmModal?.() as React.ReactElement<{ confirm: () => void }>).props.confirm;
+
+      mockLimitConfig = { whitelistedPools: [] };
+      rerender();
+
+      expect(result.current.buttonState).toBe("NO_WHITELISTED_POOL");
+      act(() => confirm());
+      expect(mockSubmit).not.toHaveBeenCalled();
+    });
+
+    it("rejects a non-whitelisted direct pair", async () => {
+      const { result } = await renderReadyOrder(tokenD);
+      expect(result.current.buttonState).toBe("NO_WHITELISTED_POOL");
+    });
+
+    it("rejects a quoted multi-hop route without a direct whitelisted pool", async () => {
+      mockLimitConfig = {
+        whitelistedPools: [`${tokenA.path}:${tokenB.path}:3000`, `${tokenB.path}:${tokenC.path}:500`],
+      };
+      const { result } = await renderReadyOrder(tokenC);
+      expect(result.current.buttonState).toBe("NO_WHITELISTED_POOL");
+    });
+
+    it("treats an empty whitelist as a known unsupported pair", async () => {
+      mockLimitConfig = { whitelistedPools: [] };
+      const { result } = await renderReadyOrder();
+      expect(result.current.buttonState).toBe("NO_WHITELISTED_POOL");
+    });
+
+    const expectRetryWhenUnknown = async (
+      config: { maxSlippageBps?: number; whitelistedPools?: string[] } | undefined,
+    ) => {
+      mockLimitConfig = config;
+      const { result } = await renderReadyOrder();
+
+      expect(result.current.buttonState).toBe("POOL_CHECK_FAILED");
+      act(() => result.current.onClickButton());
+      expect(mockRefetchLimitConfig).toHaveBeenCalledTimes(1);
+      expect(mockSubmit).not.toHaveBeenCalled();
+    };
+
+    it("keeps orders blocked and offers retry when config is missing", async () => {
+      await expectRetryWhenUnknown(undefined);
+    });
+
+    it("keeps orders blocked and offers retry when whitelist support is missing", async () => {
+      await expectRetryWhenUnknown({ maxSlippageBps: 1000 });
+    });
+
+    it("does not trust cached whitelist data after a config refresh error and allows retry", async () => {
+      mockLimitConfigError = true;
+      const { result } = await renderReadyOrder();
+
+      expect(result.current.buttonState).toBe("POOL_CHECK_FAILED");
+      act(() => result.current.onClickButton());
+      expect(mockRefetchLimitConfig).toHaveBeenCalledTimes(1);
+      expect(mockSubmit).not.toHaveBeenCalled();
+    });
+
+    it("normalizes native GNOT to the wrapped path before checking the whitelist", async () => {
+      mockLimitConfig = { whitelistedPools: [`${WRAPPED_GNOT_PATH}:${tokenA.path}:3000`] };
+      const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+      act(() => result.current.changeTokenA(GNOT_TOKEN));
+      act(() => result.current.changeTokenB(tokenA));
+      act(() => {
+        result.current.changeLimitPrice("10");
+        result.current.changeSellAmount("10");
+      });
+
+      expect(result.current.buttonState).toBe("PLACE_ORDER");
     });
   });
 

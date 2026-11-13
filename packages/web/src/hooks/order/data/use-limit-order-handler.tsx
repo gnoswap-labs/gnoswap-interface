@@ -25,6 +25,7 @@ import {
   formatOrderRate,
   trimFractionZeros,
 } from "@utils/order-format-utils";
+import { getSwapTokenPath } from "@utils/swap-route-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
 import { useConfirmOrderModal } from "../ui/use-confirm-order-modal";
@@ -39,6 +40,7 @@ import {
   getAvailableExpiryOptions,
   getLimitMinMakingAmount,
   getOrderButtonState,
+  hasWhitelistedPoolForPair,
   isLimitAmountTooLow,
   MAX_LIMIT_SLIPPAGE_BPS,
   stepLimitPrice,
@@ -103,7 +105,21 @@ export const useLimitOrderHandler = () => {
     formatUsd,
   } = useOrderFormCommon(tokenA, tokenB);
 
-  const { data: config, isLoading: isLoadingConfig } = useGetLimitConfig();
+  const {
+    data: config,
+    isLoading: isLoadingConfig,
+    isError: isConfigError,
+    refetch: refetchConfig,
+  } = useGetLimitConfig();
+  const whitelistedPools =
+    !isConfigError && Array.isArray(config?.whitelistedPools) ? config.whitelistedPools : undefined;
+  const whitelistedPoolsRef = useRef(whitelistedPools);
+  whitelistedPoolsRef.current = whitelistedPools;
+  const hasWhitelistedPool = useMemo<boolean | null>(() => {
+    if (!tokenA || !tokenB || isSameToken || !whitelistedPools) return null;
+    return hasWhitelistedPoolForPair(whitelistedPools, getSwapTokenPath(tokenA), getSwapTokenPath(tokenB));
+  }, [isSameToken, tokenA, tokenB, whitelistedPools]);
+  const isPoolCheckFailed = hasWhitelistedPool === null && !!tokenA && !!tokenB && !isSameToken;
 
   const expiryOptions = useMemo(
     () => getAvailableExpiryOptions(config?.minDurationSec, config?.maxDurationSec),
@@ -266,6 +282,8 @@ export const useLimitOrderHandler = () => {
     requiredAmount: sellAmount,
     balance: tokenABalance,
     hasLiquidity,
+    hasWhitelistedPool: hasWhitelistedPool === true,
+    isPoolCheckFailed,
     isAmountTooLow,
   });
 
@@ -286,7 +304,15 @@ export const useLimitOrderHandler = () => {
   );
 
   const createRequest = useMemo((): Omit<CreateLimitOrderRequest, "expiresAt"> | null => {
-    if (buttonState !== "PLACE_ORDER" || !tokenA || !tokenB || !hasRawAmounts) return null;
+    if (
+      buttonState !== "PLACE_ORDER" ||
+      !tokenA ||
+      !tokenB ||
+      !hasRawAmounts ||
+      hasWhitelistedPool !== true
+    ) {
+      return null;
+    }
     return {
       tokenIn: tokenA,
       tokenOut: tokenB,
@@ -295,17 +321,27 @@ export const useLimitOrderHandler = () => {
       takingAmount,
       slippageBps,
     };
-  }, [buttonState, hasRawAmounts, makingAmount, orderSide, slippageBps, takingAmount, tokenA, tokenB]);
+  }, [
+    buttonState,
+    hasRawAmounts,
+    hasWhitelistedPool,
+    makingAmount,
+    orderSide,
+    slippageBps,
+    takingAmount,
+    tokenA,
+    tokenB,
+  ]);
 
   /**
    * The CreateOrder messages for a native making amount of `rawAmount` at the
    * current price (the market price until one is set), so Max reserves the
-   * storage and measured cost of this order. Built regardless of the button state.
+   * storage and measured cost of this order. This simulation requires a known, directly whitelisted pair.
    */
   const maxAmountPrice = isValidPrice ? limitPrice : marketPrice;
   const makeMaxAmountMessages = useCallback(
     async (rawAmount: string) => {
-      if (!tokenA || !tokenB || isSameToken || !maxAmountPrice) return [];
+      if (!tokenA || !tokenB || isSameToken || !maxAmountPrice || hasWhitelistedPool !== true) return [];
       const maxTakingAmount = calculateTakingAmount(rawAmount, maxAmountPrice, tokenA, tokenB, orderSide);
       if (!BigNumber(maxTakingAmount).isGreaterThan(0)) return [];
       const maxMakingAmount =
@@ -321,7 +357,7 @@ export const useLimitOrderHandler = () => {
         expiresAt: Math.floor(Date.now() / 1000) + expiry,
       });
     },
-    [expiry, isSameToken, maxAmountPrice, orderRepository, orderSide, slippageBps, tokenA, tokenB],
+    [expiry, hasWhitelistedPool, isSameToken, maxAmountPrice, orderRepository, orderSide, slippageBps, tokenA, tokenB],
   );
   // What else the Max estimate was priced for, so an answer for another order is not written back.
   const maxAmountDependsOn = useMemo(
@@ -495,6 +531,13 @@ export const useLimitOrderHandler = () => {
 
   const placeOrder = useCallback(() => {
     if (!tokenA || !tokenB || !createRequest) return;
+    const currentWhitelistedPools = whitelistedPoolsRef.current;
+    if (
+      !currentWhitelistedPools ||
+      !hasWhitelistedPoolForPair(currentWhitelistedPools, getSwapTokenPath(tokenA), getSwapTokenPath(tokenB))
+    ) {
+      return;
+    }
 
     const messageData = {
       tokenASymbol: tokenA.displaySymbol,
@@ -550,8 +593,11 @@ export const useLimitOrderHandler = () => {
     [placeOrder, summary],
   );
 
-  const { openModal, closeModal } = useConfirmOrderModal(renderConfirmModal);
+  const { opened: isConfirmOpened, openModal, closeModal } = useConfirmOrderModal(renderConfirmModal);
   closeConfirmModalRef.current = closeModal;
+  useEffect(() => {
+    if (isConfirmOpened && buttonState !== "PLACE_ORDER") closeModal();
+  }, [buttonState, closeModal, isConfirmOpened]);
 
   const onClickButton = useCallback(() => {
     switch (buttonState) {
@@ -561,13 +607,16 @@ export const useLimitOrderHandler = () => {
       case "SWITCH_NETWORK":
         switchNetwork();
         return;
+      case "POOL_CHECK_FAILED":
+        void refetchConfig();
+        return;
       case "PLACE_ORDER":
         openModal();
         return;
       default:
         return;
     }
-  }, [buttonState, openConnectWallet, openModal, switchNetwork]);
+  }, [buttonState, openConnectWallet, openModal, refetchConfig, switchNetwork]);
 
   return {
     orderSide,
