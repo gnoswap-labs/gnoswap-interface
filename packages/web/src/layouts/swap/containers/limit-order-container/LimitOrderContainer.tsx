@@ -17,21 +17,26 @@ interface LimitOrderContainerProps {
 const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, changeSwapType }) => {
   const themeKey = useAtomValue(ThemeState.themeKey);
   const handler = useLimitOrderHandler();
-  const { changeSellAmount, setLimitPrice, changeExpiry, restoreOrderSide } = handler;
+  const { changeSellAmount, changeBuyAmount, setLimitPrice, changeExpiry, restoreOrderSide } = handler;
 
-  // A shared link may carry `amount`, `price` and `expiry`.
+  // `amount` is the legacy funding amount; Buy quantity links use `buyAmount`.
   const applyQuery = useCallback(
     (query: Record<string, string | string[] | undefined>) => {
       const side = getQueryString(query.side);
       if (side === "buy" || side === "sell") restoreOrderSide(side);
       const amount = getQueryString(query.amount);
+      const buyAmount = getQueryString(query.buyAmount);
       const price = getQueryString(query.price);
       const expiry = Number(getQueryString(query.expiry));
-      if (amount && BigNumber(amount).isGreaterThan(0)) changeSellAmount(amount);
+      if (side === "buy" && buyAmount && BigNumber(buyAmount).isGreaterThan(0)) {
+        changeBuyAmount(buyAmount);
+      } else if (amount && BigNumber(amount).isGreaterThan(0)) {
+        changeSellAmount(amount);
+      }
       if (price && BigNumber(price).isGreaterThan(0)) setLimitPrice(price);
       if (Number.isInteger(expiry) && expiry > 0) changeExpiry(expiry);
     },
-    [changeExpiry, changeSellAmount, restoreOrderSide, setLimitPrice],
+    [changeBuyAmount, changeExpiry, changeSellAmount, restoreOrderSide, setLimitPrice],
   );
   useOrderQueryTokens(applyQuery);
 
@@ -64,6 +69,7 @@ const LimitOrderContainer: React.FC<LimitOrderContainerProps> = ({ swapType, cha
       changeTokenA={handler.changeTokenA}
       changeTokenB={handler.changeTokenB}
       changeSellAmount={handler.changeSellAmount}
+      changeBuyAmount={handler.changeBuyAmount}
       switchTokens={handler.switchTokens}
       limitPrice={handler.limitPrice}
       limitPriceUsd={handler.limitPriceUsd}

@@ -17,7 +17,10 @@ export const dcaExecutionCount = atom<string>("2");
 /** Limit form. */
 export const limitSellAmount = atom<string>("");
 
-/** Client-only intent; never changes the order realm's request schema. */
+/** Explicitly entered Buy output quantity; empty while Sell or a funding-budget Max/link controls the amount. */
+export const limitBuyAmount = atom<string>("");
+
+/** Buy prices the output asset; Sell prices the input asset. */
 export const limitOrderSide = atom<LimitOrderSide>("sell");
 
 /** Quote tokens per base token: output/input for Sell, input/output for Buy. */

@@ -61,6 +61,7 @@ export const Default: Story = {
     changeTokenA: fn(),
     changeTokenB: fn(),
     changeSellAmount: fn(),
+    changeBuyAmount: fn(),
     switchTokens: fn(),
     limitPrice: "1.2716",
     limitPriceUsd: "$1",

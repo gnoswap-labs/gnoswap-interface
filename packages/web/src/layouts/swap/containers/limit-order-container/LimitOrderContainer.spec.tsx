@@ -43,10 +43,20 @@ jest.mock("@hooks/order/ui/use-confirm-order-modal", () => ({
 jest.mock("@query/order", () => ({ useGetLimitConfig: () => ({ data: undefined, isLoading: false }) }));
 jest.mock("@query/router", () => ({
   useGetRoutes: (
-    request: { inputToken: TokenModel; outputToken: TokenModel; tokenAmount: string } | null,
+    request: {
+      inputToken: TokenModel;
+      outputToken: TokenModel;
+      tokenAmount: string;
+      exactType: "EXACT_IN" | "EXACT_OUT";
+    } | null,
     _options: unknown,
   ) => ({
-    data: request ? { status: "SUCCESS", amount: `${Number(request.tokenAmount) * 100_000}` } : undefined,
+    data: request
+      ? {
+          status: "SUCCESS",
+          amount: `${Number(request.tokenAmount) * (request.exactType === "EXACT_OUT" ? 10_000_000 : 100_000)}`,
+        }
+      : undefined,
   }),
 }));
 jest.mock("@hooks/order/data/use-order-form-common", () => ({
@@ -101,7 +111,7 @@ beforeEach(() => {
 describe("LimitOrderContainer query restoration", () => {
   it("keeps a Buy form's side, pair-bound manual price, and amount on a same-store remount without side in the query", async () => {
     const store = createStore();
-    mockQuery = { from: tokenB.path, to: tokenA.path, side: "buy", amount: "18", price: "6" };
+    mockQuery = { from: tokenB.path, to: tokenA.path, side: "buy", buyAmount: "3", price: "6" };
 
     const first = renderContainer(store);
     await waitFor(() => expect(screen.getByDisplayValue("18")).toBeInTheDocument());
@@ -132,6 +142,34 @@ describe("LimitOrderContainer query restoration", () => {
           baseToken: tokenA,
           makingAmount: "18000000",
           takingAmount: "3000000",
+        }),
+      ),
+    );
+  });
+
+  it("keeps old Buy links as funding budgets until a purchased quantity is entered", async () => {
+    const store = createStore();
+    mockQuery = { from: tokenB.path, to: tokenA.path, side: "buy", amount: "18", price: "6" };
+    renderContainer(store);
+    await waitFor(() => expect(screen.getByDisplayValue("3")).toBeInTheDocument());
+    expect(screen.getByDisplayValue("18")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByDisplayValue("3"), { target: { value: "4" } });
+    expect(screen.getByDisplayValue("24")).toBeInTheDocument();
+    fireEvent.change(screen.getByDisplayValue("6"), { target: { value: "8" } });
+    expect(screen.getByDisplayValue("32")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("4")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Swap:dca.placeOrder" }));
+    const confirmation = mockConfirmContent?.() as { props: { confirm: () => void } };
+    act(() => confirmation.props.confirm());
+    await waitFor(() =>
+      expect(mockSendCreateLimitOrder).toHaveBeenCalledWith(
+        expect.objectContaining({
+          tokenIn: tokenB,
+          tokenOut: tokenA,
+          baseToken: tokenA,
+          makingAmount: "32000000",
+          takingAmount: "4000000",
         }),
       ),
     );

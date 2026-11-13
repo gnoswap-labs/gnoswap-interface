@@ -4,6 +4,7 @@ import {
   applyLimitPricePreset,
   calculateAmountPerExecution,
   calculateMaxExecutionCount,
+  calculateMakingAmount,
   calculateTakingAmount,
   clampExecutionCount,
   getAvailableDcaIntervals,
@@ -78,6 +79,18 @@ describe("use-order-handler.utils", () => {
     it("treats an unknown or comma-grouped balance correctly", () => {
       expect(getOrderButtonState({ ...ready, balance: "-" })).toBe("INSUFFICIENT_BALANCE");
       expect(getOrderButtonState({ ...ready, amount: "1500", balance: "1,541.5" })).toBe("PLACE_ORDER");
+    });
+
+    it("checks the required funding amount rather than the entered target quantity", () => {
+      expect(getOrderButtonState({ ...ready, amount: "100", requiredAmount: "10", balance: "10" })).toBe("PLACE_ORDER");
+      expect(getOrderButtonState({ ...ready, amount: "10", requiredAmount: "100", balance: "10" })).toBe(
+        "INSUFFICIENT_BALANCE",
+      );
+      expect(
+        getOrderButtonState({ ...ready, amount: "100", requiredAmount: "0", balance: "0", isAmountTooLow: true }),
+      ).toBe("AMOUNT_TOO_LOW");
+      expect(getOrderButtonState({ ...ready, requiredAmount: "-1" })).toBe("INSUFFICIENT_BALANCE");
+      expect(getOrderButtonState({ ...ready, requiredAmount: "not-a-number" })).toBe("INSUFFICIENT_BALANCE");
     });
 
     it("only lets the wallet states and the final state act", () => {
@@ -156,6 +169,19 @@ describe("use-order-handler.utils", () => {
     expect(calculateTakingAmount("18000000", "6", { decimals: 6 }, { decimals: 6 }, "buy")).toBe("3000000");
     expect(calculateTakingAmount("6000000", "6", { decimals: 6 }, { decimals: 18 }, "buy")).toBe("1000000000000000000");
     expect(calculateTakingAmount("1", "6", { decimals: 0 }, { decimals: 0 }, "buy")).toBe("0");
+  });
+
+  it("computes Buy funding with decimal scaling and floors without exceeding the limit price", () => {
+    expect(calculateMakingAmount("2500000", "2", { decimals: 6 }, { decimals: 6 })).toBe("5000000");
+    expect(calculateMakingAmount("2500000000000000000", "1.5", { decimals: 6 }, { decimals: 18 })).toBe("3750000");
+    expect(calculateMakingAmount("123456789012345678901234567890", "3.25", { decimals: 18 }, { decimals: 18 })).toBe(
+      "401234564290123456429012345642",
+    );
+    const rawTaking = "1";
+    const making = calculateMakingAmount(rawTaking, "1.5", { decimals: 0 }, { decimals: 0 });
+    expect(making).toBe("1");
+    // Funding per purchased unit stays at or below the selected Buy price.
+    expect(Number(making) / Number(rawTaking)).toBeLessThanOrEqual(1.5);
   });
 
   describe("calculateLimitMinimumReceived", () => {
