@@ -1,6 +1,4 @@
 {
-  "addPosi": "ポジション追加",
-  "copied": "コピーした！",
   "developersSection": {
     "item": {
       "audit": "監査",
@@ -23,14 +21,12 @@
     },
     "title": "特徴"
   },
-  "gnoBridge": "Gnoブリッジ",
   "governance": "ガバナンス",
   "governanceSection": {
     "item": {
       "dashboard": "エクスペリエンス",
       "forum": "フォーラム",
       "proposals": "プロポーザル",
-      "vote": "投票",
       "xgns": "エックスジーエヌエス"
     },
     "title": "ガバナンス"
@@ -41,7 +37,6 @@
       "aboutUs": "会社概要",
       "faq": "よくあるご質問",
       "projectOnboarding": "オンボーディング",
-      "twitter": "ツイッター（X）",
       "userGuide": "ユーザーガイド"
     },
     "title": "ヘルプ"
@@ -61,7 +56,6 @@
     "title": "方針"
   },
   "portfolio": "ポートフォリオ",
-  "projectOnboarding": "プロジェクト・オンボーディング",
   "receive": "受け取る",
   "referralSection": {
     "banner": {
@@ -84,9 +78,7 @@
       }
     }
   },
-  "stakePosi": "ステークポジション",
   "swap": "スワップ",
   "switchNetwork": "ネットワークを切り替える",
-  "theFastest": "は、グノランドで最も流動性の高いソースの構築を目指す、急成長中のエコシステムです。",
   "theme": "テーマ"
 }

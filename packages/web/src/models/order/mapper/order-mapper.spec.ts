@@ -1,0 +1,375 @@
+jest.mock("@constants/environment.constant", () => ({
+  ...jest.requireActual("@constants/environment.constant"),
+  WRAPPED_GNOT_PATH: "gno.land/r/gnoland/wugnot",
+  PACKAGE_DCA_ORDER_PATH: "gno.land/r/gnoswap/test3/order/dca",
+  PACKAGE_LIMIT_ORDER_PATH: "gno.land/r/gnoswap/test3/order/limit",
+}));
+
+import type { TokenModel } from "@models/token/token-model";
+import type { DcaOrderItem, LimitOrderItem } from "@repositories/order/response";
+
+import {
+  parseReturnRate,
+  calculatePriceRate,
+  calculateProgress,
+  canCancelLimitOrder,
+  mapDcaOrderItemToModel,
+  resolveOrderRealm,
+  mapLimitFillToHistory,
+  mapLimitOrderItemToModel,
+  resolveOrderToken,
+} from "./order-mapper";
+
+const gns: TokenModel = {
+  type: "GRC20",
+  chainId: "",
+  createdAt: "",
+  name: "GnoSwap",
+  path: "gno.land/r/gnoswap/gns",
+  decimals: 6,
+  symbol: "GNS",
+  displaySymbol: "GNS",
+  logoURI: "",
+  priceID: "gno.land/r/gnoswap/gns",
+};
+const gnot: TokenModel = {
+  ...gns,
+  type: "Native",
+  path: "ugnot",
+  priceID: "ugnot",
+  symbol: "GNOT",
+  displaySymbol: "GNOT",
+};
+const eightDecimals: TokenModel = { ...gns, path: "gno.land/r/demo/btc", priceID: "btc", decimals: 8, symbol: "BTC" };
+const tokens = [gns, gnot, eightDecimals];
+
+const dcaItem: DcaOrderItem = {
+  orderId: "42",
+  owner: "g1",
+  status: "ACTIVE",
+  inputToken: "gno.land/r/gnoswap/gns",
+  outputToken: "gno.land/r/gnoland/wugnot",
+  interval: 3600,
+  slotOffset: 0,
+  groupId: "",
+  amountPerExecution: "750000000",
+  executionCount: 200,
+  depositAmount: "150000000000",
+  executedCount: 13,
+  remainingCount: 187,
+  soldAmount: "9750000000",
+  purchasedAmount: "10140000000",
+  remainingAmount: "140250000000",
+  claimedAmount: "0",
+  claimableAmount: "10140000000",
+  nextExecutionAt: 1745833200,
+  createdAt: 1745780000,
+  createdTxHash: "tx",
+  closedAt: null,
+  closedTxHash: null,
+  refundedAmount: "0",
+};
+
+describe("order-mapper", () => {
+  it("shows wrapped GNOT as GNOT", () => {
+    expect(resolveOrderToken("gno.land/r/gnoland/wugnot", tokens).path).toBe("ugnot");
+    expect(resolveOrderToken("gno.land/r/gnoswap/gns", tokens)).toBe(gns);
+  });
+
+  it("applies each token's decimals to the price rate", () => {
+    expect(calculatePriceRate(gns, gnot, "9750000000", "10140000000")).toBe("1.04");
+    // 1 GNS (6 decimals) bought 0.5 BTC (8 decimals)
+    expect(calculatePriceRate(gns, eightDecimals, "1000000", "50000000")).toBe("0.5");
+    expect(calculatePriceRate(gns, gnot, "0", "100")).toBeNull();
+  });
+
+  it("clamps progress to 0-100", () => {
+    expect(calculateProgress(13, 200)).toBe(6.5);
+    expect(calculateProgress(3, 2)).toBe(100);
+    expect(calculateProgress(1, 0)).toBe(0);
+  });
+
+  it("reads the order-api return rate, null when the API has none", () => {
+    expect(parseReturnRate("3.4483")).toBe(3.4483);
+    expect(parseReturnRate("-5.0000")).toBe(-5);
+    expect(parseReturnRate(null)).toBeNull();
+    expect(parseReturnRate(undefined)).toBeNull();
+    expect(parseReturnRate("")).toBeNull();
+    expect(parseReturnRate("x")).toBeNull();
+  });
+
+  it("maps a DCA order to display units", () => {
+    const order = mapDcaOrderItemToModel(dcaItem, tokens);
+
+    expect(order.isActive).toBe(true);
+    expect(order.inputToken).toBe(gns);
+    expect(order.outputToken.symbol).toBe("GNOT");
+    expect(order.soldAmount).toBe("9750");
+    expect(order.purchasedAmount).toBe("10140");
+    expect(order.remainingAmount).toBe("140250");
+    expect(order.amountPerExecution).toBe("750");
+    expect(order.priceRate).toBe("1.04");
+    expect(order.progress).toBe(6.5);
+    // An order-api without the return leaves it unknown.
+    expect(order.returnRate).toBeNull();
+  });
+
+  it("takes the DCA order return from the order-api", () => {
+    expect(mapDcaOrderItemToModel({ ...dcaItem, returnRate: "3.4483" }, tokens).returnRate).toBe(3.4483);
+    expect(mapDcaOrderItemToModel({ ...dcaItem, returnRate: null }, tokens).returnRate).toBeNull();
+  });
+
+  it("shows completed orders as full and cancelled ones at their real progress", () => {
+    expect(mapDcaOrderItemToModel({ ...dcaItem, status: "COMPLETED" }, tokens).progress).toBe(100);
+    const cancelled = mapDcaOrderItemToModel({ ...dcaItem, status: "CANCELLED", nextExecutionAt: null }, tokens);
+    expect(cancelled.progress).toBe(6.5);
+    expect(cancelled.remainingCount).toBe(0);
+    expect(cancelled.nextExecutionAt).toBeNull();
+  });
+
+  it("tells a keeper's force cancel apart from the owner's", () => {
+    const cancelled = { ...dcaItem, status: "CANCELLED" as const, nextExecutionAt: null };
+    expect(mapDcaOrderItemToModel({ ...cancelled, forceCancelled: true }, tokens).forceCancelled).toBe(true);
+    expect(mapDcaOrderItemToModel(cancelled, tokens).forceCancelled).toBe(false);
+    // Only a cancelled order can have been force cancelled.
+    expect(mapDcaOrderItemToModel({ ...dcaItem, forceCancelled: true }, tokens).forceCancelled).toBe(false);
+  });
+
+  it("keeps a completed DCA order claimable until its output is paid", () => {
+    const completed = { ...dcaItem, status: "COMPLETED" as const, remainingCount: 0, nextExecutionAt: null };
+
+    const unclaimed = mapDcaOrderItemToModel({ ...completed, claimedAmount: "0", claimableAmount: "450" }, tokens);
+    expect(unclaimed.isActive).toBe(false);
+    expect(unclaimed.canClaim).toBe(true);
+    expect(unclaimed.claimableAmount).toBe("0.00045");
+    expect(unclaimed.claimedAmount).toBe("0");
+
+    const claimed = mapDcaOrderItemToModel({ ...completed, claimedAmount: "450", claimableAmount: "0" }, tokens);
+    expect(claimed.canClaim).toBe(false);
+    expect(claimed.claimedAmount).toBe("0.00045");
+
+    // An active order pays its accrued output through Stop; a cancelled one already paid it.
+    expect(mapDcaOrderItemToModel(dcaItem, tokens).canClaim).toBe(false);
+    expect(mapDcaOrderItemToModel({ ...dcaItem, status: "CANCELLED" }, tokens).canClaim).toBe(false);
+  });
+
+  describe("order realm", () => {
+    const currentDca = "gno.land/r/gnoswap/test3/order/dca";
+    const earlierDca = "gno.land/r/gnoswap/test/order/dca";
+
+    it("treats an order-api without realms as the current realm", () => {
+      expect(resolveOrderRealm(undefined, currentDca)).toEqual({ packagePath: currentDca, isCurrentRealm: true });
+      expect(resolveOrderRealm("", currentDca)).toEqual({ packagePath: currentDca, isCurrentRealm: true });
+      expect(resolveOrderRealm(earlierDca, currentDca)).toEqual({ packagePath: earlierDca, isCurrentRealm: false });
+    });
+
+    it("lets a completed earlier realm's DCA order be claimed", () => {
+      const completed = { ...dcaItem, status: "COMPLETED" as const, claimableAmount: "450" };
+
+      const current = mapDcaOrderItemToModel({ ...completed, packagePath: currentDca }, tokens);
+      expect(current.isCurrentRealm).toBe(true);
+      expect(current.canClaim).toBe(true);
+
+      const earlier = mapDcaOrderItemToModel({ ...completed, packagePath: earlierDca }, tokens);
+      expect(earlier.packagePath).toBe(earlierDca);
+      expect(earlier.isCurrentRealm).toBe(false);
+      expect(earlier.canClaim).toBe(true);
+    });
+  });
+
+  it("maps a limit order with its limit price and fill rate", () => {
+    const item: LimitOrderItem = {
+      orderId: "7",
+      owner: "g1",
+      status: "PARTIALLY_FILLED",
+      tokenIn: "gno.land/r/gnoswap/gns",
+      tokenOut: "gno.land/r/gnoland/wugnot",
+      makingAmount: "3000000",
+      takingAmount: "3814800",
+      slippageBps: 50,
+      executionFeeRate: 15,
+      filledInput: "1000000",
+      remainingInput: "2000000",
+      refundedInput: "0",
+      userOutput: "1271000",
+      createdAt: 1,
+      expiresAt: 2,
+      createdTxHash: "tx",
+      closedAt: null,
+      closedTxHash: null,
+    };
+
+    const order = mapLimitOrderItemToModel(item, tokens);
+
+    expect(order.isActive).toBe(true);
+    expect(order.limitPrice).toBe("1.2716");
+    expect(order.priceRate).toBe("1.271");
+    expect(order.progress).toBeCloseTo(33.333, 2);
+    expect(order.slippageBps).toBe(50);
+    expect(order.minimumReceived).toBe("3.795726");
+    for (const [baseToken, side] of [
+      [item.tokenIn, "sell"],
+      [item.tokenOut, "buy"],
+      [undefined, null],
+      [null, null],
+      ["", null],
+      ["unrelated-token", null],
+    ] as const) {
+      expect(mapLimitOrderItemToModel({ ...item, baseToken }, tokens).side).toBe(side);
+    }
+    const completed = mapLimitOrderItemToModel(
+      {
+        ...item,
+        status: "COMPLETED",
+        filledInput: item.makingAmount,
+        remainingInput: "0",
+        userOutput: "4000000",
+      },
+      tokens,
+    );
+    expect(completed.minimumReceived).toBe("3.795726");
+    expect(mapLimitOrderItemToModel({ ...item, status: "EXPIRED" }, tokens).isActive).toBe(false);
+    // An earlier realm's order is still cancelled, in its own realm.
+    expect(order.canCancel).toBe(true);
+    const earlier = mapLimitOrderItemToModel({ ...item, packagePath: "gno.land/r/gnoswap/test/order/limit" }, tokens);
+    expect(earlier.isCurrentRealm).toBe(false);
+    expect(earlier.packagePath).toBe("gno.land/r/gnoswap/test/order/limit");
+    expect(earlier.canCancel).toBe(true);
+  });
+
+  it("offers the limit cancel/refund while input is still escrowed, even after expiry", () => {
+    const base = { remainingInput: "2000000", refundedInput: "0" };
+
+    expect(canCancelLimitOrder({ ...base, status: "OPEN" })).toBe(true);
+    expect(canCancelLimitOrder({ ...base, status: "PARTIALLY_FILLED" })).toBe(true);
+    // Expired but not yet cleaned up: the realm still refunds through CancelOrder.
+    expect(canCancelLimitOrder({ ...base, status: "EXPIRED" })).toBe(true);
+    // Already refunded by cleanup, or nothing left to refund.
+    expect(canCancelLimitOrder({ status: "EXPIRED", remainingInput: "0", refundedInput: "2000000" })).toBe(false);
+    expect(canCancelLimitOrder({ status: "EXPIRED", remainingInput: "2000000", refundedInput: "2000000" })).toBe(false);
+    expect(canCancelLimitOrder({ ...base, status: "CANCELLED" })).toBe(false);
+    expect(canCancelLimitOrder({ status: "COMPLETED", remainingInput: "0", refundedInput: "0" })).toBe(false);
+  });
+
+  describe("limit order minimum for the unfilled input", () => {
+    const item: LimitOrderItem = {
+      orderId: "9",
+      owner: "g1",
+      status: "PARTIALLY_FILLED",
+      tokenIn: "gno.land/r/gnoland/wugnot",
+      tokenOut: "gno.land/r/gnoswap/gns",
+      makingAmount: "100000000",
+      takingAmount: "12430800",
+      slippageBps: 50,
+      executionFeeRate: 15,
+      filledInput: "35000000",
+      remainingInput: "65000000",
+      refundedInput: "0",
+      userOutput: "4373420",
+      createdAt: 1,
+      expiresAt: 2,
+      createdTxHash: "tx",
+      closedAt: null,
+      closedTxHash: null,
+    };
+
+    it("covers only the unfilled input and leaves the original minimum alone", () => {
+      const order = mapLimitOrderItemToModel(item, tokens);
+
+      expect(order.minimumRemainingReceived).toBe("8.03962");
+      expect(order.minimumReceived).toBe("12.368646");
+    });
+
+    it("is the original minimum before any fill and zero once nothing remains", () => {
+      const unfilled = mapLimitOrderItemToModel(
+        { ...item, status: "OPEN", filledInput: "0", remainingInput: item.makingAmount, userOutput: "0" },
+        tokens,
+      );
+      expect(unfilled.minimumRemainingReceived).toBe("12.368646");
+      expect(unfilled.minimumReceived).toBe("12.368646");
+
+      const completed = mapLimitOrderItemToModel(
+        { ...item, status: "COMPLETED", filledInput: item.makingAmount, remainingInput: "0", userOutput: "12495486" },
+        tokens,
+      );
+      expect(completed.minimumRemainingReceived).toBe("0");
+      expect(completed.minimumReceived).toBe("12.368646");
+
+      const cancelled = mapLimitOrderItemToModel(
+        { ...item, status: "CANCELLED", remainingInput: "0", refundedInput: "65000000" },
+        tokens,
+      );
+      expect(cancelled.minimumRemainingReceived).toBe("0");
+    });
+
+    it("rounds up from the raw terms, not from the rounded display amounts", () => {
+      // Scaling the rounded original minimum (3.316667) by the unfilled share rounds up to 3.316667 again.
+      const order = mapLimitOrderItemToModel(
+        { ...item, makingAmount: "7000000", takingAmount: "3333333", filledInput: "1", remainingInput: "6999999" },
+        tokens,
+      );
+
+      expect(order.minimumReceived).toBe("3.316667");
+      expect(order.minimumRemainingReceived).toBe("3.316666");
+    });
+
+    it("applies the output token's decimals", () => {
+      // 1 of 3 input tokens (6 decimals) against 1 output token (8 decimals): 33166666.67 raw rounds up.
+      const order = mapLimitOrderItemToModel(
+        {
+          ...item,
+          tokenOut: eightDecimals.path,
+          makingAmount: "3000000",
+          takingAmount: "100000000",
+          remainingInput: "1000000",
+        },
+        tokens,
+      );
+
+      expect(order.minimumRemainingReceived).toBe("0.33166667");
+      expect(order.minimumReceived).toBe("0.995");
+    });
+  });
+
+  describe("execution fees", () => {
+    const item: LimitOrderItem = {
+      orderId: "11",
+      owner: "g1",
+      status: "COMPLETED",
+      tokenIn: "gno.land/r/gnoland/wugnot",
+      tokenOut: "gno.land/r/gnoswap/gns",
+      makingAmount: "3000000",
+      takingAmount: "12430800",
+      slippageBps: 50,
+      executionFeeRate: 15,
+      filledInput: "3000000",
+      remainingInput: "0",
+      refundedInput: "0",
+      userOutput: "12495486",
+      createdAt: 1,
+      expiresAt: 2,
+      createdTxHash: "tx",
+      closedAt: 3,
+      closedTxHash: "tx",
+    };
+
+    const feeOf = (cumulativeExecutionFee?: string) =>
+      mapLimitOrderItemToModel({ ...item, cumulativeExecutionFee }, tokens).cumulativeExecutionFee;
+
+    it("keeps the stored cumulative fee at the output token's full precision", () => {
+      expect(feeOf("18771")).toBe("0.018771");
+    });
+
+    it("tells a known zero fee from one the order-api does not report", () => {
+      expect(feeOf("0")).toBe("0");
+      expect(feeOf(undefined)).toBeNull();
+    });
+
+    it("carries each fill's own fee into its history row", () => {
+      const fill = { txHash: "tx", amountIn: "1000000", userOutput: "4165000", executionFee: "18771", blockTime: 5 };
+
+      expect(mapLimitFillToHistory(fill, gnot, gns, 0).executionFee).toBe("0.018771");
+      expect(mapLimitFillToHistory({ ...fill, executionFee: "0" }, gnot, gns, 0).executionFee).toBe("0");
+    });
+  });
+});

@@ -1,6 +1,4 @@
 {
-  "addAct": "Add",
-  "adds": "Adds",
   "day": "Day",
   "fees": "Fees",
   "govOver": {
@@ -24,7 +22,6 @@
       "tooltip": "Total amount of xGNS currently issued by GNS staking."
     }
   },
-  "noTokensfound\n": "No activities found",
   "onchainActi": {
     "col": {
       "acc": "Account",
@@ -52,8 +49,7 @@
       "tooltip": {
         "community": "Community Pool",
         "devOps": "DevOps",
-        "liquiStaking": "Liquidity Staking",
-        "title": "Block Emissions"
+        "liquiStaking": "Liquidity Staking"
       }
     },
     "circulSup": {
@@ -75,15 +71,9 @@
       "tooltip": "The maximum token supply of GNS."
     }
   },
-  "swapAct": "Swap",
-  "swaps": "Swaps",
   "title": "Explore",
   "totalVolChart": {
     "title": "Total Volume",
     "totalFee": "Total Fees"
-  },
-  "totalvolumeFees": "Fees",
-  "tradingVolume": "Trading Volume",
-  "unstakeAct": "Unstake",
-  "unstakes": "Unstakes"
+  }
 }

@@ -177,7 +177,7 @@ export const useSwapHandler = () => {
     refetchGrc20Balances,
     refetchSwapExtensionBalances,
   } = useTokenData(true);
-  const { slippage, changeSlippage } = useSlippage();
+  const { slippage, changeSlippage } = useSlippage({ resetOnMount: false });
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
 

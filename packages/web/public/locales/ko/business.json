@@ -22,12 +22,16 @@
       "claimFees": "수수료 청구",
       "claimRewards": "수수료 청구",
       "create": "생성",
+      "dcaOrder": "DCA 명령",
+      "dcaSwap": "DCA 스왑",
       "decrease": "일부 해지",
       "delegate": "위임",
       "deposit": "예치",
       "execute": "실행",
       "incentivize": "인센티브 제공",
       "increase": "증가",
+      "limitOrder": "지정가 주문",
+      "limitSwap": "한도 스왑",
       "remove": "해지",
       "reposition": "포지션 재배치",
       "stake": "스테이킹",
@@ -39,7 +43,6 @@
   },
   "pageHeader": {
     "addPosi": "포지션 추가",
-    "dashboard": "탐색",
     "decreaseLiqui": "유동성 일부 해지",
     "earn": "획득",
     "incentivzePool": "인센티브 추가",
@@ -49,10 +52,6 @@
     "stakePosition": "포지션 스테이킹",
     "unstakePosition": "포지션 언스테이킹",
     "wallet": "포트폴리오"
-  },
-  "positionHistoryAction": {
-    "claimFees": "수수료 청구",
-    "create": "생성"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +84,7 @@
     "internal_reward": "Internal 보상",
     "swap_fee": "스왑 수수료"
   },
-  "selectAToken": "토큰 선택",
   "staked": "스테이킹",
-  "stakingIncentiveType": {
-    "external": "External",
-    "internal": "Internal"
-  },
   "switchGnoland": "Gnoland로 전환",
   "token": "토큰",
   "unstakingFee": {

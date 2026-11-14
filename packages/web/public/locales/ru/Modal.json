@@ -68,6 +68,48 @@
       },
       "title": "Заявление GNS"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Не удалось получить <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Заявление <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Заявлено <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Заявление о вынесении постановления DCA"
+    },
+    "dcaError": {
+      "amountTooLow": {
+        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
+        "title": "Amount Too Low"
+      },
+      "halted": {
+        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
+        "title": "DCA Orders Paused"
+      },
+      "noEligiblePool": {
+        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
+        "title": "No Eligible Pool"
+      },
+      "pairNotSupported": {
+        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
+        "title": "Pair Not Supported"
+      }
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Не удалось оформить заказ <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Оформление заказа <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Заказано <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Распоряжение DCA"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Не удалось остановиться <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Остановка <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Остановлено <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Распоряжение о приостановлении действия DCA"
+    },
     "delegate": {
       "status": {
         "error": "<div>Не удалось делегировать полномочия <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> на <span>{{target}}</span></div>",
@@ -109,6 +151,22 @@
         "title": "Транзакция подана",
         "viewTx": "Посмотреть сделку"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Не удалось отменить <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Отмена <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Отменено <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> из-за <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Отменить лимитный ордер"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Не удалось оформить заказ <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Оформление заказа <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Заказано <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> для <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Лимитный ордер"
     },
     "propose": {
       "status": {
@@ -197,6 +255,18 @@
       "title": "Обертывание"
     }
   },
+  "confirmPlaceOrder": {
+    "actualAmount": "Заказ размещается только на сайте {{amount}} {{symbol}}, чтобы при каждой сделке продавалось одинаковое количество.",
+    "title": "Подтвердить оформление заказа"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "Отменив лимитный ордер, вы не сможете повторно разместить тот же ордер, и вам будет возвращен только неисполненный объем. Исполненные объемы при этом не затрагиваются.",
+    "cancelTitle": "Подтвердить Отменить заказ",
+    "importantNote": "Важное примечание",
+    "note": "Если вы остановите ордер DCA, вы не сможете возобновить тот же ордер, и вам будут возвращены только оставшиеся суммы. Чтобы продолжить DCA, вам необходимо создать новый ордер DCA.",
+    "orderDetails": "Детали заказа",
+    "title": "Подтвердить стоп-ордер"
+  },
   "connectWallet": {
     "failed": {
       "desc": "Попытка подключения не удалась. Пожалуйста, попробуйте еще раз.",
@@ -219,6 +289,9 @@
           "success": "Создано"
         }
       },
+      "dcaOrdered": "Постановление DCA",
+      "dcaStopped": "DCA остановлено",
+      "dcaSwapped": "DCA заменено",
       "decreased": "Снижение",
       "delegate": {
         "status": {
@@ -234,6 +307,10 @@
       "feesClaimed": "Заявленные гонорары",
       "incentivized": "Стимулирование",
       "increased": "Увеличение",
+      "limitCancelled": "Ограничение отменено",
+      "limitExpired": "Срок действия ограничения истек",
+      "limitOrdered": "Ограниченный ордер",
+      "limitSwapped": "Ограничение изменено",
       "proposal": "Предложение",
       "received": "Получено",
       "removed": "Удалено",
@@ -264,7 +341,6 @@
     },
     "title": "Уведомление"
   },
-  "pop": "Популярные токены",
   "search": {
     "mostLiquiPools": "Самые жидкие бассейны",
     "pools": "Бассейны",
@@ -312,9 +388,6 @@
     "understand": "Я понимаю"
   },
   "walletLogin": {
-    "btn": {
-      "connect": "Wallet Connect"
-    },
     "desc": "Подключая кошелек, вы принимаете и соглашаетесь с нашими <1>Условиями использования</1> и <3>Политикой конфиденциальности</3>.",
     "title": "Вход в кошелек"
   }

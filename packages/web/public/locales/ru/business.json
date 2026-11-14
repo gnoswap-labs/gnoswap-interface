@@ -22,12 +22,16 @@
       "claimFees": "Претензионные сборы",
       "claimRewards": "Претендовать на вознаграждение",
       "create": "Создать",
+      "dcaOrder": "Распоряжение DCA",
+      "dcaSwap": "Обмен DCA",
       "decrease": "Уменьшить",
       "delegate": "Делегат",
       "deposit": "Депозит",
       "execute": "Выполнить",
       "incentivize": "Стимулировать",
       "increase": "Увеличить",
+      "limitOrder": "Лимитный ордер",
+      "limitSwap": "Лимитный своп",
       "remove": "Удалить",
       "reposition": "Перепозиционирование",
       "stake": "Колышек",
@@ -39,7 +43,6 @@
   },
   "pageHeader": {
     "addPosi": "Добавить позицию",
-    "dashboard": "Посетите сайт",
     "decreaseLiqui": "Снижение ликвидности",
     "earn": "Заработать",
     "incentivzePool": "Стимулировать бассейн",
@@ -49,10 +52,6 @@
     "stakePosition": "Положение кола",
     "unstakePosition": "Не занимать позицию",
     "wallet": "Портфолио"
-  },
-  "positionHistoryAction": {
-    "claimFees": "Претензионные сборы",
-    "create": "Создать"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +84,7 @@
     "internal_reward": "Внутренние вознаграждения",
     "swap_fee": "Комиссионные за своп"
   },
-  "selectAToken": "Выберите маркер",
   "staked": "Ставки",
-  "stakingIncentiveType": {
-    "external": "Внешний",
-    "internal": "Внутренний"
-  },
   "switchGnoland": "Переключитесь на Гноланд",
   "token": "Токен",
   "unstakingFee": {

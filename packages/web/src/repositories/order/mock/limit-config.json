@@ -1,0 +1,19 @@
+{
+  "message": "success",
+  "data": {
+    "minMakingAmount": "100",
+    "minDurationSec": 300,
+    "maxDurationSec": 2592000,
+    "executionFeeBps": 15,
+    "routerFeeBps": 15,
+    "maxSlippageBps": 1000,
+    "halted": {
+      "execute": false,
+      "withdraw": false
+    },
+    "whitelistedPools": [
+      "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:500",
+      "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000"
+    ]
+  }
+}

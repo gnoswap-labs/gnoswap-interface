@@ -7,8 +7,98 @@
     },
     "title": "Xác nhận hoán đổi"
   },
+  "dca": {
+    "estimatedEndDate": "Ngày kết thúc dự kiến",
+    "every": "Mỗi",
+    "everyTooltip": "Thời gian ước tính sẽ trôi qua giữa mỗi giao dịch trong lệnh của bạn. Thời gian thực tế có thể thay đổi tùy thuộc vào thời gian khối.",
+    "executionFee": "Phí thực hiện",
+    "executionFeeTooltip": "Phí được khấu trừ từ số tiền thu được từ mỗi giao dịch đã được thực hiện và được chuyển vào giao thức.",
+    "intervalPhrase": {
+      "day": "1 ngày",
+      "hour": "1 giờ",
+      "minute": "1 phút",
+      "month": "1 tháng",
+      "week": "1 tuần"
+    },
+    "marketPrice": "Giá thị trường",
+    "minTrading": "Số lượng tối thiểu {{amount}} {{symbol}} cho mỗi đơn hàng",
+    "noWhitelistedPool": "Cặp này không được hỗ trợ",
+    "orders": "Đơn hàng",
+    "orderSentence": "Bạn đang bán <sell/> để mua <buy/> theo giá thị trường mỗi <hl>{{interval}}</hl> trong <hl>{{rounds}} vòng</hl> (tổng cộng <total/>).",
+    "over": "Hết",
+    "overTooltip": "Số lượng các giao dịch riêng lẻ sẽ được thực hiện trong khuôn khổ lệnh của bạn.",
+    "placeOrder": "Đặt hàng",
+    "poolCheckFailed": "Kiểm tra nhóm thử lại",
+    "toBuy": "Mua",
+    "unit": {
+      "day": "Ngày",
+      "hour": "Giờ",
+      "minute": "Phút",
+      "month": "Tháng",
+      "week": "Tuần"
+    }
+  },
   "fetchingPrice": "Đang lấy giá tốt nhất...",
   "header": "Hoán đổi",
+  "limit": {
+    "belowMarketWarning": "Giá kích hoạt thấp hơn giá thị trường và lệnh của bạn có thể được khớp ngay lập tức.",
+    "buyTheDip": "Mua khi giá giảm",
+    "buyWhen": "Mua khi 1 {{symbol}} giảm xuống còn",
+    "executionFeeTooltip": "Phí được khấu trừ từ số lượng giao dịch thực hiện của mỗi lệnh được khớp hoàn toàn và được chuyển vào giao thức. Số tiền hiển thị là mức ước tính cho trường hợp lệnh được khớp hoàn toàn theo giá giới hạn của bạn; mức phí thực tế phụ thuộc vào số lượng giao dịch thực hiện.",
+    "expiresIn": "Hết hạn trong",
+    "expiryOption": {
+      "oneDay": "1 ngày",
+      "oneHour": "1 giờ",
+      "oneWeek": "1 tuần",
+      "thirtyDays": "30 ngày"
+    },
+    "instantFillWarning": "Giá kích hoạt là giá thị trường và lệnh của bạn có thể được khớp ngay lập tức.",
+    "limitPrice": "Giá giới hạn",
+    "market": "Thị trường",
+    "marketPrice": "Giá thị trường:",
+    "minimumReceivedTooltip": "Số lượng tối thiểu bạn nhận được sau khi trừ phí thực hiện, dựa trên giá giới hạn và mức trượt giá bạn đã chọn. Con số này được hiển thị cho trường hợp khớp lệnh toàn bộ; đối với trường hợp khớp lệnh một phần, tỷ lệ này vẫn được áp dụng và số lượng sẽ được làm tròn lên cho mỗi lần khớp lệnh.",
+    "minTrading": "{{amount}} tối thiểu {{symbol}}",
+    "sellAtTarget": "Bán tại giá mục tiêu",
+    "sellWhen": "Bán khi 1 {{symbol}} đạt"
+  },
+  "order": {
+    "active": "Đơn hàng đang mở",
+    "cancelledAt": "Thời điểm hủy",
+    "cancelOrder": "Hủy đơn hàng",
+    "claimOrder": "Yêu cầu",
+    "completedAt": "Thời điểm hoàn thành",
+    "connectWallet": "Vui lòng kết nối ví của bạn để xem đơn hàng.",
+    "expiredAt": "Hết hạn vào",
+    "expiresAt": "Hết hạn vào",
+    "filledPrice": "Giá khớp lệnh",
+    "nextTrade": "Giao dịch tiếp theo",
+    "noOrders": "Không tìm thấy đơn hàng nào.",
+    "ongoing": "Đang diễn ra",
+    "order": "Đơn hàng",
+    "orderHistory": "Lịch sử đơn hàng",
+    "overview": "Tổng quan",
+    "past": "Các đơn hàng trước đây",
+    "paused": "Đơn hàng đang bị tạm dừng",
+    "priceRate": "Mức giá",
+    "priceRateAvg": "Mức giá (trung bình)",
+    "purchased": "Đã mua",
+    "purchasedAmount": "Số tiền đã mua",
+    "rate": "Giá thực hiện",
+    "refundOrder": "Hoàn tiền",
+    "remainingAmount": "Số tiền còn lại",
+    "remainingTrades": "Các giao dịch còn lại",
+    "sold": "Đã bán",
+    "soldAmount": "Số tiền đã bán",
+    "status": {
+      "cancelled": "Đã hủy",
+      "cancelledByKeeper": "Cancelled by Keeper",
+      "completed": "Đã hoàn thành",
+      "expired": "Đã hết hạn",
+      "partiallyFilled": "Đã điền một phần"
+    },
+    "stopOrder": "Lệnh dừng",
+    "time": "Thời gian"
+  },
   "poolInfo": {
     "addPosBtn": "Thêm vị trí",
     "col": {
@@ -30,6 +120,7 @@
     "balanceUnavailable": "Không có số dư",
     "enterAmount": "Nhập số tiền",
     "insuffiLiq": "Thiếu thanh khoản",
+    "retryMaxCalculation": "Tính lại số lượng tối đa",
     "review": "Đánh giá",
     "selectToken": "Chọn một mã thông báo",
     "swap": "Hoán đổi",
@@ -39,7 +130,6 @@
     "wrap": "Bọc"
   },
   "swapInfo": {
-    "gasFee": "Phí giao dịch trên mạng lưới\n",
     "maxSent": "Tối đa Gửi đi",
     "minReceived": "Tối thiểu Nhận được\n",
     "priceImpact": "Tác động đến giá",
@@ -48,5 +138,10 @@
       "swapFee": "Tỷ lệ phần trăm phí được tính trên mỗi giao dịch và được chuyển cho giao thức. Khoản phí này được thanh toán bằng token đầu ra và đã được tính sẵn vào mức giá chào."
     }
   },
-  "swapURLCopied": "Đã sao chép URL!"
+  "swapURLCopied": "Đã sao chép URL!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "Giới hạn",
+    "swap": "Hoán đổi"
+  }
 }

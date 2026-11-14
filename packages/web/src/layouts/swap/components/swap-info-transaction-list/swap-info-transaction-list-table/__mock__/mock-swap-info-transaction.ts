@@ -11,6 +11,7 @@ export const mockSwapHistory: SwapHistoryItem[] = [
     toUsdValue: "1.2312",
     time: new Date().toISOString(),
     txHash: "",
+    tradeType: "SWAP",
   },
   {
     fromToken: GNOT_TOKEN,
@@ -21,6 +22,7 @@ export const mockSwapHistory: SwapHistoryItem[] = [
     toUsdValue: "2",
     time: new Date().toISOString(),
     txHash: "",
+    tradeType: "DCA",
   },
   {
     fromToken: GNOT_TOKEN,
@@ -31,6 +33,7 @@ export const mockSwapHistory: SwapHistoryItem[] = [
     toUsdValue: "1111.12",
     time: new Date().toISOString(),
     txHash: "",
+    tradeType: "LIMIT",
   },
   {
     fromToken: GNOT_TOKEN,
@@ -41,6 +44,7 @@ export const mockSwapHistory: SwapHistoryItem[] = [
     toUsdValue: "7777777.12",
     time: new Date().toISOString(),
     txHash: "",
+    tradeType: "SWAP",
   },
   {
     fromToken: GNOT_TOKEN,
@@ -51,5 +55,6 @@ export const mockSwapHistory: SwapHistoryItem[] = [
     toUsdValue: "888888888888.12",
     time: new Date().toISOString(),
     txHash: "",
+    tradeType: "DCA",
   },
 ];

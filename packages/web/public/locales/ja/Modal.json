@@ -68,6 +68,48 @@
       },
       "title": "請求 GNS"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>受け取りに失敗しました <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>主張 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>主張された <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "DCA命令の請求"
+    },
+    "dcaError": {
+      "amountTooLow": {
+        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
+        "title": "Amount Too Low"
+      },
+      "halted": {
+        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
+        "title": "DCA Orders Paused"
+      },
+      "noEligiblePool": {
+        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
+        "title": "No Eligible Pool"
+      },
+      "pairNotSupported": {
+        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
+        "title": "Pair Not Supported"
+      }
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>注文に失敗しました <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 対象： <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>ご注文 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ～用 <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>注文済み <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ～のために <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA命令"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>停止に失敗しました <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>停止 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ～のために <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>停止しました <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ～のために <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA命令の停止"
+    },
     "delegate": {
       "status": {
         "error": "<div>委任に失敗 <span>{{tokenAAmount}}</span><span>{{tokenASymbol}}</span>への <span>{{target}}</span></div>",
@@ -109,6 +151,22 @@
         "title": "提出された取引",
         "viewTx": "取引を見る"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>キャンセルに失敗しました <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>キャンセル <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ～の <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>中止 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 理由： <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "指値注文の取消し"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>注文に失敗しました <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> 対象： <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>ご注文 <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ～用 <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>注文済み <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> ～のために <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "指値注文"
     },
     "propose": {
       "status": {
@@ -197,6 +255,18 @@
       "title": "ラップ"
     }
   },
+  "confirmPlaceOrder": {
+    "actualAmount": "{{amount}} {{symbol}} の注文のみが、すべての取引で同量の売りが成立するように設定されています。",
+    "title": "注文の確認・注文確定"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "指値注文をキャンセルすると、同じ注文を再度出すことはできず、約定しなかった分のみが返還されます。約定済みの分には影響ありません。",
+    "cancelTitle": "注文の確認　キャンセル",
+    "importantNote": "重要なお知らせ",
+    "note": "DCA注文を停止すると、同じ注文を再開することはできず、残りの金額のみが返金されます。DCAを継続するには、新しいDCA注文を作成する必要があります。",
+    "orderDetails": "注文の詳細",
+    "title": "ストップ注文の確認"
+  },
   "connectWallet": {
     "failed": {
       "desc": "接続に失敗しました。もう一度お試しください。",
@@ -219,6 +289,9 @@
           "success": "作成"
         }
       },
+      "dcaOrdered": "DCAによる命令",
+      "dcaStopped": "DCAが停止しました",
+      "dcaSwapped": "DCAの入れ替え",
       "decreased": "減少",
       "delegate": {
         "status": {
@@ -234,6 +307,10 @@
       "feesClaimed": "請求料金",
       "incentivized": "インセンティブ",
       "increased": "増加",
+      "limitCancelled": "制限が解除されました",
+      "limitExpired": "有効期限が切れました",
+      "limitOrdered": "指値注文",
+      "limitSwapped": "リミットの入れ替え",
       "proposal": "提案",
       "received": "受領",
       "removed": "削除",
@@ -264,7 +341,6 @@
     },
     "title": "通知"
   },
-  "pop": "人気のトークン",
   "search": {
     "mostLiquiPools": "ほとんどの流動性プール",
     "pools": "プール",
@@ -312,9 +388,6 @@
     "understand": "分かっている"
   },
   "walletLogin": {
-    "btn": {
-      "connect": "ウォレット・コネクト"
-    },
     "desc": "ウォレットを接続することにより、<1>利用規約と</1> <3>プライバシーポリシーに</3>同意し、同意したものとみなされます。",
     "title": "ウォレットログイン"
   }

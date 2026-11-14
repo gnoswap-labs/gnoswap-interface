@@ -3,8 +3,6 @@
     "title": {
       "default": "一站式 Gno.land DeFi 平台 | GnoSwap",
       "earn": "赚取",
-      "earnAdd": "将位置添加到{{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
-      "earnAddDefault": "将位置添加到 GnoSwap 池",
       "explore": "探索 | GnoSwap",
       "governance": "治理 | GnoSwap",
       "launchpad": "Launchpad | GnoSwap",

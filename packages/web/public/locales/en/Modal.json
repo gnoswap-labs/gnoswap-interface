@@ -68,6 +68,48 @@
       },
       "title": "Claim GNS"
     },
+    "dcaClaim": {
+      "status": {
+        "error": "<div>Failed to claim <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "pending": "<div>Claiming <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>",
+        "success": "<div>Claimed <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span></div>"
+      },
+      "title": "Claim DCA Order"
+    },
+    "dcaError": {
+      "amountTooLow": {
+        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
+        "title": "Amount Too Low"
+      },
+      "halted": {
+        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
+        "title": "DCA Orders Paused"
+      },
+      "noEligiblePool": {
+        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
+        "title": "No Eligible Pool"
+      },
+      "pairNotSupported": {
+        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
+        "title": "Pair Not Supported"
+      }
+    },
+    "dcaOrder": {
+      "status": {
+        "error": "<div>Failed to order <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordering <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ordered <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "DCA Order"
+    },
+    "dcaStop": {
+      "status": {
+        "error": "<div>Failed to stop <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Stopping <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Stopped <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Stop DCA Order"
+    },
     "delegate": {
       "status": {
         "error": "<div>Failed to delegate <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> to <span>{{target}}</span></div>",
@@ -109,6 +151,22 @@
         "title": "Transaction Submitted",
         "viewTx": "View Transaction"
       }
+    },
+    "limitCancel": {
+      "status": {
+        "error": "<div>Failed to cancel <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Cancelling <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Cancelled <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Cancel Limit Order"
+    },
+    "limitOrder": {
+      "status": {
+        "error": "<div>Failed to order <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "pending": "<div>Ordering <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>",
+        "success": "<div>Ordered <span>{{tokenAAmount}}</span> <span>{{tokenASymbol}}</span> for <span>{{tokenBAmount}}</span> <span>{{tokenBSymbol}}</span></div>"
+      },
+      "title": "Limit Order"
     },
     "propose": {
       "status": {
@@ -197,6 +255,18 @@
       "title": "Wrap"
     }
   },
+  "confirmPlaceOrder": {
+    "actualAmount": "Only {{amount}} {{symbol}} is ordered so every trade sells the same amount.",
+    "title": "Confirm Place Order"
+  },
+  "confirmStopOrder": {
+    "cancelNote": "Cancel a limit order, you cannot restart the same order and only the unfilled amount is returned to you. Filled amounts are not affected.",
+    "cancelTitle": "Confirm Cancel Order",
+    "importantNote": "Important Note",
+    "note": "Stop a DCA order, you cannot restart the same order and only the remaining amounts are returned to you. To continue DCA, you need to create a new DCA order.",
+    "orderDetails": "Order Details",
+    "title": "Confirm Stop Order"
+  },
   "connectWallet": {
     "failed": {
       "desc": "The connection attempt has failed. Please try again.",
@@ -219,6 +289,9 @@
           "success": "Created"
         }
       },
+      "dcaOrdered": "DCA Ordered",
+      "dcaStopped": "DCA Stopped",
+      "dcaSwapped": "DCA Swapped",
       "decreased": "Decreased",
       "delegate": {
         "status": {
@@ -234,6 +307,10 @@
       "feesClaimed": "Claimed Fees",
       "incentivized": "Incentivized",
       "increased": "Increased",
+      "limitCancelled": "Limit Cancelled",
+      "limitExpired": "Limit Expired",
+      "limitOrdered": "Limit Ordered",
+      "limitSwapped": "Limit Swapped",
       "proposal": "Proposal",
       "received": "Received",
       "removed": "Removed",
@@ -264,7 +341,6 @@
     },
     "title": "Notification"
   },
-  "pop": "Popular Tokens",
   "search": {
     "mostLiquiPools": "Most Liquid Pools",
     "pools": "Pools",
@@ -312,9 +388,6 @@
     "understand": "I understand"
   },
   "walletLogin": {
-    "btn": {
-      "connect": "Wallet Connect"
-    },
     "desc": "By connecting a wallet, you agree and consent to our <1>Terms of Use</1> and <3>Privacy Policy</3>.",
     "title": "Wallet Login"
   }

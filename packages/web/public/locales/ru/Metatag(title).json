@@ -3,8 +3,6 @@
     "title": {
       "default": "Единая платформа Gno.land DeFi | GnoSwap",
       "earn": "Заработать | GnoSwap",
-      "earnAdd": "Добавить позицию на {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
-      "earnAddDefault": "Добавить позицию в пулы GnoSwap",
       "explore": "Исследуйте | GnoSwap",
       "governance": "Управление | GnoSwap",
       "launchpad": "Launchpad | GnoSwap",

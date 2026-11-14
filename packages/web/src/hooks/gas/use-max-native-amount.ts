@@ -1,12 +1,13 @@
 import BigNumber from "bignumber.js";
 import { useAtomValue } from "jotai";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { TransactionMessage } from "@common/clients/wallet-client/protocols";
 import { DEFAULT_GAS_FEE } from "@common/values";
 import { GasToken } from "@common/values/token-constant";
 import { useOptionalGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { isNativeToken, TokenModel } from "@models/token/token-model";
+import type { MaxNativeAmount } from "@services/transaction-gas";
 import * as WalletState from "@states/wallet";
 import { makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
@@ -27,9 +28,9 @@ export interface MaxNativeAmountSubject {
   /** The amount currently in the field the result would be written to. */
   amount?: string;
   /**
-   * Anything else the messages were built for and that the user can change
-   * while the estimate is out: the other side of a swap, a price range. It
-   * does not show up in the field, but it decides what the transaction costs.
+   * Anything else the messages were built for and that can change the estimate,
+   * including the other side of a swap, transaction terms, or wallet balance.
+   * It does not show up in the field, but it decides what the transaction costs.
    */
   dependsOn?: readonly unknown[];
 }
@@ -43,11 +44,17 @@ interface AskedFor {
   signer: string | null;
 }
 
-const sameAskedFor = (a: AskedFor, b: AskedFor) =>
+const sameEstimateContext = (a: AskedFor, b: AskedFor) =>
   a.signer === b.signer &&
   a.subject.token?.path === b.subject.token?.path &&
-  a.subject.amount === b.subject.amount &&
   sameDependencies(a.subject.dependsOn, b.subject.dependsOn);
+
+const sameAskedFor = (a: AskedFor, b: AskedFor) =>
+  sameEstimateContext(a, b) && a.subject.amount === b.subject.amount;
+
+const sameFailedSubject = (failure: AskedFor, current: AskedFor) =>
+  sameEstimateContext(failure, current) &&
+  (failure.subject.amount === current.subject.amount || current.subject.amount === "0");
 
 export interface MaxNativeAmountParams {
   /** Wallet balance as shown in the UI, so with a decimal point and optional grouping. */
@@ -68,9 +75,22 @@ export interface MaxNativeAmountParams {
  * a simulation of the action itself, since an action doing more work for a
  * larger amount also costs more.
  *
+ * When that simulation cannot be run — the node does not answer, the messages
+ * cannot be built, there is no service to ask — no amount is known to be
+ * spendable, and one that only holds back the fee could leave the action short
+ * of its own deposit. `getMaxAmount` then resolves to `"0"` and `failed` becomes
+ * true. The failure remains visible when a caller applies that zero to the
+ * field; it clears when the estimate context changes or `resetError` is called.
+ * A zero the estimate does arrive at is an answer rather than a failure: the
+ * balance cannot cover the action.
+ *
  * `getMaxAmount` resolves to `null` when the answer no longer belongs to the
- * field that asked: the token changed, the user typed, or a later press
- * superseded it. Callers write the result back only when it is not `null`.
+ * field that asked: the token changed, the user typed, a later press
+ * superseded it, or the field is gone. Callers write the result back only when
+ * it is not `null`, and an obsolete failure is not exposed.
+ *
+ * Call `resetError` before manual edits; it also invalidates any in-flight
+ * estimate so an answer for the unchanged field cannot overwrite the edit.
  *
  * While an estimate is out, `pendingBalance` holds the whole balance for the
  * field to show as a placeholder — the answer is the balance less a reserve, so
@@ -82,6 +102,7 @@ export interface MaxNativeAmountParams {
 export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
   const transactionGasService = useOptionalGnoswapContext()?.transactionGasService ?? null;
   const [pending, setPending] = useState<{ balance: string; askedFor: AskedFor } | null>(null);
+  const [failure, setFailure] = useState<AskedFor | null>(null);
 
   // Every action is built for, and simulated as, the connected account. Tracked
   // here rather than left to each caller, since none of them can afford to
@@ -92,6 +113,25 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
   const current = useRef(askingFor);
   current.current = askingFor;
   const pressCount = useRef(0);
+  const resetError = useCallback(() => {
+    pressCount.current += 1;
+    setPending(null);
+    setFailure(null);
+  }, []);
+
+  // A field that is gone has nothing to write an answer into, and a failure
+  // reported after it would be about a form the user has already left.
+  useEffect(
+    () => () => {
+      pressCount.current += 1;
+    },
+    [],
+  );
+
+  // Clear stale failure during this render so a context that later returns to
+  // the failed subject cannot make an obsolete error reappear.
+  if (failure && !sameFailedSubject(failure, askingFor)) setFailure(null);
+  const failed = failure !== null && sameFailedSubject(failure, askingFor);
 
   // Only stands in for the request still on screen. A field that has moved on
   // gets its placeholder and its button back at once, without waiting out an
@@ -102,6 +142,8 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
     async ({ balance, makeMessages }: MaxNativeAmountParams): Promise<string | null> => {
       const press = (pressCount.current += 1);
       const asked = current.current;
+      setFailure(null);
+      setPending(null);
       const { token } = asked.subject;
 
       const isLatest = () => press === pressCount.current;
@@ -116,31 +158,46 @@ export const useMaxNativeAmount = (subject: MaxNativeAmountSubject) => {
       const rawBalance = makeRawTokenAmount(token, displayBalance.toFixed());
       if (!rawBalance) return displayBalance.toFixed();
 
-      if (!makeMessages || !transactionGasService) {
+      // A field that builds no messages has no deposit to measure, so the flat
+      // fee is all it holds back.
+      if (!makeMessages) {
         const spendable = BigNumber(rawBalance).minus(OFFERED_GAS_FEE);
 
         return makeDisplayTokenAmountString(token, BigNumber.maximum(spendable, 0).toFixed(0)) ?? "0";
       }
 
-      setPending({ balance: displayBalance.toFixed(), askedFor: asked });
+      // One that does has a deposit only a simulation can price. Without the
+      // service there is no estimate at all, and the fee alone would leave the
+      // deposit unaccounted for.
+      let estimate: MaxNativeAmount | null = null;
+      if (transactionGasService) {
+        setPending({ balance: displayBalance.toFixed(), askedFor: asked });
 
-      try {
-        const { amount } = await transactionGasService.estimateMaxNativeAmount({
-          balance: rawBalance,
-          makeMessages,
-        });
-
-        if (!stillWanted()) return null;
-
-        return makeDisplayTokenAmountString(token, amount) ?? "0";
-      } finally {
-        // An earlier press finishing must not re-enable the button while a
-        // later one is still out.
-        if (isLatest()) setPending(null);
+        try {
+          estimate = await transactionGasService.estimateMaxNativeAmount({ balance: rawBalance, makeMessages });
+        } catch {
+          // Handled below, once it is known the field is still asking.
+        } finally {
+          // An earlier press finishing must not re-enable the button while a
+          // later one is still out.
+          if (isLatest()) setPending(null);
+        }
       }
+
+      if (!stillWanted()) return null;
+
+      // A positive amount is only safe to spend once a simulation priced what
+      // it leaves behind; zero offers nothing, so it stands either way. Without
+      // an estimate, return zero and expose failure rather than guess.
+      if (!estimate || (!estimate.simulated && BigNumber(estimate.amount).isGreaterThan(0))) {
+        setFailure(asked);
+        return "0";
+      }
+
+      return makeDisplayTokenAmountString(token, estimate.amount) ?? "0";
     },
     [transactionGasService],
   );
 
-  return { getMaxAmount, pendingBalance, loading: pendingBalance !== null };
+  return { getMaxAmount, pendingBalance, loading: pendingBalance !== null, failed, resetError };
 };

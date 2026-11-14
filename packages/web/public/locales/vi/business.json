@@ -22,12 +22,16 @@
       "claimFees": "Phí yêu cầu bồi thường",
       "claimRewards": "Nhận phần thưởng",
       "create": "Tạo",
+      "dcaOrder": "Lệnh của DCA",
+      "dcaSwap": "Hoán đổi DCA",
       "decrease": "Giảm",
       "delegate": "Đại biểu",
       "deposit": "Tiền gửi",
       "execute": "Thực thi",
       "incentivize": "Tạo động lực",
       "increase": "Tăng",
+      "limitOrder": "Lệnh giới hạn",
+      "limitSwap": "Hợp đồng hoán đổi có giới hạn",
       "remove": "Xóa",
       "reposition": "Điều chỉnh vị trí",
       "stake": "Cổ phần",
@@ -39,7 +43,6 @@
   },
   "pageHeader": {
     "addPosi": "Thêm vị trí",
-    "dashboard": "Khám phá",
     "decreaseLiqui": "Giảm tính thanh khoản",
     "earn": "Kiếm tiền",
     "incentivzePool": "Quỹ khuyến khích",
@@ -49,10 +52,6 @@
     "stakePosition": "Vị thế đặt cược",
     "unstakePosition": "Hủy đặt cược",
     "wallet": "Danh mục đầu tư"
-  },
-  "positionHistoryAction": {
-    "claimFees": "Phí yêu cầu bồi thường",
-    "create": "Tạo"
   },
   "positionPriceRangeInfo": {
     "capEff": {
@@ -85,12 +84,7 @@
     "internal_reward": "Phần thưởng nội bộ",
     "swap_fee": "Phí hoán đổi"
   },
-  "selectAToken": "Chọn một mã thông báo\n",
   "staked": "Được đặt cược",
-  "stakingIncentiveType": {
-    "external": "Bên ngoài",
-    "internal": "Nội bộ"
-  },
   "switchGnoland": "Chuyển sang Gnoland",
   "token": "Token",
   "unstakingFee": {

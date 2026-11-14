@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "Đã bỏ phiếu",
-      "changeNetwork": "Chuyển sang Gnoland",
-      "execute": "Thực thi",
       "noVoteWeight": "Trọng số bỏ phiếu không đủ",
       "requireSelect": "Chọn tùy chọn bỏ phiếu",
       "tryAgain": "Thử lại",
@@ -127,8 +125,7 @@
         "select": {
           "amount": "Số tiền"
         },
-        "title": "1. Chọn đại diện của bạn",
-        "tooltip": "Các đại biểu là những nhà lãnh đạo cộng đồng được lựa chọn để đưa ra các quyết định quản trị thay mặt cho các chủ sở hữu GNS."
+        "title": "1. Chọn đại diện của bạn"
       },
       "step2": {
         "title": "2. Nhập số tiền"
@@ -179,8 +176,6 @@
       "executableInMinutes_other": "Có thể thực thi trong {{count}} phút",
       "executed": "Đề xuất đã được thực hiện {{rel_time}}",
       "expired": "Đề xuất đã hết hạn {{rel_time}}",
-      "h": "trong {{time}}h",
-      "m": "trong {{time}}m",
       "start": "Bắt đầu bỏ phiếu {{rel_time}}"
     },
     "tooltip": {
@@ -220,8 +215,7 @@
       "unavailable": "Không có sẵn"
     },
     "aprHistory": {
-      "dailyApr": "Tổng cộng",
-      "vs7dAvg": "so với TB 7D"
+      "dailyApr": "Tổng cộng"
     },
     "apr": {
       "title": "xGNS APR (7 ngày)"

@@ -30,7 +30,6 @@
     "enterAddr": {
       "input": "Saisir l'adresse"
     },
-    "estNetFee": "Estimation de la redevance de réseau",
     "network": {
       "label": "Réseau",
       "tooltip": "Le réseau du jeton à envoyer."

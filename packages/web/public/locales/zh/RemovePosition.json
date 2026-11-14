@@ -14,15 +14,8 @@
       "title": "重要说明"
     }
   },
-  "fees": "费用",
-  "liquidity": "流动性",
   "overview": {
-    "collectAsSwitch": "收集为 WGNOT",
     "pooled": "池化",
-    "stakingApr": {
-      "label": "定标 APR",
-      "tooltip": "估计年利率范围的计算方法是，根据注码持续时间，对您的注码头寸应用动态乘数。"
-    },
     "unclaimed": "无人认领的费用"
   },
   "posi": "职位",

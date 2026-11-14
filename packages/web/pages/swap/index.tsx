@@ -12,7 +12,7 @@ import { formatDisplayTokenSymbol } from "@utils/token-utils";
 export async function getStaticProps({ locale }: { locale: string }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Swap", "Dashboard", "Pool"])),
+      ...(await serverSideTranslations(locale, [...DEFAULT_I18N_NS, "Swap", "Dashboard", "Pool", "AddPosition"])),
     },
   };
 }

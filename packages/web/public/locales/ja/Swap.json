@@ -7,8 +7,98 @@
     },
     "title": "スワップ確認"
   },
+  "dca": {
+    "estimatedEndDate": "終了予定日",
+    "every": "すべての",
+    "everyTooltip": "注文内の各取引の間に経過すると見込まれる時間です。実際の時間は、ブロック時間によって異なる場合があります。",
+    "executionFee": "執行手数料",
+    "executionFeeTooltip": "約定した各取引の収益から差し引かれ、プロトコルに支払われる手数料。",
+    "intervalPhrase": {
+      "day": "1日",
+      "hour": "1時間",
+      "minute": "1分",
+      "month": "1か月",
+      "week": "1週間"
+    },
+    "marketPrice": "市場価格",
+    "minTrading": "1注文あたりの最低注文数量：{{amount}} 、{{symbol}} ",
+    "noWhitelistedPool": "この組み合わせはサポートされていません",
+    "orders": "注文",
+    "orderSentence": "市場価格で<sell/>を売って<buy/>を購入します。これを<hl>{{interval}}</hl>ごとに<hl>{{rounds}}ラウンド</hl>実行します（合計<total/>）。",
+    "over": "以上",
+    "overTooltip": "注文の一環として発動される個別の取引の数。",
+    "placeOrder": "注文する",
+    "poolCheckFailed": "リトライプールの確認",
+    "toBuy": "購入",
+    "unit": {
+      "day": "日",
+      "hour": "時間",
+      "minute": "議事録",
+      "month": "月",
+      "week": "週"
+    }
+  },
   "fetchingPrice": "最良の価格を取得しています...",
   "header": "スワップ",
+  "limit": {
+    "belowMarketWarning": "トリガー価格は市場価格を下回っているため、注文が即座に約定する可能性があります。",
+    "buyTheDip": "値下がり時に買いを入れる",
+    "buyWhen": "1{{symbol}} が以下まで下がったら購入する",
+    "executionFeeTooltip": "各約定取引の約定額から差し引かれ、プロトコルに支払われる手数料です。表示されている金額は、指値価格で全量約定した場合の概算額です。実際の手数料は、約定額によって異なります。",
+    "expiresIn": "残り",
+    "expiryOption": {
+      "oneDay": "1日",
+      "oneHour": "1時間",
+      "oneWeek": "1週間",
+      "thirtyDays": "30日間"
+    },
+    "instantFillWarning": "トリガー価格は市場価格であり、注文が即座に約定する可能性があります。",
+    "limitPrice": "指値",
+    "market": "市場",
+    "marketPrice": "市場価格：",
+    "minimumReceivedTooltip": "指値価格および選択したスリッページに基づいて、執行手数料を差し引いた後に受け取る最低の売却額です。これは全量約定の場合の表示です。一部約定の場合は、同じ比率を適用し、約定ごとに切り上げられます。",
+    "minTrading": "{{amount}} 以上{{symbol}}",
+    "sellAtTarget": "目標価格で売る",
+    "sellWhen": "1 {{symbol}} が次の価格に達したら売却"
+  },
+  "order": {
+    "active": "未決済注文",
+    "cancelledAt": "キャンセル日時",
+    "cancelOrder": "注文をキャンセルする",
+    "claimOrder": "主張",
+    "completedAt": "完了日時",
+    "connectWallet": "ご注文内容を確認するには、ウォレットを接続してください。",
+    "expiredAt": "失効日時",
+    "expiresAt": "有効期限",
+    "filledPrice": "約定価格",
+    "nextTrade": "次の取引",
+    "noOrders": "注文が見つかりませんでした。",
+    "ongoing": "進行中",
+    "order": "注文",
+    "orderHistory": "注文履歴",
+    "overview": "概要",
+    "past": "過去の注文",
+    "paused": "注文が一時停止されました",
+    "priceRate": "価格・料金",
+    "priceRateAvg": "価格（平均）",
+    "purchased": "購入済み",
+    "purchasedAmount": "購入金額",
+    "rate": "約定価格",
+    "refundOrder": "返金",
+    "remainingAmount": "残額",
+    "remainingTrades": "残りの取引",
+    "sold": "販売済み",
+    "soldAmount": "販売額",
+    "status": {
+      "cancelled": "中止",
+      "cancelledByKeeper": "Cancelled by Keeper",
+      "completed": "完了",
+      "expired": "有効期限切れ",
+      "partiallyFilled": "一部埋まっている"
+    },
+    "stopOrder": "ストップ注文",
+    "time": "時間"
+  },
   "poolInfo": {
     "addPosBtn": "ポジション追加",
     "col": {
@@ -30,6 +120,7 @@
     "balanceUnavailable": "残高がありません",
     "enterAmount": "金額を入力",
     "insuffiLiq": "不十分な流動性",
+    "retryMaxCalculation": "最大数量を再計算",
     "review": "レビュー",
     "selectToken": "トークンの選択",
     "swap": "スワップ",
@@ -39,7 +130,6 @@
     "wrap": "ラップ"
   },
   "swapInfo": {
-    "gasFee": "ネットワークガス料金",
     "maxSent": "送信最大数",
     "minReceived": "最小受信",
     "priceImpact": "価格への影響",
@@ -48,5 +138,10 @@
       "swapFee": "各取引で課金される手数料のうち、プロトコルに支払われる割合。これは出力トークンで支払われ、すでに見積もりに織り込まれています。"
     }
   },
-  "swapURLCopied": "コピーされたURLを入れ替える！"
+  "swapURLCopied": "コピーされたURLを入れ替える！",
+  "tab": {
+    "dca": "DCA",
+    "limit": "上限",
+    "swap": "スワップ"
+  }
 }

@@ -9,6 +9,7 @@ import { PriceImpactStatus, SwapRateAction } from "@hooks/swap/data/use-swap-han
 import { SwapResultInfo } from "@models/swap/swap-result-info";
 import { SwapRouteInfo } from "@models/swap/swap-route-info";
 import { SwapSummaryInfo } from "@models/swap/swap-summary-info";
+import { SwapCardType } from "@models/order/order-type";
 import { SwapTokenInfo } from "@models/swap/swap-token-info";
 import { TokenModel } from "@models/token/token-model";
 
@@ -55,6 +56,8 @@ interface SwapCardProps {
   setSwapRateAction: (type: SwapRateAction) => void;
   priceImpactStatus: PriceImpactStatus;
   makeMaxAmountMessages?: MaxNativeAmountParams["makeMessages"];
+  swapType?: SwapCardType;
+  changeSwapType?: (type: SwapCardType) => void;
 }
 
 const SwapCard: React.FC<SwapCardProps> = ({
@@ -86,6 +89,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
   isSameToken,
   isRefetching,
   makeMaxAmountMessages,
+  swapType,
+  changeSwapType,
 }) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -103,6 +108,8 @@ const SwapCard: React.FC<SwapCardProps> = ({
         slippage={swapTokenInfo.slippage}
         changeSlippage={changeSlippage}
         themeKey={themeKey}
+        swapType={swapType}
+        changeSwapType={changeSwapType}
       />
       <SwapCardContent
         swapTokenInfo={swapTokenInfo}

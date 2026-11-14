@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "Cân bằng",
     "cancel": "Hủy",
     "close": "Đóng",
     "copy": "Sao chép",
-    "earn": "Kiếm tiền",
     "swap": "Hoán đổi"
   },
   "all": "Tất cả",
-  "available": "Còn hàng",
   "balanceChange": {
     "currentBalance": "Số dư hiện tại",
     "defaultTitle": "3. Thay đổi về cân bằng",
@@ -22,7 +19,6 @@
     "amountTooLow": "Số tiền quá thấp",
     "enterAmount": "Nhập số tiền",
     "insuffiBal": "Số dư không đủ",
-    "switchNetwork": "Chuyển sang Gnoland",
     "walletLogin": "Đăng nhập bằng ví"
   },
   "candleTooltip": {
@@ -72,7 +68,6 @@
       "title": "Staking hoạt động như thế nào?"
     }
   },
-  "imporNote": "Lưu ý quan trọng",
   "learnMore": "Tìm hiểu thêm",
   "localTimeComp": {
     "tooltip": "*Dựa trên múi giờ địa phương của bạn"
@@ -97,14 +92,6 @@
   "noDataFound": "Không tìm thấy dữ liệu nào",
   "noProposalFound": "Không tìm thấy đề xuất nào",
   "per": "mỗi",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "Chức vụ",
-      "priceRange": "Phạm vi giá",
-      "quote": "Trích dẫn",
-      "totalAmt": "Tổng số tiền"
-    }
-  },
   "price": "Giá",
   "reset": "Đặt lại",
   "search": "Tìm kiếm",

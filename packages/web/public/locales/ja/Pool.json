@@ -56,10 +56,6 @@
         "title": "受け取った報酬",
         "title_total": "請求済み報酬の合計"
       },
-      "dailyEarn": {
-        "title": "日々の収益",
-        "title_total": "1日の総収入"
-      },
       "fee": "料金",
       "history": {
         "col": {
@@ -116,6 +112,5 @@
       }
     },
     "totalStaked": "ステーク総額"
-  },
-  "wanttoaddup": "このプールのインセンティブを高めたい？"
+  }
 }

@@ -7,8 +7,98 @@
     },
     "title": "Confirmar intercambio"
   },
+  "dca": {
+    "estimatedEndDate": "Fecha prevista de finalización",
+    "every": "Cada",
+    "everyTooltip": "El tiempo estimado que transcurrirá entre cada operación de tu orden. El tiempo real puede variar en función del tiempo de bloque.",
+    "executionFee": "Comisión de ejecución",
+    "executionFeeTooltip": "La comisión que se deduce del importe de cada operación ejecutada y que se destina al protocolo.",
+    "intervalPhrase": {
+      "day": "1 día",
+      "hour": "1 hora",
+      "minute": "1 minuto",
+      "month": "1 mes",
+      "week": "1 semana"
+    },
+    "marketPrice": "Precio de mercado",
+    "minTrading": "{{amount}} o mínimo de {{symbol}} por pedido",
+    "noWhitelistedPool": "Par no compatible",
+    "orders": "Pedidos",
+    "orderSentence": "Estás vendiendo <sell/> para comprar <buy/> al precio de mercado cada <hl>{{interval}}</hl> durante <hl>{{rounds}} rondas</hl> (total <total/>).",
+    "over": "Más de",
+    "overTooltip": "El número de operaciones individuales que se ejecutarán como parte de tu orden.",
+    "placeOrder": "Realizar pedido",
+    "poolCheckFailed": "Comprobación del grupo de reintentos",
+    "toBuy": "Comprar",
+    "unit": {
+      "day": "Día",
+      "hour": "Hora",
+      "minute": "Acta",
+      "month": "Mes",
+      "week": "Semana"
+    }
+  },
   "fetchingPrice": "Obteniendo el mejor precio...",
   "header": "Intercambiar",
+  "limit": {
+    "belowMarketWarning": "El precio de activación está por debajo del precio de mercado y es posible que tu orden se ejecute al instante.",
+    "buyTheDip": "Aprovecha la caída para comprar",
+    "buyWhen": "Comprar cuando 1 {{symbol}} baje a",
+    "executionFeeTooltip": "La comisión que se deduce del importe resultante de cada operación completada y que se destina al protocolo. La cantidad que se muestra es una estimación para una ejecución completa a tu precio límite; la comisión real depende del importe resultante de la operación ejecutada.",
+    "expiresIn": "Caduca en",
+    "expiryOption": {
+      "oneDay": "1 día",
+      "oneHour": "1 hora",
+      "oneWeek": "1 semana",
+      "thirtyDays": "30 días"
+    },
+    "instantFillWarning": "El precio de activación es el del mercado y es posible que tu orden se ejecute al instante.",
+    "limitPrice": "Precio límite",
+    "market": "Mercado",
+    "marketPrice": "Precio de mercado:",
+    "minimumReceivedTooltip": "Importe mínimo que recibirás tras deducir las comisiones de ejecución, en función de tu precio límite y del deslizamiento seleccionado. Se muestra para una ejecución completa; en las ejecuciones parciales se aplica la misma proporción y se redondea al alza por cada ejecución.",
+    "minTrading": "{{amount}} mínimo {{symbol}}",
+    "sellAtTarget": "Vender al precio objetivo",
+    "sellWhen": "Vender cuando 1 {{symbol}} alcance"
+  },
+  "order": {
+    "active": "Pedidos pendientes",
+    "cancelledAt": "Cancelado el",
+    "cancelOrder": "Cancelar pedido",
+    "claimOrder": "Reclamación",
+    "completedAt": "Finalizado el",
+    "connectWallet": "Conecta tu monedero para ver tu pedido.",
+    "expiredAt": "Caducado el",
+    "expiresAt": "Vence el",
+    "filledPrice": "Precio de ejecución",
+    "nextTrade": "Próxima operación",
+    "noOrders": "No se han encontrado pedidos.",
+    "ongoing": "En curso",
+    "order": "Pedido",
+    "orderHistory": "Historial de pedidos",
+    "overview": "Resumen",
+    "past": "Pedidos anteriores",
+    "paused": "Pedido en espera",
+    "priceRate": "Tarifa",
+    "priceRateAvg": "Precio medio",
+    "purchased": "Comprado",
+    "purchasedAmount": "Importe de la compra",
+    "rate": "Precio de ejecución",
+    "refundOrder": "Reembolso",
+    "remainingAmount": "Importe restante",
+    "remainingTrades": "Operaciones pendientes",
+    "sold": "Vendido",
+    "soldAmount": "Importe vendido",
+    "status": {
+      "cancelled": "Cancelado",
+      "cancelledByKeeper": "Cancelled by Keeper",
+      "completed": "Finalizado",
+      "expired": "Caducado",
+      "partiallyFilled": "Parcialmente cubierto"
+    },
+    "stopOrder": "Orden de stop",
+    "time": "Hora"
+  },
   "poolInfo": {
     "addPosBtn": "Añadir posición",
     "col": {
@@ -30,6 +120,7 @@
     "balanceUnavailable": "Saldo no disponible",
     "enterAmount": "Introduzca el importe",
     "insuffiLiq": "Liquidez insuficiente",
+    "retryMaxCalculation": "Recalcular el importe máximo",
     "review": "Consulte",
     "selectToken": "Seleccione una ficha",
     "swap": "Intercambiar",
@@ -39,7 +130,6 @@
     "wrap": "Envolver"
   },
   "swapInfo": {
-    "gasFee": "Tasa del gas de red",
     "maxSent": "Envío máx.",
     "minReceived": "Mín. Recibido\n",
     "priceImpact": "Impacto del precio",
@@ -48,5 +138,10 @@
       "swapFee": "El porcentaje de las comisiones cobradas en cada operación que va al protocolo. Se paga en el token de salida y ya se tiene en cuenta en la cotización."
     }
   },
-  "swapURLCopied": "Intercambiar URL ¡Copiado!"
+  "swapURLCopied": "Intercambiar URL ¡Copiado!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "Límite",
+    "swap": "Intercambio"
+  }
 }

@@ -7,8 +7,98 @@
     },
     "title": "스왑 확인"
   },
+  "dca": {
+    "estimatedEndDate": "예상 종료일",
+    "every": "간격",
+    "everyTooltip": "주문 내 각 거래 사이에 소요될 것으로 예상되는 시간입니다. 실제 시간은 블록 시간에 따라 달라질 수 있습니다.",
+    "executionFee": "집행 수수료",
+    "executionFeeTooltip": "성사된 각 거래의 수익금에서 공제되어 프로토콜로 전달되는 수수료.",
+    "intervalPhrase": {
+      "day": "1일",
+      "hour": "1시간",
+      "minute": "1분",
+      "month": "1개월",
+      "week": "1주일"
+    },
+    "marketPrice": "시장 가격",
+    "minTrading": "주문당 최소 {{amount}} {{symbol}} ",
+    "noWhitelistedPool": "해당 조합은 지원되지 않습니다",
+    "orders": "회",
+    "orderSentence": "매 <hl>{{interval}}</hl>마다 <hl>{{rounds}}회</hl> 시장가로 <sell/>을(를) 매도해 <buy/>을(를) 매수합니다(총 <total/>).",
+    "over": "횟수",
+    "overTooltip": "주문의 일환으로 실행될 개별 거래의 수입니다.",
+    "placeOrder": "주문하기",
+    "poolCheckFailed": "재시도 풀 확인",
+    "toBuy": "구매하기",
+    "unit": {
+      "day": "날",
+      "hour": "시간",
+      "minute": "분",
+      "month": "월",
+      "week": "주"
+    }
+  },
   "fetchingPrice": "최적 가격을 조회중...",
   "header": "스왑",
+  "limit": {
+    "belowMarketWarning": "트리거 가격이 시장가보다 낮으므로, 귀하의 주문이 즉시 체결될 수 있습니다.",
+    "buyTheDip": "하락 시 매수하기",
+    "buyWhen": "1 {{symbol}} 가격이 다음 가격까지 하락하면 매수",
+    "executionFeeTooltip": "각 체결의 수령 수량에서 차감되어 프로토콜에 지급되는 수수료입니다. 표시된 수량은 주문 전량이 지정가에 체결되는 경우의 예상치이며, 실제 수수료는 체결된 수령 수량에 따라 달라집니다.",
+    "expiresIn": "만료까지 남은 기간:",
+    "expiryOption": {
+      "oneDay": "1일",
+      "oneHour": "1시간",
+      "oneWeek": "1주",
+      "thirtyDays": "30일"
+    },
+    "instantFillWarning": "트리거 가격은 시세와 동일하며, 주문이 즉시 체결될 수 있습니다.",
+    "limitPrice": "한도 가격",
+    "market": "시장",
+    "marketPrice": "시장 가격:",
+    "minimumReceivedTooltip": "지정가 및 선택한 슬리피지를 기준으로, 실행 수수료를 차감한 후 받게 되는 최소 수익액입니다. 이 수치는 전량 체결된 경우를 기준으로 표시되며, 부분 체결의 경우 동일한 비율을 적용하고 체결 건당 올림 처리됩니다.",
+    "minTrading": "최소 {{amount}} {{symbol}}",
+    "sellAtTarget": "목표가에 매도",
+    "sellWhen": "1 {{symbol}} 가격이 다음에 도달하면 매도"
+  },
+  "order": {
+    "active": "진행 중인 주문",
+    "cancelledAt": "취소 일시",
+    "cancelOrder": "주문 취소",
+    "claimOrder": "주장",
+    "completedAt": "완료 일시",
+    "connectWallet": "주문을 확인하시려면 지갑을 연결해 주세요.",
+    "expiredAt": "만료 일시",
+    "expiresAt": "만료일",
+    "filledPrice": "체결가",
+    "nextTrade": "다음 거래",
+    "noOrders": "주문이 없습니다.",
+    "ongoing": "진행 중",
+    "order": "주문",
+    "orderHistory": "주문 내역",
+    "overview": "개요",
+    "past": "이전 주문 내역",
+    "paused": "주문 일시 중지됨",
+    "priceRate": "가격 요율",
+    "priceRateAvg": "가격 (평균)",
+    "purchased": "구매함",
+    "purchasedAmount": "구매 금액",
+    "rate": "체결 가격",
+    "refundOrder": "환불",
+    "remainingAmount": "잔액",
+    "remainingTrades": "남은 거래",
+    "sold": "판매 완료",
+    "soldAmount": "판매 금액",
+    "status": {
+      "cancelled": "취소됨",
+      "cancelledByKeeper": "Cancelled by Keeper",
+      "completed": "완료됨",
+      "expired": "만료됨",
+      "partiallyFilled": "일부만 채워짐"
+    },
+    "stopOrder": "정지 주문",
+    "time": "시간"
+  },
   "poolInfo": {
     "addPosBtn": "포지션 추가",
     "col": {
@@ -30,6 +120,7 @@
     "balanceUnavailable": "잔액 없음",
     "enterAmount": "수량 입력",
     "insuffiLiq": "유동성 부족",
+    "retryMaxCalculation": "최대 수량 재계산",
     "review": "리뷰",
     "selectToken": "토큰 선택",
     "swap": "스왑",
@@ -39,7 +130,6 @@
     "wrap": "래핑"
   },
   "swapInfo": {
-    "gasFee": "네트워크 가스 수수료",
     "maxSent": "최대 수량",
     "minReceived": "최소 획득 수량",
     "priceImpact": "프라이스 임팩트",
@@ -48,5 +138,10 @@
       "swapFee": "각 거래에 대해 프로토콜에 부과되는 수수료 비율입니다.\n스왑된 토큰으로 지불되며, 예상 견적에 미리 적용되어 있습니다."
     }
   },
-  "swapURLCopied": "스왑 URL 복사 완료!"
+  "swapURLCopied": "스왑 URL 복사 완료!",
+  "tab": {
+    "dca": "DCA",
+    "limit": "한도",
+    "swap": "스왑"
+  }
 }

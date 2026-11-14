@@ -30,7 +30,6 @@
     "enterAddr": {
       "input": "输入地址"
     },
-    "estNetFee": "估计网络费用",
     "network": {
       "label": "网络",
       "tooltip": "要发送的令牌的网络。"

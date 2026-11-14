@@ -14,15 +14,8 @@
       "title": "Note importante"
     }
   },
-  "fees": "Honoraires",
-  "liquidity": "Liquidité",
   "overview": {
-    "collectAsSwitch": "Collecter en tant que WGNOT",
     "pooled": "Mise en commun",
-    "stakingApr": {
-      "label": "Piquetage APR",
-      "tooltip": "La fourchette estimée du TAEG est calculée en appliquant un multiplicateur dynamique à votre position mise, sur la base de la durée de mise."
-    },
     "unclaimed": "Taxe non réclamée"
   },
   "posi": "Postes à pourvoir",

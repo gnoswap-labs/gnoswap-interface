@@ -27,14 +27,8 @@
     "ongoing": "Ongoing",
     "status": {
       "ended": "Ended",
-      "endsInOneMinute": "Ends in 1 minute",
       "ongoing": "Ends in {{time}}",
       "upcoming": "Upcoming in {{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 Month",
-      "3months": "3 Months",
-      "6months": "6 Months"
     },
     "time": {
       "days_one": "{{count}} day",
@@ -146,7 +140,6 @@
     "unconnect": "Please connect your wallet<br/>\nto view your participation."
   },
   "participate": {
-    "balance": "Balance",
     "col": {
       "depositAmount": "Deposit Amount",
       "endDate": "End Date",

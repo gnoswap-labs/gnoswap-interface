@@ -30,7 +30,6 @@
     "enterAddr": {
       "input": "Nhập địa chỉ"
     },
-    "estNetFee": "Phí mạng ước tính",
     "network": {
       "label": "Mạng",
       "tooltip": "Mạng của token cần gửi."

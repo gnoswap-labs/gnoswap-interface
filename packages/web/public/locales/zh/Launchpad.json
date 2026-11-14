@@ -27,14 +27,8 @@
     "ongoing": "持续进行",
     "status": {
       "ended": "完工",
-      "endsInOneMinute": "1 分钟后结束",
       "ongoing": "结束于{{time}}",
       "upcoming": "即将在{{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 个月",
-      "3months": "3 个月",
-      "6months": "6 个月"
     },
     "time": {
       "days_other": "{{count}} 天数",
@@ -141,7 +135,6 @@
     "unconnect": "请连接您的钱包<br/>查看您的参与情况。"
   },
   "participate": {
-    "balance": "平衡",
     "col": {
       "depositAmount": "存款金额",
       "endDate": "结束日期",

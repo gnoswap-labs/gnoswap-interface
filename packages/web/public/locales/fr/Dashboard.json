@@ -1,6 +1,4 @@
 {
-  "addAct": "Ajouter",
-  "adds": "Ajouts",
   "day": "Jour",
   "fees": "Honoraires",
   "govOver": {
@@ -24,7 +22,6 @@
       "tooltip": "Montant total des xGNS actuellement émis par le piquetage GNS."
     }
   },
-  "noTokensfound\n": "Aucune activité trouvée",
   "onchainActi": {
     "col": {
       "acc": "Compte",
@@ -52,8 +49,7 @@
       "tooltip": {
         "community": "Piscine communautaire",
         "devOps": "DevOps",
-        "liquiStaking": "Mise en jeu de la liquidité",
-        "title": "Émissions en bloc"
+        "liquiStaking": "Mise en jeu de la liquidité"
       }
     },
     "circulSup": {
@@ -75,15 +71,9 @@
       "tooltip": "L'offre maximale de jetons de GNS."
     }
   },
-  "swapAct": "Échange",
-  "swaps": "Swaps",
   "title": "Explorer",
   "totalVolChart": {
     "title": "Volume total",
     "totalFee": "Total des droits"
-  },
-  "totalvolumeFees": "Honoraires",
-  "tradingVolume": "Volume des échanges",
-  "unstakeAct": "Déstockage",
-  "unstakes": "Sans enjeu"
+  }
 }

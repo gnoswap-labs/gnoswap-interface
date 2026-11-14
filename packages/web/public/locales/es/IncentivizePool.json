@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "Reclamación"
-      },
       "label": {
         "claimableUnvestedAmount": "Importe reclamable no adquirido",
         "depositAmount": "Importe del depósito",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "Liquidez",
-  "rewards": "Recompensas",
-  "selectToken": "Seleccione una ficha",
-  "setReward": "Establecer monto de recompensa",
   "submitBtn": {
     "amtTooLow": "Cantidad demasiado baja",
     "enterAmt": "Ingrese el monto",

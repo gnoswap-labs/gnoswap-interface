@@ -64,9 +64,6 @@
       }
     },
     "history": {
-      "button": {
-        "claim": "索赔"
-      },
       "label": {
         "claimableUnvestedAmount": "可申请的未归属金额",
         "depositAmount": "存款金额",
@@ -88,9 +85,6 @@
     }
   },
   "liquidity": "流动性",
-  "rewards": "奖励",
-  "selectToken": "选择代币",
-  "setReward": "设置奖励金额",
   "submitBtn": {
     "amtTooLow": "金额太低",
     "enterAmt": "输入金额",

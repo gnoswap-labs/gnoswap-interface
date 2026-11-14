@@ -52,7 +52,6 @@
     "card": {
       "claimedRewards": "Recompensas reclamadas",
       "claimRewards": "Recompensas reclamables",
-      "dailyEarn": "Ganancias diarias",
       "hideRange": "Ocultar mi alcance",
       "value": "Valor",
       "viewRange": "Ver mi gama"
@@ -71,7 +70,6 @@
     "title_other": "Posiciones",
     "unconnect": {
       "connect": "Conecte su monedero para ver sus posiciones de liquidez.",
-      "switchgno": "Cambiar a Gnolandia",
       "switchNetwork": "Red no soportada. Cambia tu red a Gnolandia."
     }
   },

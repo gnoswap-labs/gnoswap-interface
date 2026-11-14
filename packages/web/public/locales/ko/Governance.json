@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "이미 투표됨",
-      "changeNetwork": "Gnoland로 전환",
-      "execute": "실행",
       "noVoteWeight": "투표 가중치 부족",
       "requireSelect": "투표 옵션 선택",
       "tryAgain": "다시 시도하기",
@@ -127,8 +125,7 @@
         "select": {
           "amount": "수량"
         },
-        "title": "1. 위임 대상 선택",
-        "tooltip": "위임 대상은 GNS 보유자를 대신하여 거버넌스 결정을 내리기 위해 선출된 커뮤니티 리더입니다."
+        "title": "1. 위임 대상 선택"
       },
       "step2": {
         "title": "2. 수량 입력"
@@ -179,8 +176,6 @@
       "executableInMinutes_other": "{{count}}분 후 실행 가능",
       "executed": "제안 철회 {{rel_time}}",
       "expired": "제안 만료 {{rel_time}}",
-      "h": "{{time}}시간 후",
-      "m": "{{time}}분 후",
       "start": "{{rel_time}} 투표 시작"
     },
     "tooltip": {
@@ -220,8 +215,7 @@
       "unavailable": "이용 불가"
     },
     "aprHistory": {
-      "dailyApr": "합계",
-      "vs7dAvg": "7D 평균 대비"
+      "dailyApr": "합계"
     },
     "apr": {
       "title": "xGNS APR (7일)"
