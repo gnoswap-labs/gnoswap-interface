@@ -189,8 +189,8 @@ describe("LimitOrderItemCard purchased amount", () => {
   it.each([
     { decimals: 6, amount: "1.079988" },
     { decimals: 18, amount: "1.079988123456789012" },
-  ])("preserves $decimals token decimals in the summary metric", ({ decimals, amount }) => {
-    render(
+  ])("preserves $decimals token decimals in the full-value tooltip", async ({ decimals, amount }) => {
+    const { container } = render(
       <GnoswapThemeProvider>
         <LimitOrderItemCard
           order={{ ...partiallyFilled, tokenOut: { ...partiallyFilled.tokenOut, decimals }, userOutput: amount }}
@@ -202,7 +202,8 @@ describe("LimitOrderItemCard purchased amount", () => {
       </GnoswapThemeProvider>,
     );
 
-    expect(screen.getByTitle(amount)).toHaveTextContent(amount);
+    await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[2]);
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(amount);
   });
 });
 
@@ -256,12 +257,28 @@ describe("LimitOrderItemCard recorded side", () => {
         />
       </GnoswapThemeProvider>,
     );
-    expect(container.querySelector(".order-side")?.textContent ?? null).toBe(
-      side ? `${side === "buy" ? "Buy GNS" : "Sell GNOT"}` : null,
-    );
     const values = Array.from(container.querySelectorAll(".metric .value-text"), element => element.textContent);
     expect(values.slice(0, 2)).toEqual(
       side === "buy" ? ["10 GNOT", "8 GNOT"] : side === "sell" ? ["0.1 GNS", "0.125 GNS"] : ["0.1", "0.125"],
     );
   });
+});
+
+it.each([
+  { price: "12345678.901234", full: "12,345,678.901234 GNS" },
+  { price: "0.000000000123", full: "0.000000000123 GNS" },
+])("reveals the unabridged trigger price $price on hover", async ({ price, full }) => {
+  const { container } = render(
+    <GnoswapThemeProvider>
+      <LimitOrderItemCard
+        order={{ ...partiallyFilled, side: "sell", limitPrice: price }}
+        marketPrice={price}
+        txUrl=""
+        onClickCancel={jest.fn()}
+        renderHistory={() => null}
+      />
+    </GnoswapThemeProvider>,
+  );
+  await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[1]);
+  expect(await screen.findByRole("tooltip")).toHaveTextContent(full);
 });

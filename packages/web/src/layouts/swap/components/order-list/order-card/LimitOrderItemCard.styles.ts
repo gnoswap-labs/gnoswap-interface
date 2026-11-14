@@ -6,38 +6,43 @@ import { OrderItemCardWrapper } from "./OrderItemCard.styles";
 
 export const LimitOrderItemCardWrapper = styled(OrderItemCardWrapper)`
   .order-identity {
-    ${mixins.flexbox("column", "flex-start", "flex-start")};
     min-width: 0;
-    gap: 4px;
-  }
-
-  .order-side {
-    ${fonts.p4};
-    color: ${({ theme }) => theme.color.text04};
   }
 
   .card-metrics {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.5fr);
   }
 
+  .metric:nth-of-type(2) {
+    align-items: center;
+    text-align: center;
+  }
+
   .metric .metric-label {
-    white-space: normal;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .card-metrics .metric-value {
-    ${fonts.body11};
+    ${fonts.p1};
     min-width: 0;
   }
 
   .card-metrics .value-text {
     display: flex;
-    overflow: visible;
+    overflow: hidden;
     text-overflow: clip;
   }
 
   .value-whole,
   .value-suffix {
     flex-shrink: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .value-suffix {

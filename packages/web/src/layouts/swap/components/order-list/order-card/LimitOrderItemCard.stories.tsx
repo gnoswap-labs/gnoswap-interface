@@ -164,3 +164,28 @@ export const FeeUnknown: Story = {
 export const TinyFee: Story = {
   args: { order: { ...ORDER, cumulativeExecutionFee: "0.000001" } },
 };
+
+export const Buy: Story = {
+  args: { order: { ...ORDER, side: "buy" } },
+};
+
+export const Legacy: Story = {
+  args: { order: { ...ORDER, side: null } },
+};
+
+/** Large prices and amounts keep the three columns bounded; hover or focus to read the full values. */
+export const LongValues: Story = {
+  args: {
+    marketPrice: "12345670",
+    order: {
+      ...ORDER,
+      takingAmount: "1234567890.1234",
+      limitPrice: "12345678.901234",
+      userOutput: "432098761.54319",
+      priceRate: "12345678.901234",
+      minimumReceived: "1228395050.672783",
+      minimumRemainingReceived: "798456782.937308",
+      cumulativeExecutionFee: null,
+    },
+  },
+};

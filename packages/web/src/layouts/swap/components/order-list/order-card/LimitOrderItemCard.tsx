@@ -59,7 +59,6 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
   const { tokenIn, tokenOut } = order;
   const executionFeeUsd = formatOrderFeeUsd(order.cumulativeExecutionFee, tokenOutUsdPrice);
   const expiresIn = order.isActive ? formatOrderTimeUntil(order.expiresAt, locale, nowUnixSeconds) : null;
-  const baseToken = order.side === "buy" ? tokenOut : tokenIn;
   const quoteToken = order.side === "buy" ? tokenIn : tokenOut;
   const displayedMarketPrice = order.side === "buy" ? invertOrderRate(marketPrice) : marketPrice;
   const displayedLimitPrice =
@@ -74,18 +73,26 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
       calculatePriceDeviation(displayedLimitPrice, displayedMarketPrice),
       locale,
     );
-    const price = (rate: string | null) =>
-      `${formatOrderRate(rate)}${order.side && rate !== null ? ` ${quoteToken.displaySymbol}` : ""}`;
+    const price = (rate: string | null, full = false) => {
+      const value = BigNumber(rate ?? "");
+      const formatted =
+        full && value.isFinite()
+          ? formatOrderFullAmount(value, value.decimalPlaces() ?? 0)
+          : formatOrderRate(rate);
+      return `${formatted}${order.side && rate !== null ? ` ${quoteToken.displaySymbol}` : ""}`;
+    };
     return [
       {
         key: "marketPrice",
         label: t("Swap:limit.currentMarketPrice", { defaultValue: "Market Price" }),
         value: price(displayedMarketPrice),
+        fullValue: price(displayedMarketPrice, true),
       },
       {
         key: "limitPrice",
         label: t("Swap:limit.triggerPrice", { defaultValue: "Limit Trigger Price" }),
         value: price(displayedLimitPrice),
+        fullValue: price(displayedLimitPrice, true),
         annotation: deviation ? `(${deviation})` : undefined,
       },
       {
@@ -147,12 +154,6 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     <LimitOrderItemCardWrapper className={cx({ active: order.isActive })}>
       <div className="card-header">
         <div className="order-identity">
-          {order.side && (
-            <span className="order-side">
-              {t(`Swap:limit.${order.side}`, { defaultValue: order.side === "buy" ? "Buy" : "Sell" })}{" "}
-              {baseToken.displaySymbol}
-            </span>
-          )}
           <OrderPairLabel
             inputToken={tokenIn}
             outputToken={tokenOut}
@@ -163,7 +164,13 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
         </div>
         <div className="card-status-group">
           <span className={cx("card-status", { ongoing: order.isActive })}>{t(STATUS_LABEL_KEY[order.status])}</span>
-          {!order.isActive && <span className="card-status-time">{formatOrderDateTime(order.closedAt)}</span>}
+          {order.side ? (
+            <span className="card-status-time">
+              {t(order.side === "buy" ? "Swap:limit.buyTheDip" : "Swap:limit.sellAtTarget")}
+            </span>
+          ) : (
+            !order.isActive && <span className="card-status-time">{formatOrderDateTime(order.closedAt)}</span>
+          )}
         </div>
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
