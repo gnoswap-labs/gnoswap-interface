@@ -71,7 +71,7 @@
     "@babel/runtime": "^7.26.10",
     "@emotion/babel-plugin": "11.10.6",
     "@emotion/babel-preset-css-prop": "11.10.0",
-    "@faker-js/faker": "7.6.0",
+    "@faker-js/faker": "10.5.0",
     "@jest/globals": "29.4.3",
     "@mdx-js/react": "1.6.22",
     "@storybook/addon-docs": "9.1.10",
