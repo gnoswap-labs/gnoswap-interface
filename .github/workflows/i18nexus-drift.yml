@@ -1,0 +1,58 @@
+name: i18nexus Sync Check
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions: {}
+
+concurrency:
+  group: i18nexus-drift-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  drift:
+    name: Check translation drift
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      # Never check out or execute PR code in this privileged workflow.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install trusted, locked dependencies without build scripts
+        run: corepack yarn install --immutable --mode=skip-build
+
+      - name: Fetch PR objects without checking them out
+        env:
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: git fetch --no-tags --depth=1 origin "$PR_HEAD_SHA"
+
+      - name: Download authoritative translations
+        env:
+          I18NEXUS_API_KEY: ${{ secrets.I18NEXUS_API_KEY }}
+          I18NEXUS_EXPORT_DIR: ${{ runner.temp }}/i18nexus-export
+        run: |
+          if [ -z "$I18NEXUS_API_KEY" ]; then
+            echo "::error::Set the I18NEXUS_API_KEY repository secret to enable translation drift checks."
+            exit 1
+          fi
+          corepack yarn workspace @gnoswap-labs/web i18n:download --path "$I18NEXUS_EXPORT_DIR"
+
+      - name: Compare PR locale data and update drift comment
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          I18NEXUS_EXPORT_DIR: ${{ runner.temp }}/i18nexus-export
+        with:
+          script: |
+            const check = require('./.github/scripts/i18nexus-drift.cjs');
+            await check({ github, context, core });
