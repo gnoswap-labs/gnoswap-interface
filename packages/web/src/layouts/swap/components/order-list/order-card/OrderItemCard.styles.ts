@@ -1,4 +1,5 @@
 import { fonts } from "@constants/font.constant";
+import { css, Theme } from "@emotion/react";
 import styled from "@emotion/styled";
 import { media } from "@styles/media";
 import mixins from "@styles/mixins";
@@ -48,8 +49,7 @@ export const OrderItemCardWrapper = styled.div`
 
   .card-metrics {
     display: grid;
-    /* Purchased carries the amount and the return, so it gets the widest column;
-       Price Rate sizes to its value. Every value stays on one line. */
+    /* Every value stays on one line. */
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) max-content;
     width: 100%;
     gap: 8px;
@@ -86,18 +86,6 @@ export const OrderItemCardWrapper = styled.div`
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-    }
-    .roi {
-      ${fonts.p2};
-      flex-shrink: 0;
-      white-space: nowrap;
-      color: ${({ theme }) => theme.color.green01};
-      &.negative {
-        color: ${({ theme }) => theme.color.red01};
-      }
-      ${media.mobile} {
-        ${fonts.p3};
       }
     }
   }
@@ -163,4 +151,68 @@ export const OrderItemCardWrapper = styled.div`
 export const OrderMetricTooltipContent = styled.div`
   ${fonts.p2};
   overflow-wrap: anywhere;
+`;
+
+/**
+ * Metrics of a card that leads with prices: values keep their whole part and cut the fraction short (the tooltip
+ * has the full value), with a muted annotation beside them, and fee rows show their USD value muted.
+ */
+export const priceOrderCardStyles = (theme: Theme) => css`
+  .card-metrics {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.5fr);
+  }
+
+  .metric:nth-of-type(2) {
+    align-items: center;
+    text-align: center;
+  }
+
+  .metric .metric-label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-metrics .metric-value {
+    ${fonts.p1};
+    min-width: 0;
+  }
+
+  .card-metrics .value-text {
+    display: flex;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  .value-whole,
+  .value-suffix {
+    flex-shrink: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .value-suffix {
+    white-space: pre;
+  }
+
+  .value-fraction {
+    min-width: 1ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .metric-annotation {
+    ${fonts.p4};
+    color: ${theme.color.text04};
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .card-sub-info .value .value-usd {
+    color: ${theme.color.text04};
+  }
 `;

@@ -3,7 +3,6 @@ import { fn } from "@storybook/test";
 
 import { STORY_GNOT_TOKEN, STORY_GNS_TOKEN } from "@components/order/common/order-story-fixtures";
 import { DcaOrderModel } from "@models/order/dca-order-model";
-import { formatOrderRoi } from "@utils/order-format-utils";
 
 import DcaOrderItemCard from "./DcaOrderItemCard";
 
@@ -35,6 +34,10 @@ const ORDER: DcaOrderModel = {
   canClaim: false,
   priceRate: "1.04",
   returnRate: 1.2,
+  executionFeeRate: 15,
+  executionFeeAmount: "0.624",
+  poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000",
+  marketPrice: "1.0335",
   nextExecutionAt: NOW + 20 * MINUTE,
   createdAt: NOW - 4 * HOUR,
   closedAt: null,
@@ -73,7 +76,8 @@ const meta = {
   component: DcaOrderItemCard,
   args: {
     order: ORDER,
-    roi: formatOrderRoi(ORDER.returnRate),
+    marketPrice: ORDER.marketPrice,
+    outputTokenUsdPrice: "0.42",
     txUrl: "",
     onClickStop: fn(),
     onClickClaim: fn(),

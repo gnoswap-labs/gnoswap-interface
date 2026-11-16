@@ -32,6 +32,10 @@ const ORDER: DcaOrderModel = {
   forceCancelled: false,
   priceRate: null,
   returnRate: null,
+  executionFeeRate: null,
+  executionFeeAmount: null,
+  poolPath: null,
+  marketPrice: null,
   nextExecutionAt: null,
   createdAt: 1,
   closedAt: 3601,
@@ -39,12 +43,17 @@ const ORDER: DcaOrderModel = {
   closedTxHash: null,
 };
 
-const renderCard = (order: DcaOrderModel) =>
+const renderCard = (
+  order: DcaOrderModel,
+  marketPrice: string | null = null,
+  outputTokenUsdPrice: string | null = null,
+) =>
   render(
     <GnoswapThemeProvider>
       <DcaOrderItemCard
         order={order}
-        roi={null}
+        marketPrice={marketPrice}
+        outputTokenUsdPrice={outputTokenUsdPrice}
         txUrl=""
         onClickStop={jest.fn()}
         onClickClaim={jest.fn()}
@@ -62,12 +71,98 @@ const readOverview = async (order: DcaOrderModel) => {
 const overviewValues = (tooltip: HTMLElement) =>
   Array.from(tooltip.querySelectorAll(".overview-row"), row => row.querySelector(".value")?.textContent);
 
-it("preserves each token's precision in the DCA deposit, sold and purchased amounts", () => {
-  renderCard(ORDER);
+const ACTIVE: DcaOrderModel = {
+  ...ORDER,
+  status: "ACTIVE",
+  isActive: true,
+  closedAt: null,
+  priceRate: "1.926",
+  executionFeeRate: 15,
+  executionFeeAmount: "0.003125",
+};
+
+const metricValues = (container: HTMLElement) =>
+  Array.from(container.querySelectorAll(".metric .metric-value"), element => element.textContent);
+
+const termValue = (label: string) =>
+  screen.getByText(label).closest(".card-sub-info")?.querySelector(".value")?.textContent ?? null;
+
+it("preserves each token's precision in the DCA deposit and purchased amounts", async () => {
+  const { container } = renderCard(ORDER);
 
   expect(screen.getByText("2.159976 GNOT")).toBeInTheDocument();
-  expect(screen.getByText("1.079988 GNOT")).toBeInTheDocument();
-  expect(screen.getByText("2.079988123456789012 GNS")).toBeInTheDocument();
+  await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[2]);
+  expect(await screen.findByRole("tooltip")).toHaveTextContent("2.079988123456789012 GNS");
+});
+
+describe("DcaOrderItemCard metrics", () => {
+  it("shows the market price, the average executed price against it and the filled share", () => {
+    const { container } = renderCard(ACTIVE, "1.8");
+
+    expect(Array.from(container.querySelectorAll(".metric .metric-label"), element => element.textContent)).toEqual([
+      "Swap:order.marketPrice",
+      "Swap:order.executedPriceAvg",
+      "Swap:order.purchasedAmount",
+    ]);
+    expect(metricValues(container)).toEqual([
+      "1.8 GNS",
+      "1.926 GNS(+7%)",
+      "2.079988123456789012 GNS(Swap:order.filledShare)",
+    ]);
+  });
+
+  it("quotes the full market price for one input token in the tooltip", async () => {
+    const { container } = renderCard(ACTIVE, "1.123456789");
+
+    await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[0]);
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("1 GNOT = 1.123456789 GNS");
+  });
+
+  it("shows no price or deviation while the market price or the fills are unknown", () => {
+    const { container } = renderCard(ORDER);
+
+    expect(metricValues(container).slice(0, 2)).toEqual(["-", "-"]);
+  });
+});
+
+describe("DcaOrderItemCard order terms", () => {
+  const NOW = 1_800_000_000;
+
+  beforeEach(() => {
+    jest.useFakeTimers({ now: NOW * 1000, advanceTimers: true });
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  it("shows the placed terms, the schedule left, the fee charged and the expiry of an open order", () => {
+    const order = { ...ACTIVE, nextExecutionAt: NOW + 30 * 60, remainingCount: 2 };
+    renderCard(order, null, "20");
+
+    expect(termValue("Swap:dca.every")).toBe("Swap:dca.intervalPhrase.hour");
+    expect(termValue("Swap:order.order")).toBe("2 Swap:dca.orders");
+    expect(termValue("Swap:order.nextOrder")).toBe("30m");
+    expect(termValue("Swap:order.remainingOrders")).toBe("2 Swap:dca.orders");
+    expect(termValue("Swap:dca.executionFee (0.15%)")).toBe("0.003125 GNS ($0.0625)");
+    // The last round runs one interval after the next one.
+    expect(termValue("Swap:order.expiresAt")).toBe(`${formatOrderDateTime(NOW + 30 * 60 + 3600)} (in 2 hours)`);
+  });
+
+  it("drops the countdowns of a closed order and keeps the fee it paid", () => {
+    renderCard({ ...ORDER, remainingCount: 0, executionFeeRate: 15, executionFeeAmount: "0.003125" });
+
+    expect(screen.queryByText("Swap:order.nextOrder")).not.toBeInTheDocument();
+    expect(screen.queryByText("Swap:order.expiresAt")).not.toBeInTheDocument();
+    expect(termValue("Swap:order.remainingOrders")).toBe("0 Swap:dca.orders");
+    expect(termValue("Swap:dca.executionFee (0.15%)")).toBe("0.003125 GNS");
+  });
+
+  it("shows a dash, not a zero, when the order-api reports no fee", () => {
+    renderCard(ORDER);
+
+    expect(termValue("Swap:dca.executionFee")).toBe("-");
+  });
 });
 
 it("shows sold share, unfilled deposit and precise purchased output while open", async () => {

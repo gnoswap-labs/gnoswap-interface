@@ -49,6 +49,17 @@ export interface DcaOrderItem {
   referencePurchasedAmount?: string | null;
   /** Return of the fills against the one-off swap, in percent, e.g. `"1.2345"`. */
   returnRate?: string | null;
+  /** Execution fee rate in bps the order snapshotted at creation. Absent from earlier order-api versions. */
+  executionFeeRate?: number;
+  /** Execution fee on the output bought so far (raw). Absent from earlier order-api versions. */
+  executionFeeAmount?: string;
+  /**
+   * Pool the order's rounds trade on: its group's latest round pool, or before the first round the pair's
+   * whitelisted pool with the most liquidity. Null when unknown; absent from earlier order-api versions.
+   */
+  poolPath?: string | null;
+  /** Current price of `poolPath` as output per input in raw token units. Null when unknown. */
+  marketPrice?: string | null;
 }
 
 /** One executed round of a DCA order. Amounts are raw integer strings. */

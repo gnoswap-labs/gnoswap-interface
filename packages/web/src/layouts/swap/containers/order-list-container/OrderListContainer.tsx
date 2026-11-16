@@ -12,11 +12,10 @@ import { useWallet } from "@hooks/wallet/data/use-wallet";
 import { OrderKind, OrderListTab, SWAP_CARD_TYPE, SwapCardType, toEnabledSwapCardType } from "@models/order/order-type";
 import { useGetDcaOrders, useGetLimitOrders } from "@query/order";
 import { OrderState } from "@states/index";
-import { formatOrderRoi } from "@utils/order-format-utils";
 
-import DcaOrderItemCard from "../../components/order-list/order-card/DcaOrderItemCard";
 import OrderList from "../../components/order-list/OrderList";
 import { DcaOrderHistoryContainer, LimitOrderHistoryContainer } from "./OrderHistoryContainer";
+import DcaOrderItemCardContainer from "./DcaOrderItemCardContainer";
 import LimitOrderItemCardContainer from "./LimitOrderItemCardContainer";
 
 const ORDER_PAGE_SIZE = 10;
@@ -120,10 +119,10 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
   const items = (() => {
     if (kind === "dca") {
       return (dcaOrders.data?.items ?? []).map(order => (
-        <DcaOrderItemCard
+        <DcaOrderItemCardContainer
           key={`${order.packagePath}:${order.orderId}`}
           order={order}
-          roi={formatOrderRoi(order.returnRate)}
+          outputTokenUsdPrice={getUsdPrice(order.outputToken)}
           txUrl={getTxUrl(order.createdTxHash)}
           onClickStop={openStopDcaOrder}
           onClickClaim={claimDcaOrder}

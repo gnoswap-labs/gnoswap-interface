@@ -8,7 +8,6 @@ import { I18nextProvider } from "react-i18next";
 import { STORY_GNOT_TOKEN, STORY_GNS_TOKEN } from "@components/order/common/order-story-fixtures";
 import { DcaOrderModel } from "@models/order/dca-order-model";
 import { OrderHistoryModel } from "@models/order/order-type";
-import { formatOrderRoi } from "@utils/order-format-utils";
 
 import enSwap from "../../../../../public/locales/en/Swap.json";
 import DcaOrderItemCard from "./order-card/DcaOrderItemCard";
@@ -41,6 +40,10 @@ const PAST_DCA_ORDER: DcaOrderModel = {
   forceCancelled: false,
   priceRate: "0.921375",
   returnRate: 0,
+  executionFeeRate: 15,
+  executionFeeAmount: null,
+  poolPath: null,
+  marketPrice: null,
   nextExecutionAt: null,
   createdAt: NOW - 3600,
   closedAt: Date.UTC(2024, 11, 25) / 1000,
@@ -80,7 +83,7 @@ const PastOrderList: React.FC = () => {
         >
           <DcaOrderItemCard
             order={PAST_DCA_ORDER}
-            roi={formatOrderRoi(PAST_DCA_ORDER.returnRate)}
+            marketPrice="1.0395"
             txUrl=""
             onClickStop={fn()}
             onClickClaim={fn()}
