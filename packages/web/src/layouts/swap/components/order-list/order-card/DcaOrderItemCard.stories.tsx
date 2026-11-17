@@ -76,7 +76,6 @@ const meta = {
   component: DcaOrderItemCard,
   args: {
     order: ORDER,
-    marketPrice: ORDER.marketPrice,
     outputTokenUsdPrice: "0.42",
     txUrl: "",
     onClickStop: fn(),

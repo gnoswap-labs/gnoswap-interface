@@ -142,6 +142,16 @@ describe("order-mapper", () => {
     expect(order.marketPrice).toBe("1.0335");
   });
 
+  it("keeps an explicitly unavailable price of a known pool unknown", () => {
+    const order = mapDcaOrderItemToModel(
+      { ...dcaItem, poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000", marketPrice: null },
+      tokens,
+    );
+
+    expect(order.poolPath).toBe("gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000");
+    expect(order.marketPrice).toBeNull();
+  });
+
   it("leaves the pool price and execution fee unknown for an earlier order-api", () => {
     const order = mapDcaOrderItemToModel(dcaItem, tokens);
 
