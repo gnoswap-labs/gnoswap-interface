@@ -162,11 +162,6 @@ export const priceOrderCardStyles = (theme: Theme) => css`
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.5fr);
   }
 
-  .metric:nth-of-type(2) {
-    align-items: center;
-    text-align: center;
-  }
-
   .metric .metric-label {
     max-width: 100%;
     overflow: hidden;
