@@ -33,7 +33,6 @@ interface OrderSellInputProps {
   maxAmountReady?: boolean;
   /** True when the amount is derived (Limit Buy funding): shown, but not typed into. Max and the token picker stay live. */
   readOnly?: boolean;
-  showMaxButton?: boolean;
   inputRef?: React.Ref<HTMLInputElement>;
   className?: string;
   children?: React.ReactNode;
@@ -53,7 +52,6 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
   pendingBalance,
   maxAmountReady = true,
   readOnly = false,
-  showMaxButton = true,
   inputRef,
   className = "first-section",
   children,
@@ -109,7 +107,7 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
         <div className="balance-wrapper">
           {connectedWallet && <IconWallet />}
           <span className="balance-text">{balanceDisplay}</span>
-          {showMaxButton && hasBalance && (
+          {hasBalance && (
             <button className="balance-max-button" onClick={onClickMax} disabled={loadingMaxAmount || !maxAmountReady}>
               <span className="max-badge">{t("common:max")}</span>
             </button>

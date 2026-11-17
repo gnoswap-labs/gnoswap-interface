@@ -138,6 +138,11 @@ describe("LimitOrderCard amount fields", () => {
     expect(changeSellAmount).not.toHaveBeenCalled();
     expect(changeBuyAmount).not.toHaveBeenCalled();
     expect(maxButton()).toBeEnabled();
+
+    mockEstimateMaxNativeAmount.mockResolvedValueOnce(PRICED);
+    await act(async () => user.click(maxButton()));
+    await waitFor(() => expect(changeSellAmount).toHaveBeenCalledWith("8.5"));
+    expect(changeBuyAmount).not.toHaveBeenCalled();
   });
 
   it("lets Buy type the purchased quantity at the purchased token's precision", () => {
