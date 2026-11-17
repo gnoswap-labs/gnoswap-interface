@@ -100,14 +100,14 @@ describe("DcaOrderItemCard metrics", () => {
     const { container } = renderCard(ACTIVE, "1.8");
 
     expect(Array.from(container.querySelectorAll(".metric .metric-label"), element => element.textContent)).toEqual([
-      "Swap:order.marketPrice",
-      "Swap:order.executedPriceAvg",
+      "Swap:dca.marketPrice",
+      "Executed Price (Avg)",
       "Swap:order.purchasedAmount",
     ]);
     expect(metricValues(container)).toEqual([
       "1.8 GNS",
       "1.926 GNS(+7%)",
-      "2.079988123456789012 GNS(Swap:order.filledShare)",
+      "2.079988123456789012 GNS({{percent}}% filled)",
     ]);
   });
 
@@ -142,8 +142,8 @@ describe("DcaOrderItemCard order terms", () => {
 
     expect(termValue("Swap:dca.every")).toBe("Swap:dca.intervalPhrase.hour");
     expect(termValue("Swap:order.order")).toBe("2 Swap:dca.orders");
-    expect(termValue("Swap:order.nextOrder")).toBe("30m");
-    expect(termValue("Swap:order.remainingOrders")).toBe("2 Swap:dca.orders");
+    expect(termValue("Swap:order.nextTrade")).toBe("30m");
+    expect(termValue("Swap:order.remainingTrades")).toBe("2 Swap:dca.orders");
     expect(termValue("Swap:dca.executionFee (0.15%)")).toBe("0.003125 GNS ($0.0625)");
     // The last round runs one interval after the next one.
     expect(termValue("Swap:order.expiresAt")).toBe(`${formatOrderDateTime(NOW + 30 * 60 + 3600)} (in 2 hours)`);
@@ -152,9 +152,9 @@ describe("DcaOrderItemCard order terms", () => {
   it("drops the countdowns of a closed order and keeps the fee it paid", () => {
     renderCard({ ...ORDER, remainingCount: 0, executionFeeRate: 15, executionFeeAmount: "0.003125" });
 
-    expect(screen.queryByText("Swap:order.nextOrder")).not.toBeInTheDocument();
+    expect(screen.queryByText("Swap:order.nextTrade")).not.toBeInTheDocument();
     expect(screen.queryByText("Swap:order.expiresAt")).not.toBeInTheDocument();
-    expect(termValue("Swap:order.remainingOrders")).toBe("0 Swap:dca.orders");
+    expect(termValue("Swap:order.remainingTrades")).toBe("0 Swap:dca.orders");
     expect(termValue("Swap:dca.executionFee (0.15%)")).toBe("0.003125 GNS");
   });
 

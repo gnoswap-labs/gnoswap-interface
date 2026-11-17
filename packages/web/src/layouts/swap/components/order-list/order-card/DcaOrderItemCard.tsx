@@ -108,17 +108,20 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
     const purchased = `${formatOrderFullAmount(order.purchasedAmount, outputToken.decimals)} ${
       outputToken.displaySymbol
     }`;
-    const filled = `(${t("Swap:order.filledShare", { percent: formatOrderAmount(order.progress) })})`;
+    const filled = `(${t("Swap:order.filledShare", {
+      defaultValue: "{{percent}}% filled",
+      percent: formatOrderAmount(order.progress),
+    })})`;
     return [
       {
         key: "marketPrice",
-        label: t("Swap:order.marketPrice"),
+        label: t("Swap:dca.marketPrice"),
         value: formatPriceMetric(marketPrice, order),
         fullValue: formatPriceMetric(marketPrice, order, true),
       },
       {
         key: "executedPrice",
-        label: t("Swap:order.executedPriceAvg"),
+        label: t("Swap:order.executedPriceAvg", { defaultValue: "Executed Price (Avg)" }),
         value: formatPriceMetric(order.priceRate, order),
         fullValue: formatPriceMetric(order.priceRate, order, true),
         annotation: deviation ? `(${deviation})` : undefined,
@@ -205,12 +208,12 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         </div>
         {order.isActive && (
           <div className="card-sub-info">
-            <span>{t("Swap:order.nextOrder")}</span>
+            <span>{t("Swap:order.nextTrade")}</span>
             <span className="value">{nextOrderIn ?? "-"}</span>
           </div>
         )}
         <div className="card-sub-info">
-          <span>{t("Swap:order.remainingOrders")}</span>
+          <span>{t("Swap:order.remainingTrades")}</span>
           <span className="value">{orderCount(order.remainingCount)}</span>
         </div>
         <div className="card-sub-info">
