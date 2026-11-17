@@ -93,7 +93,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** The header counts down to the last trade; hover the progress bar for the next trade and the trades left. */
+/** Hover the progress bar for the order's sold, unfilled and purchased amounts. */
 export const Active: Story = {};
 
 /** The last trade is the next one, so the order ends with it. */

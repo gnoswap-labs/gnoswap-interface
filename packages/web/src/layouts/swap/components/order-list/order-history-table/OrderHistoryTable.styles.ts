@@ -38,7 +38,7 @@ export const OrderHistoryTableWrapper = styled.div`
     }
   }
 
-  .history-header .filled-price {
+  .history-header .execution-price {
     white-space: normal;
     text-align: right;
     overflow-wrap: anywhere;

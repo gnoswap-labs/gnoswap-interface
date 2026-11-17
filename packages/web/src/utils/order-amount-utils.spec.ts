@@ -1,4 +1,8 @@
-import { calculateLimitMinimumReceived, calculateLimitMinimumRemainingReceived } from "./order-amount-utils";
+import {
+  calculateLimitMinimumReceived,
+  calculateLimitMinimumRemainingReceived,
+  estimateLimitExecutionFee,
+} from "./order-amount-utils";
 
 type Terms = Parameters<typeof calculateLimitMinimumRemainingReceived>[0];
 
@@ -67,5 +71,36 @@ describe("calculateLimitMinimumRemainingReceived", () => {
   it("is zero for an order with no making amount to divide by", () => {
     expect(minimumRemaining({ makingAmount: "0" })).toBe("0");
     expect(minimumRemaining({ makingAmount: "" })).toBe("0");
+  });
+});
+
+describe("estimateLimitExecutionFee", () => {
+  it.each([
+    ["1", 15, "0"],
+    ["666", 15, "0"],
+    ["667", 15, "1"],
+    ["30000000", 15, "45067"],
+    ["30000000", 0, "0"],
+    ["9007199254740993", 1000, "1000799917193443"],
+  ] as const)("estimates the gross-output fee for net %s at %s bps", (net, rate, fee) => {
+    expect(estimateLimitExecutionFee(net, rate)).toBe(fee);
+    const gross = BigInt(net) + BigInt(fee);
+    expect(gross - (gross * BigInt(rate)) / 10_000n).toBe(BigInt(net));
+    const previous = gross - 1n;
+    expect(previous - (previous * BigInt(rate)) / 10_000n).toBeLessThan(BigInt(net));
+  });
+
+  it.each([
+    ["", 15],
+    ["0", 15],
+    ["-1", 15],
+    ["1.5", 15],
+    ["10", null],
+    ["10", undefined],
+    ["10", -1],
+    ["10", 10_000],
+    ["10", 1.5],
+  ])("does not invent a fee for invalid net %s or unknown rate %s", (net, rate) => {
+    expect(estimateLimitExecutionFee(net as string, rate as number | null | undefined)).toBeNull();
   });
 });

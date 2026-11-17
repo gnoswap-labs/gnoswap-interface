@@ -1,4 +1,5 @@
 import { cx } from "@emotion/css";
+import BigNumber from "bignumber.js";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -8,6 +9,7 @@ import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { DcaOrderModel, getDcaIntervalUnit } from "@models/order/dca-order-model";
 import {
   calculateDcaOrderEndAt,
+  formatOrderAmount,
   formatOrderFullAmount,
   formatOrderDateTime,
   formatOrderRate,
@@ -95,16 +97,31 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
     [inputToken.decimals, inputToken.displaySymbol, order, outputToken.decimals, outputToken.displaySymbol, roi, t],
   );
 
-  const overview = useMemo(
-    () =>
-      order.isActive
-        ? [
-            { label: t("Swap:order.nextTrade"), value: formatOrderDateTime(order.nextExecutionAt) },
-            { label: t("Swap:order.remainingTrades"), value: `${order.remainingCount}` },
-          ]
-        : undefined,
-    [order.isActive, order.nextExecutionAt, order.remainingCount, t],
-  );
+  const overview = useMemo(() => {
+    const inputAmount = (amount: string) =>
+      `${formatOrderFullAmount(amount, inputToken.decimals)} ${inputToken.displaySymbol}`;
+    const sold = formatOrderFullAmount(order.soldAmount, inputToken.decimals);
+    // A refund empties escrow, but does not change how much of the original deposit went unfilled.
+    const unfilled = BigNumber(order.depositAmount).minus(order.soldAmount).toFixed();
+    const rows = [
+      {
+        label: t("Swap:order.soldAmount"),
+        value: `${sold} / ${inputAmount(order.depositAmount)} (${formatOrderAmount(order.progress)}%)`,
+      },
+      { label: t("Swap:order.remainingAmount"), value: inputAmount(unfilled) },
+      {
+        label: t("Swap:order.purchasedAmount"),
+        value: `${formatOrderFullAmount(order.purchasedAmount, outputToken.decimals)} ${outputToken.displaySymbol}`,
+      },
+    ];
+    if (!order.isActive) {
+      rows.push({
+        label: t(order.status === "CANCELLED" ? "Swap:order.cancelledAt" : "Swap:order.completedAt"),
+        value: formatOrderDateTime(order.closedAt),
+      });
+    }
+    return rows;
+  }, [inputToken, order, outputToken, t]);
 
   // The terms the order was placed with, not what is left of them. An interval that is none of the allowed units
   // is told in plain seconds.

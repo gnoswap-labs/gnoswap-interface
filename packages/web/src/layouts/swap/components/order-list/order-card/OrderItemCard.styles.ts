@@ -159,3 +159,8 @@ export const OrderItemCardWrapper = styled.div`
     }
   }
 `;
+
+export const OrderMetricTooltipContent = styled.div`
+  ${fonts.p2};
+  overflow-wrap: anywhere;
+`;

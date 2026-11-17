@@ -5,11 +5,16 @@ import { useTranslation } from "react-i18next";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconArrowDown from "@components/common/icons/IconArrowDown";
 import IconArrowUp from "@components/common/icons/IconArrowUp";
+import Tooltip from "@components/common/tooltip/Tooltip";
+
+import { OrderMetricTooltipContent } from "./OrderItemCard.styles";
 
 export interface OrderMetric {
   key: string;
   label: string;
   value: string;
+  /** Unabridged value for the tooltip when the visible value uses compact formatting. */
+  fullValue?: string;
   /** Secondary context next to the value, such as price deviation or the filled share. */
   annotation?: string;
   /** Cumulative return, shown next to the purchased amount. */
@@ -23,11 +28,11 @@ export const OrderMetrics: React.FC<{ metrics: OrderMetric[]; truncateFractions?
   <div className="card-metrics">
     {metrics.map(metric => {
       const fraction = truncateFractions ? metric.value.match(/^([<>]?[\d,]+\.)(\d+)(.*)$/) : null;
-      return (
-        <div key={metric.key} className="metric">
+      const content = (
+        <>
           <span className="metric-label">{metric.label}</span>
-          <span className="metric-value">
-            <span className="value-text" title={metric.value}>
+          <span className="metric-value" tabIndex={truncateFractions ? 0 : undefined}>
+            <span className="value-text" title={truncateFractions ? undefined : metric.value}>
               {fraction ? (
                 <>
                   <span className="value-whole">{fraction[1]}</span>
@@ -41,6 +46,29 @@ export const OrderMetrics: React.FC<{ metrics: OrderMetric[]; truncateFractions?
             {metric.roi && <span className={cx("roi", { negative: metric.roi.isNegative })}>{metric.roi.text}</span>}
             {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
           </span>
+        </>
+      );
+      return truncateFractions ? (
+        <Tooltip
+          key={metric.key}
+          className="metric"
+          placement="top"
+          interactive
+          FloatingContent={
+            <OrderMetricTooltipContent>
+              <div>{metric.label}</div>
+              <div>
+                {metric.fullValue ?? metric.value}
+                {metric.annotation && ` ${metric.annotation}`}
+              </div>
+            </OrderMetricTooltipContent>
+          }
+        >
+          {content}
+        </Tooltip>
+      ) : (
+        <div key={metric.key} className="metric">
+          {content}
         </div>
       );
     })}

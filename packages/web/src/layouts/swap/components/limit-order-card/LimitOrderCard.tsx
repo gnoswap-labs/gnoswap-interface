@@ -16,7 +16,7 @@ import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { useTokenBalanceDisplay } from "@hooks/token/ui/use-token-balance-display";
 import { LimitOrderSide, SwapCardType } from "@models/order/order-type";
 import { TokenModel } from "@models/token/token-model";
-import { formatOrderDateTime, formatOrderRelativeDuration } from "@utils/order-format-utils";
+import { formatOrderDateTime, formatOrderFullAmount, formatOrderRelativeDuration } from "@utils/order-format-utils";
 
 import OrderCardSkeleton from "../order-form/OrderCardSkeleton";
 import OrderFormButton from "../order-form/OrderFormButton";
@@ -64,6 +64,8 @@ export interface LimitOrderCardProps {
   buyAmountUsd: string;
   minimumReceived: string;
   executionFee: string;
+  executionFeeAmount: string | null;
+  executionFeeUsd: string | null;
   changeTokenA: (token: TokenModel) => void;
   changeTokenB: (token: TokenModel) => void;
   /** Funding budget: Sell typing, the funding Max and legacy links. */
@@ -114,6 +116,8 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   buyAmountUsd,
   minimumReceived,
   executionFee,
+  executionFeeAmount,
+  executionFeeUsd,
   changeTokenA,
   changeTokenB,
   changeSellAmount,
@@ -159,9 +163,18 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
       },
       {
         key: "executionFee",
-        label: t("Swap:dca.executionFee"),
+        label: `${t("Swap:dca.executionFee")} (${executionFee})`,
         tooltip: t("Swap:limit.executionFeeTooltip"),
-        value: executionFee,
+        value:
+          executionFeeAmount !== null && tokenB ? (
+            <span>
+              {formatOrderFullAmount(executionFeeAmount, tokenB.decimals)} {tokenB.displaySymbol}
+              {executionFeeUsd && " "}
+              {executionFeeUsd && <ValueAnnotation>({executionFeeUsd})</ValueAnnotation>}
+            </span>
+          ) : (
+            "-"
+          ),
       },
       {
         key: "expiresAt",
@@ -174,7 +187,18 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
         ),
       },
     ],
-    [executionFee, expiresIn, expiry, minimumReceived, nowUnixSeconds, slippage, t, tokenB],
+    [
+      executionFee,
+      executionFeeAmount,
+      executionFeeUsd,
+      expiresIn,
+      expiry,
+      minimumReceived,
+      nowUnixSeconds,
+      slippage,
+      t,
+      tokenB,
+    ],
   );
 
   // Max is worked out here rather than in the sell field, so the order button
