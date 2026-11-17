@@ -7,6 +7,7 @@ import { ValueAnnotation } from "@components/order/common/OrderValueAnnotation.s
 import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { LimitOrderModel } from "@models/order/limit-order-model";
+import { formatTokenAmount } from "@utils/new-number-utils";
 import {
   calculatePriceDeviation,
   formatBps,
@@ -20,6 +21,7 @@ import {
   formatOrderRate,
   formatOrderTimeUntil,
   invertOrderRate,
+  trimFractionZeros,
 } from "@utils/order-format-utils";
 
 import OrderProgressBar from "../order-progress-bar/OrderProgressBar";
@@ -77,7 +79,15 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     const price = (rate: string | null, full = false, format = formatOrderRate) => {
       const value = BigNumber(rate ?? "");
       const formatted =
-        full && value.isFinite() ? formatOrderFullAmount(value, value.decimalPlaces() ?? 0) : format(rate);
+        full && value.isFinite() && !value.isZero()
+          ? trimFractionZeros(
+              formatTokenAmount(quoteToken.decimals === 0 ? value.integerValue(BigNumber.ROUND_DOWN) : value, {
+                decimals: quoteToken.decimals,
+                minLimit: 10 ** -quoteToken.decimals,
+                isKMB: false,
+              }),
+            )
+          : format(rate);
       return `${formatted}${order.side && rate !== null ? ` ${quoteToken.displaySymbol}` : ""}`;
     };
     return [
@@ -111,6 +121,7 @@ const LimitOrderItemCard: React.FC<LimitOrderItemCardProps> = ({
     order.progress,
     order.side,
     order.userOutput,
+    quoteToken.decimals,
     quoteToken.displaySymbol,
     t,
     tokenOut.decimals,

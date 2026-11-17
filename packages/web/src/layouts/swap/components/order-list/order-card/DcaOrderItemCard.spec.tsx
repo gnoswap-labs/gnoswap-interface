@@ -90,7 +90,15 @@ it("preserves each token's precision in the DCA deposit and purchased amounts", 
   const { container } = renderCard(ORDER);
 
   expect(screen.getByText("2.159976 GNOT")).toBeInTheDocument();
-  await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[2]);
+  const purchased = container.querySelectorAll<HTMLElement>(".metric .metric-value")[2];
+  await userEvent.hover(purchased);
+  expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  await userEvent.unhover(purchased);
+  Object.defineProperties(purchased.querySelector(".value-fraction"), {
+    scrollWidth: { value: 150 },
+    clientWidth: { value: 50 },
+  });
+  await userEvent.hover(purchased);
   expect(await screen.findByRole("tooltip")).toHaveTextContent("2.079988123456789012 GNS");
 });
 
@@ -113,7 +121,15 @@ describe("DcaOrderItemCard metrics", () => {
   it("quotes the full market price for one input token in the tooltip", async () => {
     const { container } = renderCard(ACTIVE, "1.123456789");
 
-    await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[0]);
+    const price = container.querySelectorAll<HTMLElement>(".metric .metric-value")[0];
+    await userEvent.hover(price);
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    await userEvent.unhover(price);
+    Object.defineProperties(price.querySelector(".value-fraction"), {
+      scrollWidth: { value: 150 },
+      clientWidth: { value: 50 },
+    });
+    await userEvent.hover(price);
     expect(await screen.findByRole("tooltip")).toHaveTextContent("1 GNOT = 1.123456789 GNS");
   });
 

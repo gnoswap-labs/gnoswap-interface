@@ -21,55 +21,73 @@ export interface OrderMetric {
 export const OrderMetrics: React.FC<{ metrics: OrderMetric[]; truncateFractions?: boolean }> = ({
   metrics,
   truncateFractions = false,
-}) => (
-  <div className="card-metrics">
-    {metrics.map(metric => {
-      const fraction = truncateFractions ? metric.value.match(/^([<>]?[\d,]+\.)(\d+)(.*)$/) : null;
-      const content = (
-        <>
-          <span className="metric-label">{metric.label}</span>
-          <span className="metric-value" tabIndex={truncateFractions ? 0 : undefined}>
-            <span className="value-text" title={truncateFractions ? undefined : metric.value}>
-              {fraction ? (
-                <>
-                  <span className="value-whole">{fraction[1]}</span>
-                  <span className="value-fraction">{fraction[2]}</span>
-                  {fraction[3] && <span className="value-suffix">{fraction[3]}</span>}
-                </>
-              ) : (
-                metric.value
-              )}
+}) => {
+  const [truncatedMetric, setTruncatedMetric] = useState<string | null>(null);
+  const updateTruncatedMetric = (event: React.SyntheticEvent<HTMLDivElement>) => {
+    if (!(event.target instanceof HTMLElement)) return;
+    const metric = event.target.closest<HTMLElement>(".metric");
+    if (!metric || !event.currentTarget.contains(metric)) return;
+    const clipped = Array.from(
+      metric.querySelectorAll<HTMLElement>(".metric-label, .value-text, .value-whole, .value-fraction, .value-suffix"),
+    ).some(element => element.scrollWidth > element.clientWidth);
+    setTruncatedMetric(clipped ? metric.querySelector<HTMLElement>(".metric-value")?.dataset.metricKey ?? null : null);
+  };
+
+  return (
+    <div
+      className="card-metrics"
+      onMouseOver={truncateFractions ? updateTruncatedMetric : undefined}
+      onFocusCapture={truncateFractions ? updateTruncatedMetric : undefined}
+    >
+      {metrics.map(metric => {
+        const fraction = truncateFractions ? metric.value.match(/^([<>]?[\d,]+\.)(\d+)(.*)$/) : null;
+        const content = (
+          <>
+            <span className="metric-label">{metric.label}</span>
+            <span className="metric-value" data-metric-key={metric.key} tabIndex={truncateFractions ? 0 : undefined}>
+              <span className="value-text" title={truncateFractions ? undefined : metric.value}>
+                {fraction ? (
+                  <>
+                    <span className="value-whole">{fraction[1]}</span>
+                    <span className="value-fraction">{fraction[2]}</span>
+                    {fraction[3] && <span className="value-suffix">{fraction[3]}</span>}
+                  </>
+                ) : (
+                  metric.value
+                )}
+              </span>
+              {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
             </span>
-            {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
-          </span>
-        </>
-      );
-      return truncateFractions ? (
-        <Tooltip
-          key={metric.key}
-          className="metric"
-          placement="top"
-          interactive
-          FloatingContent={
-            <OrderMetricTooltipContent>
-              <div>{metric.label}</div>
-              <div>
-                {metric.fullValue ?? metric.value}
-                {metric.annotation && ` ${metric.annotation}`}
-              </div>
-            </OrderMetricTooltipContent>
-          }
-        >
-          {content}
-        </Tooltip>
-      ) : (
-        <div key={metric.key} className="metric">
-          {content}
-        </div>
-      );
-    })}
-  </div>
-);
+          </>
+        );
+        return truncateFractions ? (
+          <Tooltip
+            key={metric.key}
+            className="metric"
+            placement="top"
+            interactive
+            forcedClose={truncatedMetric !== metric.key}
+            FloatingContent={
+              <OrderMetricTooltipContent>
+                <div>{metric.label}</div>
+                <div>
+                  {metric.fullValue ?? metric.value}
+                  {metric.annotation && ` ${metric.annotation}`}
+                </div>
+              </OrderMetricTooltipContent>
+            }
+          >
+            {content}
+          </Tooltip>
+        ) : (
+          <div key={metric.key} className="metric">
+            {content}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
 
 export const OrderStopButton: React.FC<{ text: string; onClick: () => void; disabled?: boolean }> = ({
   text,

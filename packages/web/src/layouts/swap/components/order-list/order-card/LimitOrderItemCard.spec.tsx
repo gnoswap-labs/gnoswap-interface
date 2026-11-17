@@ -202,7 +202,15 @@ describe("LimitOrderItemCard purchased amount", () => {
       </GnoswapThemeProvider>,
     );
 
-    await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[2]);
+    const purchased = container.querySelectorAll<HTMLElement>(".metric .metric-value")[2];
+    await userEvent.hover(purchased);
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+    await userEvent.unhover(purchased);
+    Object.defineProperties(purchased.querySelector(".value-fraction"), {
+      scrollWidth: { value: 150 },
+      clientWidth: { value: 50 },
+    });
+    await userEvent.hover(purchased);
     expect(await screen.findByRole("tooltip")).toHaveTextContent(amount);
   });
 });
@@ -264,13 +272,17 @@ describe("LimitOrderItemCard recorded side", () => {
 });
 
 it.each([
-  { price: "12345678.901234", full: "12,345,678.901234 GNS" },
-  { price: "0.000000000123", full: "0.000000000123 GNS" },
-])("reveals the unabridged trigger price $price on hover", async ({ price, full }) => {
+  { price: "12345678.90123456789", decimals: 6, full: "12,345,678.901234 GNS" },
+  { price: "0.0733484254607927925438043473", decimals: 6, full: "0.073348 GNS" },
+  { price: "0.000000000123", decimals: 6, full: "<0.000001 GNS" },
+  { price: "1.1234567890123456789", decimals: 18, full: "1.123456789012345678 GNS" },
+  { price: "1234.56789", decimals: 0, full: "1,234 GNS" },
+  { price: "0.5", decimals: 0, full: "<1 GNS" },
+])("reveals the decimal-bounded price $price only when clipped", async ({ price, decimals, full }) => {
   const { container } = render(
     <GnoswapThemeProvider>
       <LimitOrderItemCard
-        order={{ ...partiallyFilled, side: "sell", limitPrice: price }}
+        order={{ ...partiallyFilled, side: "sell", tokenOut: { ...token("GNS"), decimals }, limitPrice: price }}
         marketPrice={price}
         txUrl=""
         onClickCancel={jest.fn()}
@@ -278,6 +290,18 @@ it.each([
       />
     </GnoswapThemeProvider>,
   );
-  await userEvent.hover(container.querySelectorAll<HTMLElement>(".metric .metric-value")[1]);
-  expect(await screen.findByRole("tooltip")).toHaveTextContent(full);
+  const prices = container.querySelectorAll<HTMLElement>(".metric .metric-value");
+  await userEvent.hover(prices[0]);
+  expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  await userEvent.unhover(prices[0]);
+
+  for (const index of [0, 1]) {
+    Object.defineProperties(prices[index].querySelector(".value-text"), {
+      scrollWidth: { value: 150 },
+      clientWidth: { value: 50 },
+    });
+    await userEvent.hover(prices[index]);
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(full);
+    await userEvent.unhover(prices[index]);
+  }
 });
