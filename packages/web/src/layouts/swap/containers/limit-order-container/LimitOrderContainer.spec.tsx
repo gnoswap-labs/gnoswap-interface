@@ -13,6 +13,7 @@ let mockTokens: TokenModel[] = [];
 let mockConfirmContent: (() => unknown) | undefined;
 const mockSendCreateLimitOrder = jest.fn(() => Promise.resolve({}));
 const mockSubmit = jest.fn(({ send }: { send: () => unknown }) => send());
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- typed for mock.calls
 const mockGetUsdPrice = jest.fn((_token: TokenModel | null): string | null => null);
 
 jest.mock("@hooks/common/use-custom-router", () => ({
@@ -48,6 +49,10 @@ jest.mock("@query/order", () => ({
     refetch: jest.fn(),
   }),
 }));
+// These links carry their own prices; the shared pool market price is not needed.
+jest.mock("@providers/limit-market-price-provider/LimitMarketPriceProvider", () => ({
+  useLimitMarketPrices: () => ({ getPrice: () => null }),
+}));
 jest.mock("@query/router", () => ({
   useGetRoutes: (
     request: {
@@ -56,6 +61,7 @@ jest.mock("@query/router", () => ({
       tokenAmount: string;
       exactType: "EXACT_IN" | "EXACT_OUT";
     } | null,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- matches useGetRoutes
     _options: unknown,
   ) => ({
     data: request

@@ -66,6 +66,10 @@ jest.mock("@query/order", () => ({
 jest.mock("@query/pools", () => ({
   useGetPoolList: () => ({ data: [], isError: false, refetch: jest.fn() }),
 }));
+// Each Limit case sets its own price, so no pool market price is needed.
+jest.mock("@providers/limit-market-price-provider/LimitMarketPriceProvider", () => ({
+  useLimitMarketPrices: () => ({ getPrice: () => null }),
+}));
 // One input unit buys two output units.
 jest.mock("@query/router", () => ({
   useGetRoutes: (request: { tokenAmount: string; exactType: "EXACT_IN" | "EXACT_OUT" } | null) => ({

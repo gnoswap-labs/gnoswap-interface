@@ -1,12 +1,16 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
+import { LimitMarketPriceProvider } from "@providers/limit-market-price-provider/LimitMarketPriceProvider";
+import type { LimitMarketPricePair } from "@repositories/order/request";
+import { canonicalizeLimitMarketPricePairs, getLimitMarketPricePairKey } from "@utils/limit-market-price-utils";
 
 import { hasAnyOrder, OrderListContainer } from "./OrderListContainer";
 
 const mockUseWallet = jest.fn();
 const mockUseGetDcaOrders = jest.fn();
 const mockUseGetLimitOrders = jest.fn();
+const mockUseGetLimitMarketPrices = jest.fn();
 
 jest.mock("@hooks/wallet/data/use-wallet", () => ({ useWallet: () => mockUseWallet() }));
 jest.mock("@hooks/common/use-window-size", () => ({
@@ -25,6 +29,13 @@ jest.mock("@query/order", () => ({
   useGetDcaOrders: (...args: unknown[]) => mockUseGetDcaOrders(...args),
   useGetLimitOrders: (...args: unknown[]) => mockUseGetLimitOrders(...args),
 }));
+jest.mock("@query/order/use-get-limit-market-prices", () => ({
+  useGetLimitMarketPrices: (...args: unknown[]) => mockUseGetLimitMarketPrices(...args),
+}));
+jest.mock("@hooks/common/use-custom-router", () => ({
+  __esModule: true,
+  default: () => ({ query: { type: "limit" } }),
+}));
 jest.mock("@constants/order.constant", () => ({ ENABLED_SWAP_CARD_TYPES: ["swap", "dca", "limit"] }));
 jest.mock("../../components/order-list/order-card/DcaOrderItemCard", () => ({
   __esModule: true,
@@ -32,12 +43,17 @@ jest.mock("../../components/order-list/order-card/DcaOrderItemCard", () => ({
     <div data-testid="order-card">{`${order.packagePath}:${order.orderId}`}</div>
   ),
 }));
-jest.mock("./LimitOrderItemCardContainer", () => ({
+type MockLimitCardProps = { order: { packagePath: string; orderId: string }; marketPrice: string | null };
+jest.mock("../../components/order-list/order-card/LimitOrderItemCard", () => ({
   __esModule: true,
-  default: ({ order }: { order: { packagePath: string; orderId: string } }) => (
-    <div data-testid="order-card">{`${order.packagePath}:${order.orderId}`}</div>
+  default: ({ order, marketPrice }: MockLimitCardProps) => (
+    <div data-testid="order-card">{`${order.packagePath}:${order.orderId} ${marketPrice ?? "-"}`}</div>
   ),
 }));
+
+beforeEach(() => {
+  mockUseGetLimitMarketPrices.mockReset().mockReturnValue({ data: undefined, isError: false });
+});
 
 type Totals = { active?: number; past?: number };
 
@@ -61,6 +77,7 @@ const renderContainer = (kind: "dca" | "limit", totals: Totals, connected = true
     <GnoswapThemeProvider>
       <OrderListContainer kind={kind} />
     </GnoswapThemeProvider>,
+    { wrapper: LimitMarketPriceProvider },
   );
 };
 
@@ -123,6 +140,7 @@ describe("OrderListContainer", () => {
       <GnoswapThemeProvider>
         <OrderListContainer kind="limit" />
       </GnoswapThemeProvider>,
+      { wrapper: LimitMarketPriceProvider },
     );
 
     fireEvent.click(screen.getByText("Swap:order.past"));
@@ -160,9 +178,10 @@ describe("OrderListContainer", () => {
 
   it.each(["dca", "limit"] as const)("keys %s cards by realm and order ID", kind => {
     const consoleError = jest.spyOn(console, "error").mockImplementation(() => undefined);
+    const pair = { tokenIn: { path: "gno.land/r/demo/a" }, tokenOut: { path: "gno.land/r/demo/b" } };
     const items = [
-      { orderId: "1", packagePath: "gno.land/r/gnoswap/test/order/" + kind },
-      { orderId: "1", packagePath: "gno.land/r/gnoswap/test3/order/" + kind },
+      { orderId: "1", packagePath: "gno.land/r/gnoswap/test/order/" + kind, ...pair },
+      { orderId: "1", packagePath: "gno.land/r/gnoswap/test3/order/" + kind, ...pair },
     ];
     const page = { data: { items, pageInfo: { currentPage: 1, totalItems: 2, totalPages: 1 } }, isLoading: false };
     mockUseWallet.mockReturnValue({ connected: true, account: { address: "g1owner" } });
@@ -175,6 +194,7 @@ describe("OrderListContainer", () => {
       <GnoswapThemeProvider>
         <OrderListContainer kind={kind} />
       </GnoswapThemeProvider>,
+      { wrapper: LimitMarketPriceProvider },
     );
 
     expect(screen.getAllByTestId("order-card")).toHaveLength(2);
@@ -204,7 +224,7 @@ describe("OrderListContainer", () => {
         <OrderListContainer kind={kind} />
       </GnoswapThemeProvider>
     );
-    const { rerender } = render(view());
+    const { rerender } = render(view(), { wrapper: LimitMarketPriceProvider });
     fireEvent.click(screen.getByRole("button", { name: "2" }));
 
     // The last order of page 2 leaves the list.
@@ -214,5 +234,79 @@ describe("OrderListContainer", () => {
 
     const lastListRequest = requests.filter(request => request.size > 1).pop();
     expect(lastListRequest?.page).toBe(1);
+  });
+});
+
+describe("OrderListContainer market prices", () => {
+  const tokenA = { path: "gno.land/r/demo/a" };
+  const tokenB = { path: "gno.land/r/demo/b" };
+  const tokenC = { path: "gno.land/r/demo/c" };
+  /** Pool spot rates by directed pair; a pair's rate never answers its reverse. */
+  const SPOT_RATES: [LimitMarketPricePair, string][] = [
+    [{ tokenIn: tokenA.path, tokenOut: tokenB.path }, "0.25"],
+    [{ tokenIn: tokenB.path, tokenOut: tokenA.path }, "4"],
+    [{ tokenIn: tokenC.path, tokenOut: tokenA.path }, "0.5"],
+  ];
+
+  const order = (orderId: string, tokenIn: { path: string }, tokenOut: { path: string }, makingAmount = "1") => ({
+    orderId,
+    packagePath: "gno.land/r/gnoswap/limit",
+    tokenIn,
+    tokenOut,
+    makingAmount,
+  });
+
+  /** The pairs of the latest shared market price query. */
+  const requestedPairs = () => {
+    const { calls } = mockUseGetLimitMarketPrices.mock;
+    return canonicalizeLimitMarketPricePairs(calls[calls.length - 1]?.[0] ?? []);
+  };
+  const view = () => (
+    <GnoswapThemeProvider>
+      <OrderListContainer kind="limit" />
+    </GnoswapThemeProvider>
+  );
+
+  const renderPages = (pages: unknown[][]) => {
+    mockUseWallet.mockReturnValue({ connected: true, account: { address: "g1owner" } });
+    mockUseGetDcaOrders.mockReturnValue({ data: undefined, isLoading: true });
+    mockUseGetLimitOrders.mockImplementation((request: { page: number; size: number }) => ({
+      data: {
+        items: request.size > 1 ? (pages[request.page - 1] ?? []) : [],
+        pageInfo: { currentPage: request.page, totalItems: pages.flat().length, totalPages: pages.length },
+      },
+      isLoading: false,
+      isPreviousData: false,
+    }));
+    return render(view(), { wrapper: LimitMarketPriceProvider });
+  };
+
+  beforeEach(() => {
+    const rates = new Map(SPOT_RATES.map(([pair, rate]) => [getLimitMarketPricePairKey(pair), rate]));
+    const pool = { poolPath: "gno.land/r/gnoswap/pool", updatedBlockHeight: 1, updatedBlockTime: 1 };
+    mockUseGetLimitMarketPrices.mockImplementation((pairs: LimitMarketPricePair[]) => ({
+      data: Object.fromEntries(
+        pairs.map(pair => {
+          const outputPerInput = rates.get(getLimitMarketPricePairKey(pair));
+          return [getLimitMarketPricePairKey(pair), outputPerInput ? { ...pool, outputPerInput } : null];
+        }),
+      ),
+      isError: false,
+    }));
+  });
+
+  it("asks for the opened page's pairs instead of the previous page's", () => {
+    renderPages([[order("1", tokenA, tokenB)], [order("2", tokenC, tokenA)]]);
+    fireEvent.click(screen.getByRole("button", { name: "2" }));
+
+    expect(requestedPairs()).toEqual([{ tokenIn: tokenC.path, tokenOut: tokenA.path }]);
+  });
+
+  it("stops pricing the orders once the list closes", () => {
+    const { rerender } = renderPages([[order("1", tokenA, tokenB)]]);
+    mockUseWallet.mockReturnValue({ connected: false, account: null });
+    rerender(view());
+
+    expect(requestedPairs()).toEqual([]);
   });
 });

@@ -206,7 +206,6 @@ describe("LimitOrderItemCard purchased amount", () => {
     expect(await screen.findByRole("tooltip")).toHaveTextContent(amount);
   });
 });
-
 describe("LimitOrderItemCard execution fee", () => {
   const renderFee = (order: LimitOrderModel, tokenOutUsdPrice: string | null = null) => {
     render(

@@ -25,6 +25,7 @@ import {
   GetOrderHistoryRequest,
   GetOrdersRequest,
   OrderGasRequest,
+  LimitMarketPricePair,
 } from "./request";
 import {
   DcaConfigResponse,
@@ -35,6 +36,7 @@ import {
   LimitConfigResponse,
   LimitFillItem,
   LimitOrderItem,
+  LimitMarketPriceResponse,
   OrderAPIResponse,
   OrderPagedResponse,
 } from "./response";
@@ -89,6 +91,14 @@ export class OrderRepositoryImpl implements OrderRepository {
 
   public getLimitConfig = async (): Promise<LimitConfigResponse> => {
     return this.get<LimitConfigResponse>("orders/limit/config");
+  };
+
+  public getLimitMarketPrice = async ({
+    tokenIn,
+    tokenOut,
+  }: LimitMarketPricePair): Promise<LimitMarketPriceResponse> => {
+    const params = new URLSearchParams({ tokenIn, tokenOut });
+    return this.get<LimitMarketPriceResponse>(`orders/limit/market-price?${params.toString()}`);
   };
 
   public getLimitOrders = async (request: GetOrdersRequest): Promise<OrderPagedResponse<LimitOrderItem>> => {
