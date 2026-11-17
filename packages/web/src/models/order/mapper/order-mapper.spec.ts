@@ -140,7 +140,6 @@ describe("order-mapper", () => {
     expect(order.executionFeeAmount).toBe("15.21");
     expect(order.poolPath).toBe("gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000");
     expect(order.marketPrice).toBe("1.0335");
-    expect(order.isMarketPriceReported).toBe(true);
   });
 
   it("keeps an explicitly unavailable price of a known pool unknown", () => {
@@ -151,8 +150,6 @@ describe("order-mapper", () => {
 
     expect(order.poolPath).toBe("gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000");
     expect(order.marketPrice).toBeNull();
-    // Reported, so the app does not look for another price.
-    expect(order.isMarketPriceReported).toBe(true);
   });
 
   it("leaves the pool price and execution fee unknown for an earlier order-api", () => {
@@ -162,7 +159,7 @@ describe("order-mapper", () => {
     expect(order.executionFeeAmount).toBeNull();
     expect(order.poolPath).toBeNull();
     expect(order.marketPrice).toBeNull();
-    expect(order.isMarketPriceReported).toBe(false);
+    expect(mapDcaOrderItemToModel({ ...dcaItem, poolPath: null, marketPrice: null }, tokens).marketPrice).toBeNull();
   });
 
   it("takes the DCA order return from the order-api", () => {

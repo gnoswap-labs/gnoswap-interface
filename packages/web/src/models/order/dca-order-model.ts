@@ -78,11 +78,6 @@ export interface DcaOrderModel {
   poolPath: string | null;
   /** Current output per input of `poolPath` in display units. Null when unknown. */
   marketPrice: string | null;
-  /**
-   * Whether the order-api reports the market price at all. An order-api that does is the only source of the
-   * price, even when it reports null; an earlier one leaves the price to the app.
-   */
-  isMarketPriceReported: boolean;
   /** Unix seconds. */
   nextExecutionAt: number | null;
   createdAt: number;

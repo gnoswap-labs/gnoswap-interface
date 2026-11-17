@@ -36,7 +36,6 @@ const ORDER: DcaOrderModel = {
   executionFeeAmount: null,
   poolPath: null,
   marketPrice: null,
-  isMarketPriceReported: false,
   nextExecutionAt: null,
   createdAt: 1,
   closedAt: 3601,
@@ -52,8 +51,7 @@ const renderCard = (
   render(
     <GnoswapThemeProvider>
       <DcaOrderItemCard
-        order={order}
-        marketPrice={marketPrice}
+        order={{ ...order, marketPrice }}
         outputTokenUsdPrice={outputTokenUsdPrice}
         txUrl=""
         onClickStop={jest.fn()}
@@ -123,6 +121,16 @@ describe("DcaOrderItemCard metrics", () => {
     const { container } = renderCard(ORDER);
 
     expect(metricValues(container).slice(0, 2)).toEqual(["-", "-"]);
+  });
+
+  it("keeps the market price unknown when the order-api reports the pool without a price", () => {
+    const { container } = renderCard({
+      ...ACTIVE,
+      poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000",
+    });
+
+    // No other quote stands in for the pool's price, so neither the price nor the deviation is shown.
+    expect(metricValues(container).slice(0, 2)).toEqual(["-", "1.926 GNS"]);
   });
 });
 
