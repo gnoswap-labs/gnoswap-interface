@@ -54,6 +54,8 @@ const summary: DcaOrderSummary = {
   estimatedEndDate: "2026-11-03 20:35:36",
   estimatedEndAt: null,
   executionFee: "0.1%",
+  executionFeeAmount: null,
+  executionFeeUsd: null,
 };
 
 /** The retry the order button offers after a failed Max, read here as its translation key. */
@@ -179,8 +181,15 @@ describe("DcaOrderCard", () => {
     expect(header).toHaveTextContent("1 GNS = 1.04 GNOT(≈$1.04)");
     expect(screen.getByText(/Swap:dca.marketPrice: 1 GNS = 1\.04 GNOT/)).toBeInTheDocument();
     expect(screen.getByText("2026-11-03 20:35:36")).toBeInTheDocument();
-    expect(screen.getByText("Swap:dca.executionFee")).toBeInTheDocument();
-    expect(screen.getByText("0.1%")).toBeInTheDocument();
+    expect(screen.getByText("Swap:dca.executionFee (0.1%)")).toBeInTheDocument();
+  });
+
+  it("shows the estimated execution fee amount and its USD value", () => {
+    renderCard({ summary: { ...summary, executionFeeAmount: "1.5", executionFeeUsd: "$1.18" } });
+
+    expect(screen.getByText("Swap:dca.executionFee (0.1%)")).toBeInTheDocument();
+    expect(screen.getByText(/1\.5 GNOT/)).toBeInTheDocument();
+    expect(screen.getByText("($1.18)")).toBeInTheDocument();
   });
 
   it("collapses the order details from the rate header but keeps the order sentence", () => {
@@ -190,7 +199,7 @@ describe("DcaOrderCard", () => {
     fireEvent.click(header);
 
     expect(header).toHaveAttribute("aria-expanded", "false");
-    expect(screen.queryByText("Swap:dca.executionFee")).not.toBeInTheDocument();
+    expect(screen.queryByText("Swap:dca.executionFee (0.1%)")).not.toBeInTheDocument();
     expect(screen.getByText(/Swap:dca.marketPrice: 1 GNS = 1\.04 GNOT/)).toBeInTheDocument();
   });
 

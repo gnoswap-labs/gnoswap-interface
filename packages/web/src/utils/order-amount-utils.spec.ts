@@ -1,6 +1,7 @@
 import {
   calculateLimitMinimumReceived,
   calculateLimitMinimumRemainingReceived,
+  estimateDcaExecutionFee,
   estimateLimitExecutionFee,
 } from "./order-amount-utils";
 
@@ -102,5 +103,31 @@ describe("estimateLimitExecutionFee", () => {
     ["10", 1.5],
   ])("does not invent a fee for invalid net %s or unknown rate %s", (net, rate) => {
     expect(estimateLimitExecutionFee(net as string, rate as number | null | undefined)).toBeNull();
+  });
+});
+
+describe("estimateDcaExecutionFee", () => {
+  it.each([
+    ["1000000", 1, 15, "1500"],
+    ["666", 1, 15, "0"],
+    ["666", 2, 15, "1"],
+    ["30000000", 4, 15, "180000"],
+    ["30000000", 4, 0, "0"],
+  ] as const)("charges the cumulative gross of %s x %s at %s bps", (gross, count, rate, fee) => {
+    expect(estimateDcaExecutionFee(gross, count, rate)).toBe(fee);
+  });
+
+  it.each([
+    ["", 1, 15],
+    ["0", 1, 15],
+    ["1.5", 1, 15],
+    ["10", 0, 15],
+    ["10", 1.5, 15],
+    ["10", 1, null],
+    ["10", 1, undefined],
+    ["10", 1, -1],
+    ["10", 1, 10_000],
+  ])("does not invent a fee for gross %s, count %s or rate %s", (gross, count, rate) => {
+    expect(estimateDcaExecutionFee(gross as string, count as number, rate as number | null | undefined)).toBeNull();
   });
 });

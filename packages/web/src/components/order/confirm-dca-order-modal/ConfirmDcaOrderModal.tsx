@@ -7,7 +7,7 @@ import IconSwapArrowDown from "@components/common/icons/IconSwapArrowDown";
 import MissingLogo from "@components/common/missing-logo/MissingLogo";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { DcaOrderSummary } from "@models/order/order-summary";
-import { formatOrderTimeUntil } from "@utils/order-format-utils";
+import { formatOrderFullAmount, formatOrderTimeUntil } from "@utils/order-format-utils";
 
 import { OrderModalWrapper } from "../common/OrderModal.styles";
 import { ValueAnnotation } from "../common/OrderValueAnnotation.styles";
@@ -56,9 +56,19 @@ const ConfirmDcaOrderModal: React.FC<ConfirmDcaOrderModalProps> = ({ summary, is
       },
       {
         key: "executionFee",
-        label: t("Swap:dca.executionFee"),
+        label: `${t("Swap:dca.executionFee")} (${summary.executionFee})`,
         tooltip: t("Swap:dca.executionFeeTooltip"),
-        value: summary.executionFee,
+        value:
+          summary.executionFeeAmount !== null ? (
+            <span>
+              {formatOrderFullAmount(summary.executionFeeAmount, summary.outputToken.decimals)}{" "}
+              {summary.outputToken.displaySymbol}
+              {summary.executionFeeUsd && " "}
+              {summary.executionFeeUsd && <ValueAnnotation>({summary.executionFeeUsd})</ValueAnnotation>}
+            </span>
+          ) : (
+            "-"
+          ),
       },
     ];
   }, [locale, nowUnixSeconds, summary, t]);

@@ -25,6 +25,9 @@ export interface DcaOrderSummary {
   estimatedEndAt: number | null;
   /** The DCA realm's fee on each execution's output; `rate` is already net of it. */
   executionFee: string;
+  /** Estimate over all executions at the current quote, in display output-token units. */
+  executionFeeAmount: string | null;
+  executionFeeUsd: string | null;
 }
 
 /**

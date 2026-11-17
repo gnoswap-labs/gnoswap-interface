@@ -20,7 +20,8 @@ import { DexEvent } from "@repositories/common";
 import { getDcaDepositAmount } from "@repositories/order/order.message";
 import { CreateDcaOrderRequest } from "@repositories/order/request";
 import { OrderState, SwapState } from "@states/index";
-import { formatBps, formatOrderDateTime, trimFractionZeros } from "@utils/order-format-utils";
+import { estimateDcaExecutionFee } from "@utils/order-amount-utils";
+import { formatBps, formatOrderDateTime, formatOrderFeeUsd, trimFractionZeros } from "@utils/order-format-utils";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
 import { isNativeTokenPath, makeDisplayTokenAmountString, makeRawTokenAmount } from "@utils/token-utils";
 
@@ -240,6 +241,15 @@ export const useDcaOrderHandler = () => {
     const ownerOutput = BigNumber(output).multipliedBy(BPS_DENOMINATOR - executionFeeBps).dividedBy(BPS_DENOMINATOR);
     return ownerOutput.dividedBy(quoteAmount).toFixed();
   }, [executionFeeBps, quoteAmount, routes, tokenB]);
+  // Only a quote of the real per-execution amount prices the fee; the `1` placeholder does not.
+  const executionFeeAmount = useMemo(() => {
+    if (!tokenB || routes?.status !== "SUCCESS" || !BigNumber(debouncedAmountPerExecution).isGreaterThan(0)) {
+      return null;
+    }
+    const rawFee = estimateDcaExecutionFee(routes.amount, executionCount, config?.executionFeeBps);
+    return rawFee === null ? null : makeDisplayTokenAmountString(tokenB, rawFee);
+  }, [config?.executionFeeBps, debouncedAmountPerExecution, executionCount, routes, tokenB]);
+  const executionFeeUsd = formatOrderFeeUsd(executionFeeAmount, getUsdPrice(tokenB));
 
   const currentScheduleRequest = useMemo(
     () =>
@@ -376,11 +386,15 @@ export const useDcaOrderHandler = () => {
       estimatedEndDate: formatOrderDateTime(schedule?.estimatedEndAt),
       estimatedEndAt: schedule?.estimatedEndAt ?? null,
       executionFee: formatBps(config?.executionFeeBps),
+      executionFeeAmount,
+      executionFeeUsd,
     };
   }, [
     actualSellAmount,
     amountPerExecution,
     config?.executionFeeBps,
+    executionFeeAmount,
+    executionFeeUsd,
     executionCount,
     formatRate,
     formatUsd,

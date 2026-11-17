@@ -23,6 +23,8 @@ export const STORY_DCA_ORDER_SUMMARY: DcaOrderSummary = {
   estimatedEndDate: formatOrderDateTime(STORY_DCA_ESTIMATED_END_AT),
   estimatedEndAt: STORY_DCA_ESTIMATED_END_AT,
   executionFee: "0.15%",
+  executionFeeAmount: "45.067",
+  executionFeeUsd: "$35.48",
 };
 
 export const STORY_LIMIT_ORDER_SUMMARY: LimitOrderSummary = {

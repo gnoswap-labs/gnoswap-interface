@@ -58,3 +58,29 @@ export function estimateLimitExecutionFee(rawNetOutput: string, feeBps: number |
   }
   return net.minus(1).multipliedBy(feeBps).dividedToIntegerBy(10_000 - feeBps).toFixed();
 }
+
+/**
+ * Estimated DCA fee over the whole schedule, from the quoted gross output of one execution.
+ * The realm charges floor(cumulativeGross * feeBps / 10000), all in raw output units.
+ */
+export function estimateDcaExecutionFee(
+  rawGrossOutputPerExecution: string,
+  executionCount: number,
+  feeBps: number | null | undefined,
+): string | null {
+  const gross = BigNumber(rawGrossOutputPerExecution);
+  if (
+    !gross.isInteger() ||
+    !gross.isGreaterThan(0) ||
+    !Number.isInteger(executionCount) ||
+    executionCount <= 0 ||
+    feeBps === null ||
+    feeBps === undefined ||
+    !Number.isInteger(feeBps) ||
+    feeBps < 0 ||
+    feeBps >= 10_000
+  ) {
+    return null;
+  }
+  return gross.multipliedBy(executionCount).multipliedBy(feeBps).dividedToIntegerBy(10_000).toFixed();
+}
