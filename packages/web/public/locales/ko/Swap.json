@@ -93,7 +93,7 @@
     "soldAmount": "판매 금액",
     "status": {
       "cancelled": "취소됨",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "Keeper에 의해 취소됨",
       "completed": "완료됨",
       "expired": "만료됨",
       "partiallyFilled": "일부만 채워짐"

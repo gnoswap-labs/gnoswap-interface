@@ -84,7 +84,6 @@
       }
     }
   },
-  "liquidity": "유동성",
   "submitBtn": {
     "amtTooLow": "수량이 너무 적음",
     "enterAmt": "수량을 입력하세요",

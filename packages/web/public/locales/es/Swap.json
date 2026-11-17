@@ -68,7 +68,7 @@
     "claimOrder": "Reclamación",
     "completedAt": "Finalizado el",
     "connectWallet": "Conecta tu monedero para ver tu pedido.",
-    "executedPriceAvg": "Precio de ejecución (prom.)",
+    "executedPriceAvg": "Precio de ejecución (media)",
     "expiredAt": "Caducado el",
     "expiresAt": "Vence el",
     "filledPrice": "Precio de ejecución",
@@ -93,7 +93,7 @@
     "soldAmount": "Importe vendido",
     "status": {
       "cancelled": "Cancelado",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "Cancelado por Keeper",
       "completed": "Finalizado",
       "expired": "Caducado",
       "partiallyFilled": "Parcialmente cubierto"

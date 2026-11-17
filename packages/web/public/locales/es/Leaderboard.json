@@ -13,7 +13,6 @@
       "inRange": "{{n}} dentro del rango",
       "points": "Puntos",
       "pointsThisRound": "Puntos de esta ronda",
-      "position": "Posición",
       "provisional": "provisional",
       "rank": "Rango",
       "referral": "Remisión",
@@ -30,8 +29,7 @@
         "swap": "<p>Puntos correspondientes a la comisión de intercambio (comisión del router) que pagas.</p><p><formula>Comisión de intercambio pagada (en GNOT) × 5, hasta tu límite de intercambio<br/>Límite de intercambio: Puntos de delegación × 3 + Puntos de staking × 1</formula><br/>Si no hay staking ni delegación, no hay puntos de intercambio. Solo se tienen en cuenta los intercambios que se realizan a través de pools con emisiones internas de GNS.</p>"
       },
       "total": "Total",
-      "user": "Usuario",
-      "xGNS": "Estacas xGNS"
+      "user": "Usuario"
     },
     "hideToggleButton": "Ocultar mi dirección o nombre de usuario",
     "mobile": {

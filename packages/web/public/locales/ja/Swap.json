@@ -93,7 +93,7 @@
     "soldAmount": "販売額",
     "status": {
       "cancelled": "中止",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "キーパーによりキャンセルされました",
       "completed": "完了",
       "expired": "有効期限切れ",
       "partiallyFilled": "一部埋まっている"

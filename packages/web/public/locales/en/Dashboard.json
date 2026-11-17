@@ -1,6 +1,4 @@
 {
-  "day": "Day",
-  "fees": "Fees",
   "govOver": {
     "activeProp": {
       "label": "Active Proposals"

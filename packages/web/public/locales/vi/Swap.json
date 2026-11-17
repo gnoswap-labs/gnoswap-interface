@@ -68,7 +68,7 @@
     "claimOrder": "Yêu cầu",
     "completedAt": "Thời điểm hoàn thành",
     "connectWallet": "Vui lòng kết nối ví của bạn để xem đơn hàng.",
-    "executedPriceAvg": "Giá khớp (TB)",
+    "executedPriceAvg": "Giá thực hiện (trung bình)",
     "expiredAt": "Hết hạn vào",
     "expiresAt": "Hết hạn vào",
     "filledPrice": "Giá khớp lệnh",
@@ -93,7 +93,7 @@
     "soldAmount": "Số tiền đã bán",
     "status": {
       "cancelled": "Đã hủy",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "Đã bị Keeper hủy bỏ",
       "completed": "Đã hoàn thành",
       "expired": "Đã hết hạn",
       "partiallyFilled": "Đã điền một phần"

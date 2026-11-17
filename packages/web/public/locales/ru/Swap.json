@@ -68,7 +68,7 @@
     "claimOrder": "Утверждение",
     "completedAt": "Завершено в",
     "connectWallet": "Пожалуйста, подключите свой кошелек, чтобы просмотреть свой заказ.",
-    "executedPriceAvg": "Цена исполнения (сред.)",
+    "executedPriceAvg": "Цена исполнения (средняя)",
     "expiredAt": "Срок действия истек",
     "expiresAt": "Срок действия истекает",
     "filledPrice": "Цена исполнения",
@@ -93,7 +93,7 @@
     "soldAmount": "Проданная сумма",
     "status": {
       "cancelled": "Отменено",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "Отменено Keeper",
       "completed": "Завершено",
       "expired": "Срок действия истек",
       "partiallyFilled": "Частично заполнен"

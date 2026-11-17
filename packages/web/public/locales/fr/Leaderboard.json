@@ -13,7 +13,6 @@
       "inRange": "{{n}} dans la plage",
       "points": "Points",
       "pointsThisRound": "Points de cette manche",
-      "position": "Position",
       "provisional": "provisoire",
       "rank": "Rang",
       "referral": "Renvoi",
@@ -30,8 +29,7 @@
         "swap": "<p>Points correspondant aux frais de swap (frais de routeur) que vous payez.</p><p><formula>Frais de swap payés (en GNOT) × 5, dans la limite de votre plafond de swap<br/>Plafond de swap : points de délégation × 3 + points de staking × 1</formula><br/>Pas de staking ni de délégation = pas de points de swap. Seuls les swaps passant par des pools générant des émissions internes de GNS sont<formula>pris</formula> en compte.</p>"
       },
       "total": "Total",
-      "user": "Utilisateur",
-      "xGNS": "Jalonnement xGNS"
+      "user": "Utilisateur"
     },
     "hideToggleButton": "Cacher mon adresse ou mon nom d'utilisateur",
     "mobile": {

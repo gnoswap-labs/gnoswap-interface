@@ -93,7 +93,7 @@
     "soldAmount": "已售金额",
     "status": {
       "cancelled": "已取消",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "已被 Keeper 取消",
       "completed": "已完成",
       "expired": "已过期",
       "partiallyFilled": "部分已填入"

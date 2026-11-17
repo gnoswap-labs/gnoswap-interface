@@ -84,7 +84,6 @@
       }
     }
   },
-  "liquidity": "Liquidity",
   "submitBtn": {
     "amtTooLow": "Amount Too Low",
     "enterAmt": "Enter Amount",

@@ -78,8 +78,8 @@
     },
     "dcaError": {
       "amountTooLow": {
-        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
-        "title": "Amount Too Low"
+        "desc": "Каждый ордер должен быть размещен на сумму, не меньшую, чем минимальная сумма для данного токена.<br />Увеличьте сумму или уменьшите количество заказов.",
+        "title": "Сумма слишком мала"
       },
       "halted": {
         "desc": "DCA orders are temporarily paused.<br />Please try again later.",
@@ -90,8 +90,8 @@
         "title": "No Eligible Pool"
       },
       "pairNotSupported": {
-        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
-        "title": "Pair Not Supported"
+        "desc": "Заказы по системе DCA для этой пары пока недоступны.<br />Пожалуйста, выберите другую пару.",
+        "title": "Пара не поддерживается"
       }
     },
     "dcaOrder": {
@@ -381,7 +381,6 @@
       "title": "Обновление..."
     }
   },
-  "tokens": "Токены",
   "tokenTradingWarn": {
     "subtitle": "Этот токен не часто обменивается на GnoSwap.<br/> Всегда проводите собственное исследование перед торговлей.",
     "title": "Предупреждение о торговле токенами",

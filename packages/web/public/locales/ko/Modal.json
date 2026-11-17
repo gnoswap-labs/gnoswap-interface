@@ -78,8 +78,8 @@
     },
     "dcaError": {
       "amountTooLow": {
-        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
-        "title": "Amount Too Low"
+        "desc": "각 주문은 이 토큰의 최소 수량 이상을 판매해야 합니다.<br />수량을 늘리거나 주문 횟수를 줄여 주세요.",
+        "title": "금액이 너무 적습니다"
       },
       "halted": {
         "desc": "DCA orders are temporarily paused.<br />Please try again later.",
@@ -90,8 +90,8 @@
         "title": "No Eligible Pool"
       },
       "pairNotSupported": {
-        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
-        "title": "Pair Not Supported"
+        "desc": "이 페어는 아직 DCA 주문을 지원하지 않습니다.<br />다른 페어를 선택해 주세요.",
+        "title": "지원되지 않는 페어"
       }
     },
     "dcaOrder": {
@@ -381,7 +381,6 @@
       "title": "업데이트 중..."
     }
   },
-  "tokens": "토큰",
   "tokenTradingWarn": {
     "subtitle": "이 토큰은 Gnoswap에서 자주 거래되지 않았습니다.<br/> 거래전 항상 유의하시길 바랍니다.",
     "title": "토큰 거래 경고",

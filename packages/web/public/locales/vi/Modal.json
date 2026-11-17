@@ -78,8 +78,8 @@
     },
     "dcaError": {
       "amountTooLow": {
-        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
-        "title": "Amount Too Low"
+        "desc": "Mỗi đơn hàng phải đạt ít nhất số lượng tối thiểu quy định cho loại token này.<br />Tăng số lượng hoặc giảm số lượng đơn hàng.",
+        "title": "Số tiền quá thấp"
       },
       "halted": {
         "desc": "DCA orders are temporarily paused.<br />Please try again later.",
@@ -90,8 +90,8 @@
         "title": "No Eligible Pool"
       },
       "pairNotSupported": {
-        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
-        "title": "Pair Not Supported"
+        "desc": "Hiện tại, lệnh DCA chưa hỗ trợ cặp này.<br />Vui lòng chọn một cặp khác.",
+        "title": "Cặp này không được hỗ trợ"
       }
     },
     "dcaOrder": {
@@ -381,7 +381,6 @@
       "title": "Đang cập nhật..."
     }
   },
-  "tokens": "Token",
   "tokenTradingWarn": {
     "subtitle": "Token này không được giao dịch thường xuyên trên GnoSwap.<br/> Hãy luôn tự mình nghiên cứu kỹ lưỡng trước khi giao dịch.",
     "title": "Cảnh báo về giao dịch token",

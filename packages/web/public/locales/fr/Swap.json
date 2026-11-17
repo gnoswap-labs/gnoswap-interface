@@ -68,7 +68,7 @@
     "claimOrder": "Allégation",
     "completedAt": "Terminé le",
     "connectWallet": "Veuillez connecter votre portefeuille pour consulter votre commande.",
-    "executedPriceAvg": "Prix d'exécution (moy.)",
+    "executedPriceAvg": "Prix d'exécution (moyenne)",
     "expiredAt": "Expiré le",
     "expiresAt": "Date d'expiration :",
     "filledPrice": "Prix d'exécution",
@@ -93,7 +93,7 @@
     "soldAmount": "Montant de la vente",
     "status": {
       "cancelled": "Annulé",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "Annulé par Keeper",
       "completed": "Terminé",
       "expired": "Périmé",
       "partiallyFilled": "Partiellement rempli"

@@ -78,8 +78,8 @@
     },
     "dcaError": {
       "amountTooLow": {
-        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
-        "title": "Amount Too Low"
+        "desc": "每笔订单的交易量必须至少达到该代币的最低交易量。<br />请增加金额或减少订单数量。",
+        "title": "金额过低"
       },
       "halted": {
         "desc": "DCA orders are temporarily paused.<br />Please try again later.",
@@ -90,8 +90,8 @@
         "title": "No Eligible Pool"
       },
       "pairNotSupported": {
-        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
-        "title": "Pair Not Supported"
+        "desc": "该交易对暂不支持 DCA 订单。<br />请选择其他交易对。",
+        "title": "不支持该交易对"
       }
     },
     "dcaOrder": {
@@ -381,7 +381,6 @@
       "title": "更新..."
     }
   },
-  "tokens": "代币",
   "tokenTradingWarn": {
     "subtitle": "该代币在 GnoSwap 上的交易并不频繁。<br/> 交易前请务必自行研究。",
     "title": "代币交易警告",

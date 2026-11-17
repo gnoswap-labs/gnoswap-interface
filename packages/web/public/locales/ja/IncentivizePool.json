@@ -84,7 +84,6 @@
       }
     }
   },
-  "liquidity": "流動性",
   "submitBtn": {
     "amtTooLow": "金額が低すぎる",
     "enterAmt": "金額を入力",
