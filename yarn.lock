@@ -2800,7 +2800,7 @@ __metadata:
     eslint-plugin-storybook: "npm:9.1.10"
     i18next: "npm:^23.11.5"
     i18next-chained-backend: "npm:^4.6.2"
-    i18next-http-backend: "npm:^2.5.2"
+    i18next-http-backend: "npm:^4.0.0"
     i18next-localstorage-backend: "npm:^4.2.0"
     i18nexus-cli: "npm:^3.4.0"
     jest: "npm:29.4.3"
@@ -8184,15 +8184,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cross-fetch@npm:4.0.0":
-  version: 4.0.0
-  resolution: "cross-fetch@npm:4.0.0"
-  dependencies:
-    node-fetch: "npm:^2.6.12"
-  checksum: 10/e231a71926644ef122d334a3a4e73d9ba3ba4b480a8a277fb9badc434c1ba905b3d60c8034e18b348361a09afbec40ba9371036801ba2b675a7b84588f9f55d8
-  languageName: node
-  linkType: hard
-
 "cross-fetch@npm:^4.1.0":
   version: 4.1.0
   resolution: "cross-fetch@npm:4.1.0"
@@ -11288,12 +11279,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:^2.5.2":
-  version: 2.7.3
-  resolution: "i18next-http-backend@npm:2.7.3"
-  dependencies:
-    cross-fetch: "npm:4.0.0"
-  checksum: 10/2242ef138d5ffad4fdc8d5c2056af5fcce5827c04e9f57b0c9ed92f7e97f2c745434466ffa1250932e28df7d93d4ff2d4cf563a49aa105e0ce421ba9efb49818
+"i18next-http-backend@npm:^4.0.0":
+  version: 4.0.10
+  resolution: "i18next-http-backend@npm:4.0.10"
+  checksum: 10/05fe602398ff321eb26b1a4dc2d626d3651503b3c3e372c211e57ba3626befbd5ef1d0c5c92905f2d2260d18654fe8249f1bf068b4551d285b272937deed95cf
   languageName: node
   linkType: hard
 
@@ -14182,7 +14171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.6.12, node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
+"node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
