@@ -159,7 +159,12 @@ export const OrderMetricTooltipContent = styled.div`
  */
 export const priceOrderCardStyles = (theme: Theme) => css`
   .card-metrics {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.5fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .metric:nth-of-type(2) {
+    align-items: center;
+    text-align: center;
   }
 
   .metric .metric-label {
