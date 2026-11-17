@@ -5,7 +5,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { WalletResponse } from "@common/clients/wallet-client/protocols";
 import { ERROR_VALUE } from "@common/errors/adena";
 import { BROADCAST_ERROR_VALUE } from "@common/errors/broadcast/broadcast-error";
-import { ERROR_VALUE as SWAP_ERROR_VALUE } from "@common/errors/swap";
 import {
   DEFAULT_SLIPPAGE,
   PriceRangeMeta,
@@ -518,18 +517,13 @@ export const useRepositionHandle = () => {
       estimatedRoutes: estimatedSwapResult.estimatedRoutes,
       ...swapAmounts,
       slippage: slippage,
-      originAmount: estimatedSwapResult.originAmount,
       deadline,
       referrerAddress: currentReferralAddress,
     };
 
     return await (isExactIn ? buildAdenaWalletExactInAction(request) : buildAdenaWalletExactOutAction(request)).catch(
-      e => {
-        if (e.status === SWAP_ERROR_VALUE.DRY_SWAP_DEVIATION_EXCEEDED.status) {
-          broadcastError(BROADCAST_ERROR_VALUE.SLIPPAGE_EXCEEDED);
-        } else {
-          broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
-        }
+      () => {
+        broadcastError(BROADCAST_ERROR_VALUE.DEFAULT);
         return null;
       },
     );

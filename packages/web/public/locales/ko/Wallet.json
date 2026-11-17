@@ -30,7 +30,6 @@
     "enterAddr": {
       "input": "주소 입력"
     },
-    "estNetFee": "예상 네트워크 수수료",
     "network": {
       "label": "네트워크",
       "tooltip": "전송할 토큰의 네트워크입니다."

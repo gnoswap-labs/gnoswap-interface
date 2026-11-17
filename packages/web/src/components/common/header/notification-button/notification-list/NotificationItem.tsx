@@ -94,8 +94,30 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
     [DexEvent.LAUNCHPAD_COLLECT_REWARD]: "Modal:notif.action.rewardsClaimed",
     [DexEvent.LAUNCHPAD_COLLECT_DEPOSIT]: "Modal:notif.action.claimedDeposit",
     [DexEvent.LAUNCHPAD_DEPOSIT]: "Modal:notif.action.deposited",
+    // Order
+    [DexEvent.DCA_ORDER]: "Modal:notif.action.dcaOrdered",
+    [DexEvent.DCA_SWAP]: "Modal:notif.action.dcaSwapped",
+    [DexEvent.DCA_STOP]: "Modal:notif.action.dcaStopped",
+    [DexEvent.LIMIT_ORDER]: "Modal:notif.action.limitOrdered",
+    [DexEvent.LIMIT_SWAP]: "Modal:notif.action.limitSwapped",
+    [DexEvent.LIMIT_CANCEL]: "Modal:notif.action.limitCancelled",
+    [DexEvent.LIMIT_EXPIRE]: "Modal:notif.action.limitExpired",
     // Faucet
     [DexEvent.FAUCET_RECEIVE]: "Faucet Receive",
+  };
+
+  /** Order actions sell token A for token B, so they read like a swap. */
+  const isTradeNoti = (actionType: string) => {
+    return (
+      actionType === DexEvent.SWAP ||
+      actionType === DexEvent.DCA_ORDER ||
+      actionType === DexEvent.DCA_SWAP ||
+      actionType === DexEvent.DCA_STOP ||
+      actionType === DexEvent.LIMIT_ORDER ||
+      actionType === DexEvent.LIMIT_SWAP ||
+      actionType === DexEvent.LIMIT_CANCEL ||
+      actionType === DexEvent.LIMIT_EXPIRE
+    );
   };
 
   const getNotificationMessage = useCallback(
@@ -128,7 +150,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
         ) : null;
 
         const token1Amount = formatPoolPairAmount(tx?.tokenBAmount, {
-          decimals: tx.tokenA.decimals,
+          decimals: tx.tokenB?.decimals,
           isKMB: false,
         });
         const token1symbol = tx?.tokenB?.symbol;
@@ -143,9 +165,7 @@ const NotificationItem: React.FC<ItemProps> = ({ groups, breakpoint }) => {
 
         let conjunction = "";
         if (relatedTokens === 2 && token0Display && token1Display) {
-          conjunction = ` ${
-            tx.actionType === DexEvent.SWAP ? t("common:conjunction.for") : t("common:conjunction.and")
-          }`;
+          conjunction = ` ${isTradeNoti(tx.actionType) ? t("common:conjunction.for") : t("common:conjunction.and")}`;
         } else if (relatedTokens > 2) {
           conjunction = ", ";
         }

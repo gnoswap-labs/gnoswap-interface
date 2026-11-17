@@ -14,8 +14,7 @@
   "confStakeModal": {
     "positionLst": "ポジション",
     "stakingReward": {
-      "title": "ステーク報酬",
-      "tooltip": "各請求に対して請求される手数料の額。"
+      "title": "ステーク報酬"
     },
     "title": "ステークポジションの確認",
     "warning": {

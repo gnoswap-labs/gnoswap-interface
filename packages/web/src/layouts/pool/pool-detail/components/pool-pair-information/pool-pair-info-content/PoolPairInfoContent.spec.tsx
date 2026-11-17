@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { Provider as JotaiProvider } from "jotai";
 
 import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
@@ -24,6 +25,7 @@ jest.mock("@hooks/token/data/use-token-price-info", () => ({
   useTokenPriceInfo: () => ({ priceStyle: { className: "" }, shouldShowPriceWarning: false }),
 }));
 jest.mock("@components/common/pool-graph/PoolGraph", () => ({ __esModule: true, default: () => null }));
+jest.mock("./PoolPriceChart", () => ({ __esModule: true, default: () => null }));
 
 it("visibly disables only the zoom control at each liquidity scale boundary", async () => {
   const pool = await new PoolRepositoryMock().getPoolDetailByPoolPath();
@@ -66,3 +68,36 @@ it("visibly disables only the zoom control at each liquidity scale boundary", as
   expect(onZoomIn).toHaveBeenCalledTimes(1);
   expect(onZoomOut).toHaveBeenCalledTimes(1);
 });
+
+it.each([1.123456789, 1.000000123])(
+  "preserves token B balance %s in the pool tooltip when token A has six decimals",
+  async tokenBBalance => {
+    const pool = await new PoolRepositoryMock().getPoolDetailByPoolPath();
+    const { container } = render(
+      <JotaiProvider>
+        <GnoswapThemeProvider>
+          <PoolPairInfoContent
+            pool={{
+              ...pool,
+              tokenA: { ...pool.tokenA, decimals: 6 },
+              tokenB: { ...pool.tokenB, decimals: 9 },
+              tokenABalance: 2.654321,
+              tokenBBalance,
+            }}
+            loading={false}
+            loadingBins={false}
+            liquiditySegments={[]}
+            availInfo={{ availZoomIn: false, availZoomOut: false }}
+            onZoomIn={jest.fn()}
+            onZoomOut={jest.fn()}
+          />
+        </GnoswapThemeProvider>
+      </JotaiProvider>,
+    );
+    const tokenBTrigger = container.querySelectorAll(".section-info .section-image")[1];
+    await act(async () => {
+      await userEvent.hover(tokenBTrigger);
+    });
+    expect(await screen.findByText(String(tokenBBalance), { exact: true })).toBeInTheDocument();
+  },
+);

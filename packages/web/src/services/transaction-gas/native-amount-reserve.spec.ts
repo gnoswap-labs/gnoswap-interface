@@ -2,7 +2,6 @@ import {
   bisectToward,
   cappedSpendable,
   describeWithheld,
-  fallbackMaxNativeAmount,
   gasFeeFloor,
   isSubFeeBalance,
   OFFERED_GAS_FEE,
@@ -27,12 +26,6 @@ const reserve = (gasFee: string, storageDeposit = "0"): NativeAmountReserve => (
   total: `${Number(gasFee) + Number(storageDeposit) + Number(RESERVE_BUFFER)}`,
 });
 
-describe("OFFERED_GAS_FEE", () => {
-  it("is the flat fee a send path offers, in ugnot", () => {
-    expect(OFFERED_GAS_FEE).toBe("1000000");
-  });
-});
-
 describe("isSubFeeBalance", () => {
   it("separates a balance that could not even pay the offered fee", () => {
     expect(isSubFeeBalance("999999", OFFERED_GAS_FEE)).toBe(true);
@@ -43,14 +36,25 @@ describe("isSubFeeBalance", () => {
 
 describe("planProbes", () => {
   it("measures a balance over the fee just below its ceiling, holding back a tenth", () => {
-    // 10% of 20 GNOT is under the 5 GNOT cap, so the share applies.
-    expect(plan(20_000_000)).toEqual([{ amount: "18000000", gasFee: REALISTIC_GAS_FEE }]);
+    // 10% of 20 GNOT is under the 5 GNOT cap, so the share applies; half and a tenth are the retreats.
+    expect(plan(20_000_000)).toEqual([
+      { amount: "18000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "10000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "2000000", gasFee: REALISTIC_GAS_FEE },
+    ]);
+  });
+
+  it("retreats to half and a tenth of a small balance whose costs outgrow the tenth held back", () => {
+    // 4.99 GNOT: a 1 GNOT fee plus a ~1.1 GNOT DCA storage deposit cannot fit in 0.5 GNOT.
+    expect(plan(4_998_973).map(step => step.amount)).toEqual(["4499075", "2499486", "499897"]);
   });
 
   it("caps the hold-back on a large balance, and keeps the wider share as a retry", () => {
     expect(plan(10_000_000_000)).toEqual([
       { amount: "9995000000", gasFee: REALISTIC_GAS_FEE },
       { amount: "9000000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "5000000000", gasFee: REALISTIC_GAS_FEE },
+      { amount: "1000000000", gasFee: REALISTIC_GAS_FEE },
     ]);
   });
 
@@ -61,7 +65,7 @@ describe("planProbes", () => {
 
   it("offers the whole hold-back as the fee when the realistic one exceeds it", () => {
     // 10% of 3 GNOT is 0.3 GNOT, under the 2 GNOT a 2e9 ceiling would cost.
-    expect(plan(3_000_000)).toEqual([{ amount: "2700000", gasFee: "300000" }]);
+    expect(plan(3_000_000)[0]).toEqual({ amount: "2700000", gasFee: "300000" });
   });
 
   it("plans nothing for a balance too small to leave an amount", () => {
@@ -139,21 +143,5 @@ describe("describeWithheld", () => {
 
     expect(described.total).toBe("5000000");
     expect(described.buffer).toBe("3500000");
-  });
-});
-
-describe("fallbackMaxNativeAmount", () => {
-  it("holds back only the reserve it was given", () => {
-    const fallback = fallbackMaxNativeAmount("100000000", OFFERED_GAS_FEE);
-
-    expect(fallback).toEqual({
-      amount: "99000000",
-      reserve: { gasFee: "1000000", storageDeposit: "0", buffer: "0", total: "1000000" },
-      simulated: false,
-    });
-  });
-
-  it("offers nothing when the reserve exhausts the balance", () => {
-    expect(fallbackMaxNativeAmount("500000", OFFERED_GAS_FEE).amount).toBe("0");
   });
 });

@@ -7,7 +7,6 @@ import { EventBlocker, PoolSelectionGraphTooltipWrapper, PoolSelectionGraphWrapp
 
 import { LIQUIDITY_GRAPH_VISIBLE_TICK_RANGES } from "@constants/graph.constant";
 import { SwapFeeTierMaxPriceRangeMap, SwapFeeTierType } from "@constants/option.constant";
-import { useColorGraph } from "@hooks/common/use-color-graph";
 import { FloatingPosition } from "@hooks/common/use-floating-tooltip";
 import { PoolLiquiditySegmentModel } from "@models/pool/pool-liquidity-model";
 import { TokenModel } from "@models/token/token-model";
@@ -114,7 +113,7 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   setMaxPrice,
   onFinishMove,
 }) => {
-  const { themeKey } = useTheme();
+  const { themeKey, color } = useTheme();
   const graphIdRef = useRef(uuid.v4());
   const graphId = graphIdRef.current.toString();
   const svgRef = useRef<SVGSVGElement>(null);
@@ -130,12 +129,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
   const [positionX, setPositionX] = useState<number | null>(null);
   const [positionY, setPositionY] = useState<number | null>(null);
 
-  const { redColor, greenColor } = useColorGraph();
-
   const displayTokenA = useMemo(() => (flip ? tokenB : tokenA), [flip, tokenA, tokenB]);
   const displayTokenB = useMemo(() => (flip ? tokenA : tokenB), [flip, tokenA, tokenB]);
 
-  const [selectionColor, setSelectionColor] = useState<SelectionColor>(getSelectionColor("0", "0"));
+  const [selectionColor, setSelectionColor] = useState<SelectionColor>(
+    getSelectionColor("0", "0", color.chartCandleUp, color.chartCandleDown),
+  );
 
   const displayLabels = 8;
   const labelHeight = displayLabels > 0 ? 20 : 0;
@@ -366,7 +365,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
     const startRate = currentPrice ? ((Number(startPrice) - currentPrice) / currentPrice) * 100 : 0;
     const endRate = currentPrice ? ((Number(endPrice) - currentPrice) / currentPrice) * 100 : 0;
 
-    const selectionColor = getSelectionColor(startRate >= 0 ? "1" : "-1", endRate >= 0 ? "1" : "-1");
+    const selectionColor = getSelectionColor(
+      startRate >= 0 ? "1" : "-1",
+      endRate >= 0 ? "1" : "-1",
+      color.chartCandleUp,
+      color.chartCandleDown,
+    );
 
     const startLine = brushElement.select("#start");
     if (event.type === "start") {
@@ -474,6 +478,8 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
       const selectionColor = getSelectionColor(
         startPosition >= currentPricePosition ? "1" : "-1",
         endPosition >= currentPricePosition ? "1" : "-1",
+        color.chartCandleUp,
+        color.chartCandleDown,
       );
 
       function getPriceBy(position: number) {
@@ -787,12 +793,12 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
         <svg ref={svgRef}>
           <defs>
             <linearGradient id={`gradient-bar-green-${graphId}`} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor={greenColor.start} />
-              <stop offset="100%" stopColor={greenColor.end} />
+              <stop offset="0%" stopColor={color.chartCandleUp} stopOpacity={themeKey === "dark" ? 0.7 : 1} />
+              <stop offset="100%" stopColor={color.chartCandleUp} stopOpacity={themeKey === "dark" ? 0.14 : 0.2} />
             </linearGradient>
             <linearGradient id={`gradient-bar-red-${graphId}`} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor={redColor.start} />
-              <stop offset="100%" stopColor={redColor.end} />
+              <stop offset="0%" stopColor={color.chartCandleDown} stopOpacity={themeKey === "dark" ? 0.7 : 1} />
+              <stop offset="100%" stopColor={color.chartCandleDown} stopOpacity={themeKey === "dark" ? 0.14 : 0.2} />
             </linearGradient>
             <linearGradient id="gradient-selection-area" gradientTransform="rotate(0)">
               <stop offset="0%" stopColor={selectionColor.start} />
@@ -821,19 +827,19 @@ const PoolSelectionGraph: React.FC<PoolSelectionGraphProps> = ({
 
 export default React.memo(PoolSelectionGraph);
 
-const getSelectionColor = (start: string, end: string) => {
+const getSelectionColor = (start: string, end: string, upColor: string, downColor: string) => {
   const startPercent = Number(start);
   const endPercent = Number(end);
   if (startPercent > 0 && endPercent > 0) {
     return {
       startPercent: BigNumber(start).toString(),
       endPercent: BigNumber(end).toString(),
-      start: "#60E66A33",
-      end: "#60E66A33",
-      lineStart: "#16C78A", //red EA3943
-      lineEnd: "#16C78A", //green 16C78A
-      badgeStart: "#16C78AB2",
-      badgeEnd: "#16C78AB2",
+      start: `${upColor}33`,
+      end: `${upColor}33`,
+      lineStart: upColor,
+      lineEnd: upColor,
+      badgeStart: `${upColor}B2`,
+      badgeEnd: `${upColor}B2`,
     };
   }
 
@@ -841,12 +847,12 @@ const getSelectionColor = (start: string, end: string) => {
     return {
       startPercent: BigNumber(start).toString(),
       endPercent: BigNumber(end).toString(),
-      start: "#FF020233",
-      end: "#FF020233",
-      lineStart: "#EA3943",
-      lineEnd: "#EA3943",
-      badgeStart: "#EA3943B2",
-      badgeEnd: "#EA3943B2",
+      start: `${downColor}33`,
+      end: `${downColor}33`,
+      lineStart: downColor,
+      lineEnd: downColor,
+      badgeStart: `${downColor}B2`,
+      badgeEnd: `${downColor}B2`,
     };
   }
 
@@ -854,24 +860,24 @@ const getSelectionColor = (start: string, end: string) => {
     return {
       startPercent: BigNumber(start).toString(),
       endPercent: BigNumber(end).toString(),
-      start: "#FF020233",
-      end: "#00CD2E33",
-      lineStart: "#EA3943",
-      lineEnd: "#16C78A",
-      badgeStart: "#EA3943B2",
-      badgeEnd: "#16C78AB2",
+      start: `${downColor}33`,
+      end: `${upColor}33`,
+      lineStart: downColor,
+      lineEnd: upColor,
+      badgeStart: `${downColor}B2`,
+      badgeEnd: `${upColor}B2`,
     };
   }
 
   return {
     startPercent: BigNumber(start).toString(),
     endPercent: BigNumber(end).toString(),
-    start: "#00CD2E33",
-    end: "#FF020233",
-    lineStart: "#16C78A",
-    lineEnd: "#EA3943",
-    badgeStart: "#16C78AB2",
-    badgeEnd: "#EA3943B2",
+    start: `${upColor}33`,
+    end: `${downColor}33`,
+    lineStart: upColor,
+    lineEnd: downColor,
+    badgeStart: `${upColor}B2`,
+    badgeEnd: `${downColor}B2`,
   };
 };
 

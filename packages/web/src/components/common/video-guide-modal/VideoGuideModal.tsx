@@ -23,6 +23,7 @@ interface VideoGuideModalProps {
   videoType: VideoGuideType;
   setIsOpen: (value: boolean) => void;
   onInternalActionClick?: () => void;
+  poolPath?: string | null;
 }
 
 const TIMEOUTS = {
@@ -37,7 +38,7 @@ const MODAL_CLOSE_VIDEO_TYPES = new Set<VideoGuideType>([
   VIDEO_GUIDE_TYPES.LEADERBOARD,
 ]);
 
-const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoGuideModalProps) => {
+const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick, poolPath }: VideoGuideModalProps) => {
   const router = useCustomRouter();
   const { t } = useTranslation();
   const { isMobileDevice } = useMobileDevice();
@@ -68,11 +69,11 @@ const VideoGuideModal = ({ videoType, setIsOpen, onInternalActionClick }: VideoG
 
   const internalActionRoute = React.useMemo(() => {
     if (videoType === VIDEO_GUIDE_TYPES.STAKING) {
-      const poolPath = router.getPoolPath();
-      return poolPath ? `${config.internalAction.route}${poolPath}` : "/earn";
+      const resolvedPoolPath = poolPath ?? router.getPoolPath();
+      return resolvedPoolPath ? `${config.internalAction.route}${resolvedPoolPath}` : "/earn";
     }
     return config.internalAction.route;
-  }, [router, videoType, config.internalAction.route]);
+  }, [router, videoType, config.internalAction.route, poolPath]);
 
   const handleSmoothScrollToHash = React.useCallback(() => {
     document.documentElement.style.scrollBehavior = "smooth";

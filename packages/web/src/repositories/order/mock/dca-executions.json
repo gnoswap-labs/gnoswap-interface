@@ -1,0 +1,116 @@
+{
+  "message": "success",
+  "data": {
+    "items": [
+      {
+        "round": 113,
+        "executedAt": 1793663940,
+        "txHash": "mockExecutionTx13",
+        "soldAmount": "750000000",
+        "purchasedAmount": "793000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 112,
+        "executedAt": 1793660340,
+        "txHash": "mockExecutionTx12",
+        "soldAmount": "750000000",
+        "purchasedAmount": "792000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 111,
+        "executedAt": 1793656740,
+        "txHash": "mockExecutionTx11",
+        "soldAmount": "750000000",
+        "purchasedAmount": "791000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 110,
+        "executedAt": 1793653140,
+        "txHash": "mockExecutionTx10",
+        "soldAmount": "750000000",
+        "purchasedAmount": "790000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 109,
+        "executedAt": 1793649540,
+        "txHash": "mockExecutionTx9",
+        "soldAmount": "750000000",
+        "purchasedAmount": "789000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 108,
+        "executedAt": 1793645940,
+        "txHash": "mockExecutionTx8",
+        "soldAmount": "750000000",
+        "purchasedAmount": "788000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 107,
+        "executedAt": 1793642340,
+        "txHash": "mockExecutionTx7",
+        "soldAmount": "750000000",
+        "purchasedAmount": "787000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 106,
+        "executedAt": 1793638740,
+        "txHash": "mockExecutionTx6",
+        "soldAmount": "750000000",
+        "purchasedAmount": "786000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 105,
+        "executedAt": 1793635140,
+        "txHash": "mockExecutionTx5",
+        "soldAmount": "750000000",
+        "purchasedAmount": "785000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 104,
+        "executedAt": 1793631540,
+        "txHash": "mockExecutionTx4",
+        "soldAmount": "750000000",
+        "purchasedAmount": "784000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 103,
+        "executedAt": 1793627940,
+        "txHash": "mockExecutionTx3",
+        "soldAmount": "750000000",
+        "purchasedAmount": "783000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 102,
+        "executedAt": 1793624340,
+        "txHash": "mockExecutionTx2",
+        "soldAmount": "750000000",
+        "purchasedAmount": "782000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      },
+      {
+        "round": 101,
+        "executedAt": 1793620740,
+        "txHash": "mockExecutionTx1",
+        "soldAmount": "750000000",
+        "purchasedAmount": "781000000",
+        "poolPath": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3000"
+      }
+    ],
+    "pageInfo": {
+      "currentPage": 1,
+      "totalItems": 13,
+      "totalPages": 2
+    }
+  }
+}

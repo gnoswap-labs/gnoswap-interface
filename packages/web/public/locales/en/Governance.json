@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "Already Voted",
-      "changeNetwork": "Switch to Gnoland",
-      "execute": "Execute",
       "noVoteWeight": "Insufficient Voting Weight",
       "requireSelect": "Select Voting Option",
       "tryAgain": "Try Again",
@@ -81,9 +79,9 @@
         "title": "2. Enter Amount"
       },
       "step3": {
-        "aprTooltip": "Estimated APR for delegated xGNS, averaged over the last 7 days.\n\nDaily APR = (protocol fee rewards for the day × 365) ÷ USD value of all delegated xGNS.\n\nActual returns vary with protocol fees and total delegation.",
+        "aprTooltip": "Estimated APR for delegated xGNS, averaged over the last 7 days.\n\nDaily APR = (fee rewards + emission rewards for the day) × 365 ÷ USD value of all delegated GNS.\n\nActual returns vary with protocol fees, emission, and total delegation.",
         "currentlyDel": "Currently Delegated",
-        "estimatedAPR": "Estimated APR (7D)",
+        "estimatedAPR": "xGNS APR (7D)",
         "newlyDel": "Newly Delegate",
         "title": "3. Your Delegation",
         "votingPowerShare": "Voting Power Share"
@@ -127,8 +125,7 @@
         "select": {
           "amount": "Amount"
         },
-        "title": "1. Select Your Delegate",
-        "tooltip": "Delegates are community leaders who are selected to make governance decisions on behalf of GNS holders."
+        "title": "1. Select Your Delegate"
       },
       "step2": {
         "title": "2. Enter Amount"
@@ -175,10 +172,12 @@
       "end": "Voting Ends {{rel_time}}",
       "ended": "Voting Ended {{rel_time}}",
       "executable": "Proposal Executable {{rel_time}}",
+      "executableInHours_one": "Executable in {{count}} hour",
+      "executableInHours_other": "Executable in {{count}} hours",
+      "executableInMinutes_one": "Executable in {{count}} minute",
+      "executableInMinutes_other": "Executable in {{count}} minutes",
       "executed": "Proposal Excuted {{rel_time}}",
       "expired": "Proposal Expired {{rel_time}}",
-      "h": "in {{time}}h",
-      "m": "in {{time}}m",
       "start": "Voting Starts {{rel_time}}"
     },
     "tooltip": {
@@ -207,15 +206,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "disclosure": "Today's fee APR is included in the 7D average from 06:00 UTC.",
+      "emission": "GNS emission",
+      "emissionShort": "Emission",
+      "history": "View APR history",
+      "period": "7D average",
+      "periodShort": "7D",
+      "protocolFees": "Protocol fees",
+      "unavailable": "Not available"
+    },
     "aprHistory": {
-      "dailyApr": "APR (1D)",
-      "vs7dAvg": "vs 7D avg"
+      "dailyApr": "Total"
     },
     "apr": {
       "title": "xGNS APR (7D)"
     },
     "apy": {
-      "tooltip": "Estimated APR for delegated xGNS, averaged over the last 7 days.\n\nDaily APR = (protocol fee rewards for the day × 365) ÷ USD value of all delegated xGNS.\n\nActual returns vary with protocol fees and total delegation."
+      "tooltip": "Estimated APR for delegated xGNS, averaged over the last 7 days.\n\nDaily APR = (fee rewards + emission rewards for the day) × 365 ÷ USD value of all delegated GNS.\n\nActual returns vary with protocol fees, emission, and total delegation."
     },
     "commPool": {
       "title": "Community Pool",

@@ -56,10 +56,6 @@
         "title": "Phần thưởng đã nhận",
         "title_total": "Tổng số phần thưởng đã yêu cầu"
       },
-      "dailyEarn": {
-        "title": "Thu nhập hàng ngày",
-        "title_total": "Tổng thu nhập hàng ngày"
-      },
       "fee": "Phí",
       "history": {
         "col": {
@@ -116,6 +112,5 @@
       }
     },
     "totalStaked": "Tổng số đã đặt cược"
-  },
-  "wanttoaddup": "Bạn có muốn tăng mức thưởng cho nhóm này không?"
+  }
 }

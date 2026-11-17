@@ -52,7 +52,6 @@
     "card": {
       "claimedRewards": "Claimed Rewards",
       "claimRewards": "Claimable Rewards",
-      "dailyEarn": "Daily Earnings",
       "hideRange": "Hide my range",
       "value": "Value",
       "viewRange": "View my range"
@@ -71,7 +70,6 @@
     "title_other": "'s Positions",
     "unconnect": {
       "connect": "Please connect your wallet to view your liquidity positions.",
-      "switchgno": "Switch to Gnoland",
       "switchNetwork": "Unsupported network. Switch your network to Gnoland."
     }
   },

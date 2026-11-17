@@ -8,8 +8,8 @@ import { useGetRoutes } from "./use-get-routes";
 
 const getRoutes = jest.fn(async () => ({
   estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
-  originAmount: 0,
   amount: "1",
+  feeAmount: "0",
 }));
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({

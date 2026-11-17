@@ -30,18 +30,6 @@
       "title": "2. Sélectionnez Nouvelle plage"
     }
   },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "Efficacité du capital",
-      "depositR": "Ratio de dépôt",
-      "feeApr": "Frais Avril"
-    },
-    "tooltip": {
-      "capitalEffi": "Le multiplicateur calculé sur la base de la concentration de votre gamme. Il indique le nombre de récompenses supplémentaires que vous pouvez obtenir par rapport à une position de gamme complète avec le même capital.",
-      "depositR": "Le ratio de dépôt des deux jetons est déterminé en fonction du prix actuel et de la fourchette de prix fixée.",
-      "feeApr": "Le TAEG estimé provenant des frais de swap est calculé sur la base de la fourchette de prix sélectionnée pour la position."
-    }
-  },
   "repos": {
     "action": {
       "exit": "Sortie",

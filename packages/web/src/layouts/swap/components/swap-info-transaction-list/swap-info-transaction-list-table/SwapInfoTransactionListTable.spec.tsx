@@ -32,6 +32,34 @@ const renderedHashes = (container: HTMLElement) =>
   Array.from(container.querySelectorAll("a")).map(a => a.getAttribute("href")?.split("/").pop());
 
 describe("SwapInfoTransactionListTable", () => {
+  it.each([
+    [DEVICE_TYPE.WEB, 9],
+    [DEVICE_TYPE.MOBILE, 7],
+  ])("keeps navigation stable and shows the correct ten swaps on %s", (breakpoint, controlCount) => {
+    const history = Array.from({ length: 100 }, (_, i) => tx(`tx${i}`));
+    const { container } = render(
+      <GnoswapThemeProvider>
+        <SwapInfoTransactionListTable breakpoint={breakpoint} swapHistory={history} />
+      </GnoswapThemeProvider>,
+    );
+    const expectPage = (page: number) => {
+      expect(renderedHashes(container)).toEqual(history.slice((page - 1) * 10, page * 10).map(item => item.txHash));
+      expect(screen.getAllByRole("button")).toHaveLength(controlCount);
+      expect(screen.getByRole("button", { name: String(page) })).toHaveClass("selected");
+    };
+    for (let page = 1; page <= 10; page++) {
+      expectPage(page);
+      const buttons = screen.getAllByRole("button");
+      expect(buttons[0]).toHaveProperty("disabled", page === 1);
+      expect(buttons[buttons.length - 1]).toHaveProperty("disabled", page === 10);
+      if (page < 10) fireEvent.click(buttons[buttons.length - 1]);
+    }
+    expect(screen.getAllByRole("button").at(-1)).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: "1" }));
+    expectPage(1);
+    expect(screen.getAllByRole("button")[0]).toBeDisabled();
+  });
+
   it("keeps later pages fixed while new swaps arrive and shows them again on page 1", () => {
     const view = (swapHistory: SwapHistoryItem[]) => (
       <GnoswapThemeProvider>

@@ -14,15 +14,8 @@
       "title": "Lưu ý quan trọng"
     }
   },
-  "fees": "Phí",
-  "liquidity": "Khả năng thanh khoản",
   "overview": {
-    "collectAsSwitch": "Thu thập dưới tên WGNOT",
     "pooled": "Tổng hợp",
-    "stakingApr": {
-      "label": "Lãi suất hàng năm (APR) khi tham gia staking",
-      "tooltip": "Phạm vi lãi suất hàng năm ước tính (APR) được tính toán bằng cách áp dụng một hệ số nhân động vào số tiền bạn đã staking, dựa trên thời gian staking."
-    },
     "unclaimed": "Phí chưa được nhận"
   },
   "posi": "Các vị trí",

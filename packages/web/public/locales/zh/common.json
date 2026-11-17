@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "平衡",
     "cancel": "取消",
     "close": "关闭",
     "copy": "复制",
-    "earn": "赚取",
     "swap": "交换"
   },
   "all": "全部",
-  "available": "可用",
   "balanceChange": {
     "currentBalance": "当前余额",
     "defaultTitle": "3.余额变化",
@@ -22,7 +19,6 @@
     "amountTooLow": "金额太低",
     "enterAmount": "输入金额",
     "insuffiBal": "余额不足",
-    "switchNetwork": "转到糯米地",
     "walletLogin": "钱包登录"
   },
   "candleTooltip": {
@@ -72,7 +68,6 @@
       "title": "投注如何进行？"
     }
   },
-  "imporNote": "重要说明",
   "learnMore": "了解更多",
   "localTimeComp": {
     "tooltip": "*以当地时间为准"
@@ -97,14 +92,6 @@
   "noDataFound": "未找到数据",
   "noProposalFound": "未找到提案",
   "per": "论",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "职位金额",
-      "priceRange": "价格范围",
-      "quote": "报价",
-      "totalAmt": "总金额"
-    }
-  },
   "price": "价格",
   "reset": "重置",
   "search": "搜索",

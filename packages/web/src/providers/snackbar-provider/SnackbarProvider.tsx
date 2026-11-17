@@ -1,4 +1,6 @@
-import { createContext, FC, useCallback, useMemo, useState } from "react";
+import { createContext, FC, useCallback, useEffect, useMemo, useState } from "react";
+import { useAtomValue, useStore } from "jotai";
+import { WalletState } from "@states/index";
 
 import { Snackbar, SnackbarContent, SnackbarType } from "./snackbar";
 import { SnackbarOptions } from "./type";
@@ -32,20 +34,39 @@ export const SnackbarContext = createContext<SnackbarContenxtProps>({
 });
 
 const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
+  const accountAddress = useAtomValue(WalletState.account)?.address;
+  const store = useStore();
   const [snackbars, setSnackbars] = useState<
     {
       id: number;
       type: SnackbarType;
       timeout: number;
+      accountAddress?: string;
       content?: SnackbarContent;
       isClosing?: boolean;
       onClick?: () => void;
     }[]
   >([]);
 
+  useEffect(() => {
+    setSnackbars(prev =>
+      prev.filter(
+        item => item.type !== "receive-wugnot" || (!!accountAddress && item.accountAddress === accountAddress),
+      ),
+    );
+  }, [accountAddress]);
+
+  const visibleSnackbars = useMemo(
+    () =>
+      snackbars.filter(
+        item => item.type !== "receive-wugnot" || (!!accountAddress && item.accountAddress === accountAddress),
+      ),
+    [snackbars, accountAddress],
+  );
+
   const hasBadgeSnackbar = useMemo(() => {
-    return snackbars.filter(item => item.type === "receive-wugnot" && item.timeout === 0).length > 0;
-  }, [snackbars]);
+    return visibleSnackbars.some(item => item.type === "receive-wugnot" && !item.isClosing && item.timeout === 0);
+  }, [visibleSnackbars]);
 
   const hasStakePositionSnackbar = useMemo(() => {
     return snackbars.filter(item => item.type === "stake-position" && item.timeout === 0).length > 0;
@@ -55,7 +76,11 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
     (content, options) => {
       setSnackbars(prev => {
         if (options.type === "receive-wugnot") {
-          const existingIndex = prev.findIndex(item => item.type === "receive-wugnot" && !item.isClosing);
+          if (!options.accountAddress || options.accountAddress !== store.get(WalletState.account)?.address)
+            return prev;
+          const existingIndex = prev.findIndex(
+            item => item.type === "receive-wugnot" && item.accountAddress === options.accountAddress && !item.isClosing,
+          );
           if (existingIndex !== -1) {
             return prev.map((item, index) =>
               index === existingIndex ? { ...item, content, onClick: content?.onClick } : item,
@@ -73,6 +98,7 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
             id: options.id,
             type: options.type,
             timeout: options.timeout,
+            accountAddress: options.accountAddress,
             content,
             isClosing: false,
             onClick: content?.onClick,
@@ -80,7 +106,7 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
         ];
       });
     },
-    [setSnackbars],
+    [store],
   );
 
   const change = useCallback<SnackbarContenxtProps["change"]>(
@@ -91,6 +117,7 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
             ? {
                 ...item,
                 type,
+                timeout: type === "updating-done" ? 3_000 : item.timeout,
               }
             : item,
         ),
@@ -140,9 +167,9 @@ const SnackbarProvider: FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <SnackbarContext.Provider value={contextValue}>
-      {snackbars.length > 0 && (
+      {visibleSnackbars.length > 0 && (
         <SnackbarList>
-          {snackbars.map(item_ => {
+          {visibleSnackbars.map(item_ => {
             return (
               <Snackbar
                 key={item_.id}

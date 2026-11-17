@@ -3,15 +3,7 @@
     "selectPosi": "ポジションを選択"
   },
   "confStakeModal": {
-    "btn": "ポジションを確認する",
     "positionLst": "ポジション",
-    "stakingReward": {
-      "apr": {
-        "label": "ステーキング APR",
-        "tooltip": "推定APR範囲は、賭け期間に基づいて、賭けポジションに動的乗数を適用することによって計算されます。"
-      },
-      "title": "ステーク報酬"
-    },
     "title": "ポジションを確認する",
     "unstakingFee": {
       "tooltip": "元本ではなく）請求されたポジションのステーキング報酬に課された手数料のうち、プロトコルに支払われる割合。"
@@ -22,10 +14,8 @@
     }
   },
   "overview": {
-    "collectAsSwitch": "WGNOTとして収集",
     "pooled": "プール",
-    "totalAmt": "総額",
-    "unclaimed": "未請求の報奨金"
+    "totalAmt": "総額"
   },
   "positionList": {
     "item": {
@@ -34,9 +24,7 @@
       }
     }
   },
-  "rewards": "報酬",
   "title": "ポジションを外す",
-  "unclaimed": "未取得",
   "unclaimedRewards": "未請求の報酬",
   "warning": {
     "content": "これにより、ステーキングの進捗が完全にリセットされます。再度ステーキングを行うと、最大額のステーキング報酬を受け取り始めるまでに45日間待つ必要があります。ステーキングを解除する前に、ウォームアップ期間の仕組みを必ずご確認ください。",

@@ -44,7 +44,9 @@ export interface PositionRepository {
     options?: Omit<GetPositionsByAddressOptions, "page" | "limit">,
   ) => Promise<GetPositionsByAddressResult>;
 
-  getPositionRewardsByAddress: (address: string) => Promise<PositionRewardsResponse | null>;
+  getPositionRewardsByAddress: (address: string, poolPath?: string) => Promise<PositionRewardsResponse | null>;
+
+  getPositionRewardsByAddressAndId: (address: string, positionId: string) => Promise<PositionRewardsResponse>;
 
   getPositionSummaryByAddress: (address: string, poolPath?: string) => Promise<PositionSummaryResponse>;
 

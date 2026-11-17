@@ -3,15 +3,7 @@
     "selectPosi": "Chọn vị trí"
   },
   "confStakeModal": {
-    "btn": "Xác nhận việc rút tiền khỏi vị thế",
     "positionLst": "Các vị trí",
-    "stakingReward": {
-      "apr": {
-        "label": "Lãi suất hàng năm (APR) khi tham gia staking",
-        "tooltip": "Phạm vi lãi suất hàng năm ước tính (APR) được tính toán bằng cách áp dụng một\nhệ số nhân động cho số tiền bạn đã staking, dựa trên\nthời gian staking."
-      },
-      "title": "Phần thưởng từ việc staking"
-    },
     "title": "Xác nhận việc rút tiền khỏi vị thế",
     "unstakingFee": {
       "tooltip": "Tỷ lệ phần trăm phí được tính trên phần thưởng staking đã nhận của vị thế (không tính trên số vốn gốc) được chuyển cho giao thức."
@@ -22,10 +14,8 @@
     }
   },
   "overview": {
-    "collectAsSwitch": "Thu thập dưới tên WGNOT",
     "pooled": "Tổng hợp",
-    "totalAmt": "Tổng số tiền",
-    "unclaimed": "Tiền thưởng chưa có người nhận"
+    "totalAmt": "Tổng số tiền"
   },
   "positionList": {
     "item": {
@@ -34,9 +24,7 @@
       }
     }
   },
-  "rewards": "Phần thưởng",
   "title": "Hủy đặt cược",
-  "unclaimed": "Chưa có người nhận",
   "unclaimedRewards": "Phần thưởng chưa có người nhận",
   "warning": {
     "content": "Thao tác này sẽ đặt lại hoàn toàn tiến trình staking của bạn. Sau khi thực hiện staking lại, bạn sẽ phải đợi 45 ngày mới bắt đầu nhận được phần thưởng staking tối đa. Hãy đảm bảo rằng bạn đã hiểu rõ cách thức hoạt động của giai đoạn khởi động trước khi hủy staking.",

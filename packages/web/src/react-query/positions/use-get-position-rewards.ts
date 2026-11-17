@@ -1,5 +1,4 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
-import { useMemo } from "react";
 
 import { useGnoswapContext } from "@hooks/common/use-gnoswap-context";
 import { useWallet } from "@hooks/wallet/data/use-wallet";
@@ -11,6 +10,7 @@ const REFETCH_INTERVAL = 60_000;
 
 interface UseGetPositionRewardsProps {
   address?: string;
+  poolPath?: string;
 }
 
 export const useGetPositionRewards = (
@@ -20,18 +20,17 @@ export const useGetPositionRewards = (
   const { positionRepository } = useGnoswapContext();
   const { account, currentChainId, availNetwork } = useWallet();
 
-  const address = useMemo(() => {
-    return props?.address || account?.address || "";
-  }, [account?.address, props?.address]);
+  const address = props?.address ?? account?.address ?? "";
+  const poolPath = props?.poolPath ?? "";
 
   return useQuery<PositionRewardsResponse | null, Error>({
-    queryKey: [QUERY_KEY.positionRewards, currentChainId, address],
+    queryKey: [QUERY_KEY.positionRewards, currentChainId, address, poolPath],
     queryFn: async () => {
       if (!availNetwork || !address) {
         return null;
       }
 
-      return positionRepository.getPositionRewardsByAddress(address);
+      return positionRepository.getPositionRewardsByAddress(address, poolPath || undefined);
     },
     keepPreviousData: false,
     refetchInterval: REFETCH_INTERVAL,

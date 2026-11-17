@@ -26,16 +26,26 @@ export interface MaxNativeAmountRequest {
   gasFee?: string;
   /** Execution ceiling the transaction will carry. */
   gasWanted?: number;
-  /** Reserve to fall back on when the action cannot be simulated, in ugnot. */
-  fallbackReserve?: string;
 }
 
 export interface MaxNativeAmount {
   /** Largest amount the action can spend, in ugnot. */
   amount: string;
   reserve: NativeAmountReserve;
-  /** False when the reserve came from {@link MaxNativeAmountRequest.fallbackReserve}. */
+  /** Whether a simulation was used to price the reserve. */
   simulated: boolean;
+}
+
+/** What a transaction costs its signer, measured by simulation. Every amount is an integer ugnot string. */
+export interface TransactionFeeEstimate {
+  /** Gas the simulation burned. */
+  gasUsed: number;
+  /** Gas used priced at the current gas price. */
+  gasFee: string;
+  /** Storage deposit the transaction locks. */
+  storageDeposit: string;
+  /** Sum of the gas fee and the storage deposit. */
+  total: string;
 }
 
 export interface TransactionGasService {
@@ -52,6 +62,15 @@ export interface TransactionGasService {
    * an action doing more work for a larger amount writes more of it. So the
    * action is simulated to measure the deposit, at an amount that leaves room
    * for both costs, and the result is verified once it is known.
+   *
+   * Positive amounts require a successful simulation. Rejects when the action
+   * cannot be measured; an insufficient balance may still resolve to zero.
    */
   estimateMaxNativeAmount(request: MaxNativeAmountRequest): Promise<MaxNativeAmount>;
+
+  /**
+   * Simulates the messages as the connected signer and prices the gas burned
+   * plus the storage deposit locked. Null when the transaction cannot be simulated.
+   */
+  estimateTransactionFee(messages: TransactionMessage[]): Promise<TransactionFeeEstimate | null>;
 }

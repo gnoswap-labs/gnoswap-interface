@@ -7,6 +7,7 @@ import { ReactNode } from "react";
 
 import { TokenModel } from "@models/token/token-model";
 import { SwapState } from "@states/index";
+import { formatRouterFeeStr } from "@utils/swap-utils";
 
 import { useSwapHandler } from "./use-swap-handler";
 
@@ -128,8 +129,8 @@ jest.mock("@hooks/token/data/use-token-data", () => ({
 
 const oldQuote = {
   estimatedRoutes: [{ quote: 100, amountIn: 0n, amountOut: 0n, pools: [] }],
-  originAmount: 0,
   amount: "1898308",
+  feeAmount: "2851",
   status: "SUCCESS",
 };
 
@@ -378,6 +379,85 @@ describe("useSwapHandler quote consistency", () => {
     expect(result.current.swapTokenInfo.tokenAAmount).toBe("");
     expect(result.current.swapSummaryInfo?.swapRate).toBe(0);
     expect(result.current.isAvailSwap).toBe(false);
+    unmount();
+  });
+
+  it("summarizes the quoted router fee in output-token units with the output token price", () => {
+    mockGetRoutes.mockReturnValue({
+      data: { ...oldQuote, feeAmount: "2847000" },
+      error: null,
+      isLoading: false,
+      isRefetching: false,
+    });
+
+    const { result, unmount } = renderSwapHandler();
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapSummaryInfo).toMatchObject({
+      protocolFee: "0.15%",
+      routerFeeAmountRaw: "2847000",
+      tokenBPriceUSD: 1,
+    });
+    // 2.847 GNS at $1
+    expect(formatRouterFeeStr(result.current.swapSummaryInfo)).toBe("$2.84");
+    unmount();
+  });
+
+  it("charges the router fee to the output token for an exact-out quote", () => {
+    mockGetRoutes.mockReturnValue({
+      data: { ...oldQuote, feeAmount: "4560000" },
+      error: null,
+      isLoading: false,
+      isRefetching: false,
+    });
+
+    const { result, unmount } = renderSwapHandler("EXACT_OUT");
+    act(() => result.current.changeTokenBAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    // The quoted 1.898308 GNOT is the input to pay; the 4.56 GNS fee is taken from the GNS output
+    expect(result.current.swapTokenInfo.tokenAAmount).toBe("1.898308");
+    expect(result.current.swapSummaryInfo?.routerFeeAmountRaw).toBe("4560000");
+    expect(formatRouterFeeStr(result.current.swapSummaryInfo)).toBe("$4.56");
+    unmount();
+  });
+
+  it.each([
+    ["shows a true zero fee as zero", "0", "$0"],
+    ["shows a dash for a quote without a fee amount", undefined, "-"],
+  ])("%s", (_name, feeAmount, expected) => {
+    mockGetRoutes.mockReturnValue({
+      data: { ...oldQuote, feeAmount },
+      error: null,
+      isLoading: false,
+      isRefetching: false,
+    });
+
+    const { result, unmount } = renderSwapHandler();
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.swapTokenInfo.tokenBAmount).toBe("1.898308");
+    expect(formatRouterFeeStr(result.current.swapSummaryInfo)).toBe(expected);
+    unmount();
+  });
+
+  it("carries no router fee for a wrap or unwrap", () => {
+    mockDisplayBalanceStringMap = {
+      [mockOriginBubble.path]: "100",
+      [mockWrappedBubble.path]: "100",
+    };
+    // A quote that is still cached must not put a router fee on a wrap
+    mockGetRoutes.mockReturnValue({ data: oldQuote, error: null, isLoading: false, isRefetching: false });
+
+    const { result, unmount } = renderSwapHandler("EXACT_IN", mockOriginBubble, mockWrappedBubble);
+    act(() => result.current.changeTokenAAmount("1"));
+    act(() => jest.advanceTimersByTime(1_000));
+
+    expect(result.current.isSameToken).toBe(true);
+    expect(result.current.swapSummaryInfo).toMatchObject({ protocolFee: "0%", routerFeeAmountRaw: "0" });
+    expect(formatRouterFeeStr(result.current.swapSummaryInfo)).toBe("$0");
     unmount();
   });
 });

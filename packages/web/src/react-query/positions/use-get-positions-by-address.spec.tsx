@@ -7,13 +7,14 @@ import { GetPositionsByAddressResult } from "@repositories/position/response";
 import { useGetPositionsByAddress } from "./use-get-positions-by-address";
 
 const getPositionsByAddress = jest.fn();
+const wallet = { currentChainId: "gnoland1", availNetwork: true };
 
 jest.mock("@hooks/common/use-gnoswap-context", () => ({
   useGnoswapContext: () => ({ positionRepository: { getPositionsByAddress } }),
 }));
 
 jest.mock("@hooks/wallet/data/use-wallet", () => ({
-  useWallet: () => ({ currentChainId: "gnoland1", availNetwork: true }),
+  useWallet: () => wallet,
 }));
 
 const address = "g1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -23,12 +24,16 @@ const renderPositions = () => {
   const wrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
-  return renderHook(() => useGetPositionsByAddress({ address }, { refetchInterval: false }), { wrapper });
+  return renderHook(viewedAddress => useGetPositionsByAddress({ address: viewedAddress }, { refetchInterval: false }), {
+    wrapper,
+    initialProps: address,
+  });
 };
 
 describe("useGetPositionsByAddress", () => {
   beforeEach(() => {
     getPositionsByAddress.mockReset();
+    wallet.currentChainId = "gnoland1";
   });
   afterEach(() => {
     jest.restoreAllMocks();
@@ -61,4 +66,29 @@ describe("useGetPositionsByAddress", () => {
     expect(result.current.isRefetchError).toBe(true);
     expect(result.current.data).toEqual(loaded);
   });
+
+  it.each(["recipient", "chain"])(
+    "does not show another %s's list totals while its replacement loads or fails",
+    async scope => {
+      const loaded = {
+        positions: [{ id: 42, totalClaimedUsd: "24" }],
+        totalCount: 1,
+      } as GetPositionsByAddressResult;
+      getPositionsByAddress.mockResolvedValueOnce(loaded);
+      const { result, rerender } = renderPositions();
+      await waitFor(() => expect(result.current.data?.positions[0].totalClaimedUsd).toBe("24"));
+      const pendingLookup = Promise.withResolvers<GetPositionsByAddressResult>();
+      getPositionsByAddress.mockReturnValue(pendingLookup.promise);
+      if (scope === "chain") wallet.currentChainId = "another-chain";
+      rerender(scope === "recipient" ? "g1another" : address);
+      expect(result.current.data).toBeUndefined();
+      expect(result.current.isInitialLoading).toBe(true);
+      jest.spyOn(console, "error").mockImplementation(() => undefined);
+      await act(async () => {
+        pendingLookup.reject(new Error("history offline"));
+      });
+      await waitFor(() => expect(result.current.isError).toBe(true));
+      expect(result.current.data).toBeUndefined();
+    },
+  );
 });

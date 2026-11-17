@@ -1,9 +1,7 @@
 {
   "bestPool": {
     "col": {
-      "apr": "APR",
-      "pool": "Pool",
-      "tvl": "TVL"
+      "pool": "Pool"
     },
     "title": "{{symbol}}에 최적인 풀"
   },
@@ -28,7 +26,6 @@
       "col": {
         "fee": "수수료 (24h)",
         "marketCap": "시가총액",
-        "tvl": "TVL",
         "volume": "거래량 (24h)"
       },
       "title": "거래 정보"

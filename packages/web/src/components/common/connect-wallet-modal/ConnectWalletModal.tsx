@@ -3,6 +3,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { cx } from "@emotion/css";
 import { useTheme } from "@emotion/react";
 
+import { IS_SOCIAL_LOGIN_DISABLED } from "@constants/common.constant";
 import { useSocialWalletContext } from "@hooks/common/use-social-wallet-context";
 import { SocialWalletLoginType } from "@providers/social-wallet-provider";
 import { useConnectSocialWalletModal } from "@hooks/wallet/ui/use-connect-social-wallet-modal";
@@ -47,6 +48,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
 
   const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (IS_SOCIAL_LOGIN_DISABLED) return;
     setIsSubmitAttempted(true);
 
     if (isEmailValid) {
@@ -55,6 +57,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
   };
 
   const handleSocialConnect = async (type: SocialWalletLoginType, email?: string) => {
+    if (IS_SOCIAL_LOGIN_DISABLED) return;
     try {
       close();
       openSocialLoadingModal(type);
@@ -78,7 +81,12 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
         <div className="content">
           {/* Email Login */}
           <div className="login-section" style={{ "--login-section-gap": "4px" } as React.CSSProperties}>
-            <div className={cx("email-section", { error: isEmailErrorVisible })}>
+            <div
+              className={cx("email-section", {
+                error: isEmailErrorVisible,
+                disabled: IS_SOCIAL_LOGIN_DISABLED,
+              })}
+            >
               <input
                 placeholder={t("common:social.connect.email.placeholder")}
                 type="email"
@@ -92,8 +100,9 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
                   }
                 }}
                 spellCheck={"false"}
+                disabled={IS_SOCIAL_LOGIN_DISABLED}
               />
-              <button onClick={handleEmailSubmit}>
+              <button onClick={handleEmailSubmit} disabled={IS_SOCIAL_LOGIN_DISABLED}>
                 <IconArrowRight className="right-chevron" />
               </button>
             </div>
@@ -110,6 +119,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
               text={t("common:social.connect.sign.google")}
               leftIcon={<IconGoogleLogo />}
               onClick={() => handleSocialConnect("google")}
+              disabled={IS_SOCIAL_LOGIN_DISABLED}
               style={{
                 hierarchy: ButtonHierarchy.Dark,
                 fullWidth: true,
@@ -121,6 +131,7 @@ const ConnectWalletModal: React.FC<Props> = ({ close, connect, loadingConnect })
               text={t("common:social.connect.sign.x")}
               leftIcon={<IconTwitterLogo fill={theme.themeKey === "dark" ? "white" : "black"} />}
               onClick={() => handleSocialConnect("twitter")}
+              disabled={IS_SOCIAL_LOGIN_DISABLED}
               style={{
                 hierarchy: ButtonHierarchy.Dark,
                 fullWidth: true,

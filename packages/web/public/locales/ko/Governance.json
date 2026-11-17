@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "이미 투표됨",
-      "changeNetwork": "Gnoland로 전환",
-      "execute": "실행",
       "noVoteWeight": "투표 가중치 부족",
       "requireSelect": "투표 옵션 선택",
       "tryAgain": "다시 시도하기",
@@ -81,9 +79,9 @@
         "title": "2. 수량 입력"
       },
       "step3": {
-        "aprTooltip": "지난 7일간의 평균을 산출한 위임된 xGNS의 예상 연이율(APR).\n\n일일 APR = (해당 일의 프로토콜 수수료 보상 × 365) ÷ 위임된 전체 xGNS의 USD 가치.\n\n실제 수익률은 프로토콜 수수료 및 총 위임량에 따라 달라집니다.",
+        "aprTooltip": "위임한 xGNS의 최근 7일 평균 예상 APR입니다.\n\n일별 APR = (해당 일의 수수료 보상 + 에미션 보상) × 365 ÷ 전체 위임 GNS의 USD 가치.\n\n실제 수익률은 프로토콜 피, 에미션 및 총 위임량에 따라 달라집니다.",
         "currentlyDel": "현재 위임",
-        "estimatedAPR": "예상 연이율 (7일 기준)",
+        "estimatedAPR": "xGNS APR (7일)",
         "newlyDel": "신규 위임",
         "title": "3. 나의 위임",
         "votingPowerShare": "투표권 영향력"
@@ -127,8 +125,7 @@
         "select": {
           "amount": "수량"
         },
-        "title": "1. 위임 대상 선택",
-        "tooltip": "위임 대상은 GNS 보유자를 대신하여 거버넌스 결정을 내리기 위해 선출된 커뮤니티 리더입니다."
+        "title": "1. 위임 대상 선택"
       },
       "step2": {
         "title": "2. 수량 입력"
@@ -175,10 +172,10 @@
       "end": "{{rel_time}} 투표 종료",
       "ended": "투표 종료됨 {{rel_time}}",
       "executable": "제안서 실행 가능 {{rel_time}}",
+      "executableInHours_other": "{{count}}시간 후 실행 가능",
+      "executableInMinutes_other": "{{count}}분 후 실행 가능",
       "executed": "제안 철회 {{rel_time}}",
       "expired": "제안 만료 {{rel_time}}",
-      "h": "{{time}}시간 후",
-      "m": "{{time}}분 후",
       "start": "{{rel_time}} 투표 시작"
     },
     "tooltip": {
@@ -207,15 +204,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "disclosure": "오늘의 Fee APR은 UTC 06:00부터 7일 평균에 포함됩니다.",
+      "emission": "GNS 에미션",
+      "emissionShort": "에미션",
+      "history": "APR 내역 보기",
+      "period": "최근 7일 평균",
+      "periodShort": "7D",
+      "protocolFees": "프로토콜 피",
+      "unavailable": "이용 불가"
+    },
     "aprHistory": {
-      "dailyApr": "APR (1D)",
-      "vs7dAvg": "7D 평균 대비"
+      "dailyApr": "합계"
     },
     "apr": {
       "title": "xGNS APR (7일)"
     },
     "apy": {
-      "tooltip": "지난 7일간의 평균을 산출한 위임된 xGNS의 예상 연이율(APR).\n\n일일 APR = (해당 일의 프로토콜 수수료 보상 × 365) ÷ 위임된 전체 xGNS의 USD 가치.\n\n실제 수익률은 프로토콜 수수료 및 총 위임량에 따라 달라집니다."
+      "tooltip": "위임한 xGNS의 최근 7일 평균 예상 APR입니다.\n\n일별 APR = (해당 일의 수수료 보상 + 에미션 보상) × 365 ÷ 전체 위임 GNS의 USD 가치.\n\n실제 수익률은 프로토콜 피, 에미션 및 총 위임량에 따라 달라집니다."
     },
     "commPool": {
       "title": "커뮤니티 풀",

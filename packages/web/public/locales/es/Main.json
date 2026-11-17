@@ -1,9 +1,4 @@
 {
-  "allSwitch": "Todo",
-  "bal": "Saldo",
-  "brand": {
-    "introduction": "<span>Intercambia</span> y <span>gana</span><br/>en GnoSwap"
-  },
   "followOur": "Siga nuestra sencilla guía para comenzar a generar liquidez para su proyecto.",
   "highest": "TAE más elevadas",
   "keyStatCard": {
@@ -13,13 +8,9 @@
     "toDashBoardBtnText": "Ir a Explorar",
     "totalValueLocked": "Valor total bloqueado"
   },
-  "liquidityCol": "Liquidez",
   "lookingTo": "¿Quieres iniciarte en GnoSwap?",
-  "newList": "Nuevos listados",
   "projectOnb": "Guía de incorporación de proyectos",
   "search": "Buscar",
-  "swapComp": "Intercambiar",
-  "swapNowBtn": "Ir a Intercambio",
   "theFirst": "El primer AMM DEX de liquidez concentrada creado con Gnolang",
   "theOne": "la Plataforma DeFi de Gno.land de una sola parada",
   "tokenList": {

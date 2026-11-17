@@ -17,7 +17,11 @@ import ChainData from "./mock/token-chain.json";
 import TokenDetail from "./mock/token-detail.json";
 import mockedExchangeRateGraph from "./mock/token-exchange-rate-graph.json";
 import TokenPrice from "./mock/token-price.json";
-import { IBalancesByAddressResponse, IGrc20TransferHistoryResponse } from "./response/balance-by-address-response";
+import {
+  IBalancesByAddressResponse,
+  IGrc20BalanceReceiptResponse,
+  IGrc20TransferHistoryResponse,
+} from "./response/balance-by-address-response";
 import { TokenExchangeRateGraphResponse } from "./response/token-exchange-rate-response";
 
 export class TokenRepositoryMock implements TokenRepository {
@@ -90,6 +94,18 @@ export class TokenRepositoryMock implements TokenRepository {
     return {
       data: [],
       message: "",
+    };
+  };
+
+  public getGrc20BalanceReceiptByAddress = async (
+    address: string,
+    txHash: string,
+  ): Promise<IGrc20BalanceReceiptResponse> => {
+    return {
+      data: [],
+      message: "",
+      accountBalanceApplied: false,
+      balanceChanges: [],
     };
   };
 

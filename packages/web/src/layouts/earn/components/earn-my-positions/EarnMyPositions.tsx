@@ -2,7 +2,6 @@ import React from "react";
 
 import { AccountModel } from "@models/account/account-model";
 import { PoolPositionModel } from "@models/position/pool-position-model";
-import { TokenPriceModel } from "@models/token/token-price-model";
 
 import EarnMyPositionsContent from "./earn-my-positions-content/EarnMyPositionsContent";
 import EarnMyPositionsHeader from "./earn-my-positions-header/EarnMyPositionsHeader";
@@ -43,7 +42,6 @@ export interface EarnMyPositionsProps {
   isClosed: boolean;
   hasClosedPositions: boolean;
   handleChangeClosed: () => void;
-  tokenPrices: Record<string, TokenPriceModel>;
   highestApr: number;
   onOpenVideoGuide: (type: "POSITION") => void;
   currentPage?: number;
@@ -85,7 +83,6 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
   isClosed,
   hasClosedPositions,
   handleChangeClosed,
-  tokenPrices,
   highestApr,
   onOpenVideoGuide,
   currentPage,
@@ -135,7 +132,6 @@ const EarnMyPositions: React.FC<EarnMyPositionsProps> = ({
       onClickLoadMore={onClickLoadMore}
       themeKey={themeKey}
       account={account}
-      tokenPrices={tokenPrices}
       highestApr={highestApr}
       currentPage={currentPage}
       totalPage={totalPage}

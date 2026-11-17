@@ -52,7 +52,6 @@
     "card": {
       "claimedRewards": "已领取的奖励",
       "claimRewards": "可领取的奖励",
-      "dailyEarn": "每日收入",
       "hideRange": "隐藏我的范围",
       "value": "价值",
       "viewRange": "查看我的系列"
@@ -71,7 +70,6 @@
     "title_other": "职位",
     "unconnect": {
       "connect": "请连接您的钱包查看您的流动资金头寸。",
-      "switchgno": "转到糯米乐园",
       "switchNetwork": "网络不支持。将网络切换到 Gnoland。"
     }
   },

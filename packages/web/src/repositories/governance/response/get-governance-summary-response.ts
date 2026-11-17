@@ -8,6 +8,8 @@ export interface GetGovernanceSummaryResponse {
   };
   delegatedRatio: string;
   apy: string;
+  protocolFeeApr?: string;
+  emissionApr?: string;
   communityPoolUsd: string;
   aprHistory?: GovernanceAPRHistory[];
 }

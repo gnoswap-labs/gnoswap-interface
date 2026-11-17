@@ -1,7 +1,6 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { select } from "d3-selection";
 
-import { useColorGraph } from "@hooks/common/use-color-graph";
 import { ThemeKeys } from "@styles/ThemeTypes";
 
 import { ReservedBin } from "../PoolGraph.types";
@@ -90,7 +89,6 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
     useImperativeHandle(forwardedRef, () => svgRef.current as SVGSVGElement);
 
     const chartRef = useRef(null);
-    const { redColor, greenColor } = useColorGraph();
 
     const boundsWidth = width - margin.right - margin.left;
     const boundsHeight = height - margin.top - margin.bottom;
@@ -269,12 +267,12 @@ const PoolGraphSVG = forwardRef<SVGSVGElement, PoolGraphSVGProps>(
       >
         <defs>
           <linearGradient id={`gradient-bar-green-${graphId}`} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor={greenColor.start} />
-            <stop offset="100%" stopColor={greenColor.end} />
+            <stop offset="0%" stopColor={theme.color.chartCandleUp} stopOpacity={themeKey === "dark" ? 0.7 : 1} />
+            <stop offset="100%" stopColor={theme.color.chartCandleUp} stopOpacity={themeKey === "dark" ? 0.14 : 0.2} />
           </linearGradient>
           <linearGradient id={`gradient-bar-red-${graphId}`} x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor={redColor.start} />
-            <stop offset="100%" stopColor={redColor.end} />
+            <stop offset="0%" stopColor={theme.color.chartCandleDown} stopOpacity={themeKey === "dark" ? 0.7 : 1} />
+            <stop offset="100%" stopColor={theme.color.chartCandleDown} stopOpacity={themeKey === "dark" ? 0.14 : 0.2} />
           </linearGradient>
         </defs>
 

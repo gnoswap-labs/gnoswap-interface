@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "Équilibre",
     "cancel": "Annuler",
     "close": "Fermer",
     "copy": "Copie",
-    "earn": "Gagner",
     "swap": "Échange"
   },
   "all": "Tous",
-  "available": "Disponible",
   "balanceChange": {
     "currentBalance": "Solde actuel",
     "defaultTitle": "3. Modifications de l'équilibre",
@@ -22,7 +19,6 @@
     "amountTooLow": "Montant trop faible",
     "enterAmount": "Saisir le montant",
     "insuffiBal": "Solde insuffisant",
-    "switchNetwork": "Passer à Gnoland",
     "walletLogin": "Connexion au portefeuille"
   },
   "candleTooltip": {
@@ -74,7 +70,6 @@
       "title": "Comment fonctionne la mise en jeu ?"
     }
   },
-  "imporNote": "Note importante",
   "learnMore": "En savoir plus",
   "localTimeComp": {
     "tooltip": "*Basé sur l'heure locale"
@@ -99,14 +94,6 @@
   "noDataFound": "Aucune donnée n'a été trouvée",
   "noProposalFound": "Aucune proposition trouvée",
   "per": "par",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "Montant du poste",
-      "priceRange": "Fourchette de prix",
-      "quote": "Citation",
-      "totalAmt": "Montant total"
-    }
-  },
   "price": "Prix",
   "reset": "Remise à zéro",
   "search": "Recherche",

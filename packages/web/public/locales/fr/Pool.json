@@ -56,10 +56,6 @@
         "title": "Récompenses réclamées",
         "title_total": "Total des récompenses réclamées"
       },
-      "dailyEarn": {
-        "title": "Gains journaliers",
-        "title_total": "Total des gains journaliers"
-      },
       "fee": "Honoraires",
       "history": {
         "col": {
@@ -116,6 +112,5 @@
       }
     },
     "totalStaked": "Total mis en jeu"
-  },
-  "wanttoaddup": "Vous souhaitez renforcer les mesures d'incitation pour cette pool?"
+  }
 }

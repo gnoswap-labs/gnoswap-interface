@@ -14,6 +14,7 @@ export const PaginationItem = styled.li`
 
 export const Button = styled.button<{
   selected?: boolean;
+  compact?: boolean;
 }>`
   ${fonts.body11};
   ${mixins.flexbox("row", "center", "center")};
@@ -21,7 +22,7 @@ export const Button = styled.button<{
   background-color: ${({ theme }) => theme.color.background06};
   border: 1px solid ${({ theme }) => theme.color.border09};
   border-radius: 8px;
-  width: 36px;
+  width: ${({ compact }) => (compact ? "32px" : "36px")};
   height: 36px;
   transition: all 0.3s ease;
   &.selected,

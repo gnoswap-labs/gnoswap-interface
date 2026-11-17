@@ -161,21 +161,7 @@ const ConfirmSwapModal: React.FC<ConfirmSwapModalProps> = ({
     return `(${swapSummaryInfo.protocolFee})`;
   }, [swapSummaryInfo?.protocolFee]);
 
-  const routerFeeStr = useMemo(() => {
-    return formatRouterFeeStr(swapSummaryInfo, swapTokenInfo);
-  }, [
-    swapSummaryInfo?.routerFee,
-    swapSummaryInfo?.protocolFee,
-    swapTokenInfo?.direction,
-    swapTokenInfo?.tokenAAmount,
-    swapTokenInfo?.tokenBAmount,
-    swapTokenInfo?.tokenAUSD,
-    swapTokenInfo?.tokenBUSD,
-    swapTokenInfo?.tokenA?.symbol,
-    swapTokenInfo?.tokenB?.symbol,
-    swapTokenInfo?.tokenADecimals,
-    swapTokenInfo?.tokenBDecimals,
-  ]);
+  const routerFeeStr = useMemo(() => formatRouterFeeStr(swapSummaryInfo), [swapSummaryInfo]);
 
   const handleSwap = useCallback(() => {
     if (!swapTokenInfo) return;

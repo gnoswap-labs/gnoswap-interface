@@ -13,11 +13,20 @@ describe("governance.message.ts", () => {
   it("approves delegation with the exact delegated amount", async () => {
     const caller = "caller";
     const fetchAllowance = jest.fn(async () => 0);
-    const gnsToken = {
+    const gnsToken: TokenModel = {
       path: "gns_token_path",
       pkgPath: "gns_package_path",
+      type: "GRC20",
+      chainId: "dev.gnoswap",
+      name: "GnoSwap",
+      symbol: "GNS",
+      displaySymbol: "GNS",
+      decimals: 6,
+      logoURI: "",
+      createdAt: "",
+      priceID: "gns_token_path",
       routes: { funcs: { approve: { name: "Approve", args: ["$spender", "$amount"] } } },
-    } as TokenModel;
+    };
 
     const messages = await makeDelegateMessagesWithApproves(
       { to: "validator", gnsToken, amount: "123000000", caller, referrerAddress: null },

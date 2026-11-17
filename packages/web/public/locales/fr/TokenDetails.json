@@ -1,9 +1,7 @@
 {
   "bestPool": {
     "col": {
-      "apr": "APR",
-      "pool": "Piscine",
-      "tvl": "TVL"
+      "pool": "Piscine"
     },
     "title": "Meilleures Pools pour {{symbol}}"
   },
@@ -28,7 +26,6 @@
       "col": {
         "fee": "Frais (24h)",
         "marketCap": "Capitalisation boursière",
-        "tvl": "TVL",
         "volume": "Volume (24h)"
       },
       "title": "Informations sur le marché"

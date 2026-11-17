@@ -43,7 +43,6 @@
     "tooltip": "Giá khởi điểm đề xuất dựa trên giá hiện tại của nhóm thanh khoản cao nhất trong cùng cặp tiền tệ."
   },
   "fee": "Phí",
-  "feeTier": "Bậc phí",
   "form": {
     "amount": {
       "label": "4. Nhập số tiền"
@@ -79,22 +78,9 @@
       "minPrice": "Giá tối thiểu"
     }
   },
-  "oneClick": "Đặt cược chỉ với một cú nhấp chuột",
   "outR": {
     "desc": "Nếu bạn thêm một mức giá vào phạm vi hiện tại, bạn sẽ không nhận được bất kỳ khoản phí nào cho đến khi giá token nằm trong phạm vi đó.",
     "title": "Vị trí của bạn sẽ không nhận được bất kỳ khoản phí nào"
-  },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "Hiệu quả sử dụng vốn",
-      "depositR": "Tỷ lệ dự trữ bắt buộc",
-      "feeApr": "Lãi suất hàng năm (APR)"
-    },
-    "tooltip": {
-      "capitalEffi": "Hệ số nhân được tính dựa trên mức độ tập trung của danh mục đầu tư của bạn. Chỉ số này cho biết bạn có thể kiếm được thêm bao nhiêu phần thưởng so với một danh mục đầu tư đa dạng hoàn toàn với cùng mức vốn.",
-      "depositR": "Tỷ lệ ký quỹ của hai loại token này được xác định dựa trên giá hiện tại và phạm vi giá đã đặt.",
-      "feeApr": "Tỷ lệ phần trăm hàng năm (APR) ước tính từ phí hoán đổi được tính toán dựa trên phạm vi giá đã chọn của vị thế."
-    }
   },
   "positionStat": {
     "label": {
@@ -113,7 +99,6 @@
     }
   },
   "rateGraph": {
-    "title": "Tỷ giá hối đoái",
-    "tooltip": "Tỷ giá hối đoái được đề xuất dựa trên nhóm thanh khoản cao nhất trong cùng một cặp tiền tệ."
+    "title": "Tỷ giá hối đoái"
   }
 }

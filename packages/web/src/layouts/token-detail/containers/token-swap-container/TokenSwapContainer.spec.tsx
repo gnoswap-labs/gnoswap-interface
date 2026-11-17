@@ -3,13 +3,14 @@ import { render } from "@testing-library/react";
 import useCustomRouter from "@hooks/common/use-custom-router";
 import { useSwapHandler } from "@hooks/swap/data/use-swap-handler";
 import { useGnotToGnot } from "@hooks/token/data/use-gnot-wugnot";
-import { TokenModel } from "@models/token/token-model";
+import type { TokenModel } from "@models/token/token-model";
+import type { TokenSwapProps } from "../../components/token-swap/TokenSwap";
 import { useGetToken } from "@query/token";
 
 import TokenSwapContainer from "./TokenSwapContainer";
 
 let mockSwapExtensionTokens: TokenModel[] = [];
-const mockTokenSwap = jest.fn(() => null);
+const mockTokenSwap = jest.fn<null, [TokenSwapProps]>(() => null);
 
 jest.mock("jotai", () => ({ useAtomValue: () => "light" }));
 jest.mock("@states/index", () => ({ ThemeState: { themeKey: {} } }));
@@ -21,39 +22,70 @@ jest.mock("@hooks/token/data/use-token-data", () => ({
 }));
 jest.mock("@query/token", () => ({ useGetToken: jest.fn() }));
 jest.mock("@components/common/setting-menu-modal/SettingMenuModal", () => () => null);
-jest.mock("../../components/token-swap/TokenSwap", () => (props: unknown) => mockTokenSwap(props));
+jest.mock("../../components/token-swap/TokenSwap", () => (props: TokenSwapProps) => mockTokenSwap(props));
 
-const native = {
+type TokenFixture = Pick<TokenModel, "path" | "type" | "name" | "symbol" | "displaySymbol"> &
+  Partial<Pick<TokenModel, "wrappedPath">>;
+type MockSwapValue = {
+  tokenA: TokenModel | null;
+  tokenB: TokenModel | null;
+  type: "EXACT_IN";
+};
+
+const makeToken = (token: TokenFixture): TokenModel => ({
+  ...token,
+  chainId: "dev.gnoswap",
+  createdAt: "0001-01-01T00:00:00Z",
+  decimals: 6,
+  logoURI: "",
+  priceID: token.path,
+});
+
+const wrappedGnotPath = "gno.land/r/gnoland/wugnot";
+const native = makeToken({
   path: "ugnot",
-  wrappedPath: "gno.land/r/gnoland/wugnot",
+  wrappedPath: wrappedGnotPath,
   type: "Native",
+  name: "Gno.land",
   symbol: "GNOT",
   displaySymbol: "GNOT",
-} as TokenModel;
-const wrapped = {
-  path: native.wrappedPath,
+});
+const wrapped = makeToken({
+  path: wrappedGnotPath,
   type: "GRC20",
+  name: "Wrapped GNOT",
   symbol: "WUGNOT",
   displaySymbol: "WUGNOT",
-} as TokenModel;
-const wrappedBubble = {
-  ...wrapped,
+});
+const wrappedBubble = makeToken({
   path: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/wbubble.BUBBLE",
+  type: "GRC20",
+  name: "Wrapped BUBBLE",
   symbol: "BUBBLE",
   displaySymbol: "wBUBBLE",
-} as TokenModel;
-const originBubble = {
-  ...wrappedBubble,
-  name: "BUBBLE",
+});
+const originBubble = makeToken({
   path: "gno.land/r/g1leu8d2vsplhehcfkjg50mwgdpxdkt8tztu95wr/bubble",
+  type: "GRC20",
+  name: "BUBBLE",
+  symbol: "BUBBLE",
   displaySymbol: "BUBBLE",
-} as TokenModel;
-const gns = {
-  ...wrapped,
+});
+const gns = makeToken({
   path: "gno.land/r/gnoswap/gns",
+  type: "GRC20",
+  name: "GnoSwap",
   symbol: "GNS",
   displaySymbol: "GNS",
-} as TokenModel;
+});
+
+const getLastTokenSwapProps = (): TokenSwapProps => {
+  const lastCall = mockTokenSwap.mock.calls.at(-1);
+  if (!lastCall) {
+    throw new Error("TokenSwap was not rendered");
+  }
+  return lastCall[0];
+};
 
 beforeEach(() => {
   mockSwapExtensionTokens = [];
@@ -64,7 +96,7 @@ it.each([
   ["wrap", native, wrapped],
   ["unwrap", wrapped, native],
 ])("keeps distinct GNOT and WUGNOT identities for %s on the token page", (_action, from, to) => {
-  let swapValue = { tokenA: null as TokenModel | null, tokenB: null as TokenModel | null, type: "EXACT_IN" };
+  let swapValue: MockSwapValue = { tokenA: null, tokenB: null, type: "EXACT_IN" };
   const setSwapValue = jest.fn(updater => {
     swapValue = typeof updater === "function" ? updater(swapValue) : updater;
   });
@@ -97,9 +129,9 @@ it.each([
 it("keeps a lower origin selection in the lower slot after token-page navigation", () => {
   let routePath = native.path;
   let routeTokenAPath: string | null = wrappedBubble.path;
-  let swapValue = {
-    tokenA: wrappedBubble as TokenModel | null,
-    tokenB: native as TokenModel | null,
+  let swapValue: MockSwapValue = {
+    tokenA: wrappedBubble,
+    tokenB: native,
     type: "EXACT_IN",
   };
   const setSwapValue = jest.fn(updater => {
@@ -134,9 +166,7 @@ it("keeps a lower origin selection in the lower slot after token-page navigation
     swapValue,
   }));
   const { unmount } = render(<TokenSwapContainer />);
-  const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
-    changeTokenB: (token: TokenModel) => void;
-  };
+  const tokenSwapProps = getLastTokenSwapProps();
 
   tokenSwapProps.changeTokenB(originBubble);
   unmount();
@@ -147,9 +177,7 @@ it("keeps a lower origin selection in the lower slot after token-page navigation
   };
   const remounted = render(<TokenSwapContainer />);
   remounted.rerender(<TokenSwapContainer />);
-  const remountedTokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
-    additionalTokenATokens: TokenModel[];
-  };
+  const remountedTokenSwapProps = getLastTokenSwapProps();
 
   expect(remountedTokenSwapProps.additionalTokenATokens).toContain(originBubble);
 
@@ -164,9 +192,9 @@ it("keeps a lower origin selection in the lower slot after token-page navigation
 it("routes a selected origin token through its wrapper when the counter token changes", () => {
   let routePath = native.path;
   let routeTokenAPath: string | null = null;
-  let swapValue = {
-    tokenA: originBubble as TokenModel | null,
-    tokenB: native as TokenModel | null,
+  let swapValue: MockSwapValue = {
+    tokenA: originBubble,
+    tokenB: native,
     type: "EXACT_IN",
   };
   const setSwapValue = jest.fn(updater => {
@@ -201,9 +229,7 @@ it("routes a selected origin token through its wrapper when the counter token ch
     swapValue,
   }));
   const { unmount } = render(<TokenSwapContainer />);
-  const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
-    changeTokenB: (token: TokenModel) => void;
-  };
+  const tokenSwapProps = getLastTokenSwapProps();
 
   tokenSwapProps.changeTokenB(wrapped);
   unmount();
@@ -225,9 +251,9 @@ it("routes a selected origin token through its wrapper when the counter token ch
 it("persists both sides when switching a regular pair on the token page", () => {
   let routePath = gns.path;
   let routeTokenAPath: string | null = wrappedBubble.path;
-  let swapValue = {
-    tokenA: wrappedBubble as TokenModel | null,
-    tokenB: gns as TokenModel | null,
+  let swapValue: MockSwapValue = {
+    tokenA: wrappedBubble,
+    tokenB: gns,
     type: "EXACT_IN",
   };
   const setSwapValue = jest.fn(updater => {
@@ -271,11 +297,7 @@ it("persists both sides when switching a regular pair on the token page", () => 
     swapValue,
   }));
   const { unmount } = render(<TokenSwapContainer />);
-  const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
-    additionalTokenATokens: TokenModel[];
-    additionalTokenBTokens: TokenModel[];
-    switchSwapDirection: () => void;
-  };
+  const tokenSwapProps = getLastTokenSwapProps();
   expect(tokenSwapProps.additionalTokenATokens).not.toContain(originBubble);
   expect(tokenSwapProps.additionalTokenBTokens).toContain(originBubble);
 
@@ -297,9 +319,9 @@ it("persists both sides when switching a regular pair on the token page", () => 
 });
 
 it("does not expose an origin token in its wrapper's selector when the opposite side is empty", () => {
-  const swapValue = {
-    tokenA: wrappedBubble as TokenModel | null,
-    tokenB: null as TokenModel | null,
+  const swapValue: MockSwapValue = {
+    tokenA: wrappedBubble,
+    tokenB: null,
     type: "EXACT_IN",
   };
   mockSwapExtensionTokens = [originBubble];
@@ -320,10 +342,7 @@ it("does not expose an origin token in its wrapper's selector when the opposite 
   });
 
   render(<TokenSwapContainer />);
-  const tokenSwapProps = mockTokenSwap.mock.calls.at(-1)?.[0] as {
-    additionalTokenATokens: TokenModel[];
-    additionalTokenBTokens: TokenModel[];
-  };
+  const tokenSwapProps = getLastTokenSwapProps();
 
   expect(tokenSwapProps.additionalTokenATokens).not.toContain(originBubble);
   expect(tokenSwapProps.additionalTokenBTokens).toContain(originBubble);

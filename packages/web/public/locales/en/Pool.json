@@ -56,10 +56,6 @@
         "title": "Claimed Rewards",
         "title_total": "Total Claimed Rewards"
       },
-      "dailyEarn": {
-        "title": "Daily Earnings",
-        "title_total": "Total Daily Earnings"
-      },
       "fee": "Fees",
       "history": {
         "col": {
@@ -116,6 +112,5 @@
       }
     },
     "totalStaked": "Total Staked"
-  },
-  "wanttoaddup": "Want to boost up incentives for this pool?"
+  }
 }

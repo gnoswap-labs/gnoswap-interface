@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "Ya ha votado",
-      "changeNetwork": "Cambiar a Gnolandia",
-      "execute": "Ejecute",
       "noVoteWeight": "Insuficiente peso electoral",
       "requireSelect": "Seleccione la opción de voto",
       "tryAgain": "Inténtalo de nuevo",
@@ -81,9 +79,9 @@
         "title": "2. Introduzca el importe"
       },
       "step3": {
-        "aprTooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado.",
+        "aprTooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones + recompensas por emisión del día) × 365 ÷ valor en USD de todos los GNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo, la emisión y el total de la delegación.",
         "currentlyDel": "Actualmente delegado",
-        "estimatedAPR": "TAE estimada (7 días)",
+        "estimatedAPR": "xGNS APR (7 días)",
         "newlyDel": "Nuevo Delegado",
         "title": "3. Su delegación",
         "votingPowerShare": "Poder de voto Cuota"
@@ -127,8 +125,7 @@
         "select": {
           "amount": "Importe"
         },
-        "title": "1. Seleccione su delegado",
-        "tooltip": "Los delegados son líderes de la comunidad seleccionados para tomar decisiones de gobierno en nombre de los titulares de GNS."
+        "title": "1. Seleccione su delegado"
       },
       "step2": {
         "title": "2. Introduzca el importe"
@@ -175,10 +172,12 @@
       "end": "Fin de las votaciones {{rel_time}}",
       "ended": "Votación Finalizada {{rel_time}}",
       "executable": "Propuesta ejecutable {{rel_time}}",
+      "executableInHours_one": "Se ejecuta en {{count}} hora",
+      "executableInHours_other": "Se ejecuta en {{count}} horas",
+      "executableInMinutes_one": "Se ejecuta en {{count}} minuto",
+      "executableInMinutes_other": "Se ejecuta en {{count}} minutos",
       "executed": "Propuesta Excusada {{rel_time}}",
       "expired": "Propuesta caducada {{rel_time}}",
-      "h": "en {{time}}h",
-      "m": "en {{time}}m",
       "start": "Comienza la votación {{rel_time}}"
     },
     "tooltip": {
@@ -207,15 +206,24 @@
     }
   },
   "summary": {
+    "aprBreakdown": {
+      "disclosure": "El APR de las comisiones de hoy se incluye en el promedio de 7 días a partir de las 06:00 UTC.",
+      "emission": "Emisión de GNS",
+      "emissionShort": "Emisión",
+      "history": "Ver el historial de la TAE",
+      "period": "Media de 7D",
+      "periodShort": "7D",
+      "protocolFees": "Tasas de protocolo",
+      "unavailable": "No disponible"
+    },
     "aprHistory": {
-      "dailyApr": "APR (1D)",
-      "vs7dAvg": "vs media 7D"
+      "dailyApr": "Total"
     },
     "apr": {
       "title": "xGNS APR (7 días)"
     },
     "apy": {
-      "tooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones del protocolo del día × 365) ÷ valor en USD de todos los xGNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo y del total delegado."
+      "tooltip": "TAE estimada para los xGNS delegados, calculada como media de los últimos 7 días.\n\nTAE diaria = (recompensas por comisiones + recompensas por emisión del día) × 365 ÷ valor en USD de todos los GNS delegados.\n\nLos rendimientos reales varían en función de las comisiones del protocolo, la emisión y el total de la delegación."
     },
     "commPool": {
       "title": "Piscina comunitaria",

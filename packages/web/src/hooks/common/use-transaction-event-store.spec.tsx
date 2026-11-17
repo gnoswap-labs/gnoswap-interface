@@ -1,7 +1,9 @@
 import React from "react";
-import { render, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { DexEvent } from "@repositories/common";
+import { WRAPPED_GNOT_PATH } from "@constants/environment.constant";
+import type { IGrc20BalanceReceiptResponse } from "@repositories/token/response/balance-by-address-response";
 
 import { useTransactionEventStore } from "./use-transaction-event-store";
 
@@ -69,7 +71,6 @@ describe("useTransactionEventStore", () => {
       getStakePositionMessage: jest.fn(),
     });
     (useWrap as jest.Mock).mockReturnValue({
-      fetchWugnotBalance: jest.fn(),
       unwrapAll: jest.fn(),
     });
     (useWallet as jest.Mock).mockReturnValue({ account: null });
@@ -100,25 +101,43 @@ describe("useTransactionEventStore", () => {
     render(<Probe />);
     return { onEmit: eventStore.addEvent.mock.calls[0][2], getStakePositionMessage };
   }
+  const appliedReceipt: IGrc20BalanceReceiptResponse = {
+    message: "",
+    data: [{ path: WRAPPED_GNOT_PATH, amount: "20000" }],
+    accountBalanceApplied: true,
+    balanceChanges: [{ path: WRAPPED_GNOT_PATH, amount: "20000" }],
+  };
+  const pendingReceipt: IGrc20BalanceReceiptResponse = {
+    message: "",
+    data: [],
+    accountBalanceApplied: false,
+    balanceChanges: [],
+  };
 
-  function setupTransferEvent(getTransfers: jest.Mock, balance: string | jest.Mock = "20000") {
+  function setupTransferEvent(getReceipt: jest.Mock, hasBadgeSnackbar = false) {
+    (useSnackbar as jest.Mock).mockReturnValue({
+      hasBadgeSnackbar,
+      enqueue,
+      dequeue: jest.fn(),
+      change: jest.fn(),
+    });
     (useGnoswapContext as jest.Mock).mockReturnValue({
       eventStore,
-      tokenRepository: { getGrc20TransferHistoryByTxHash: getTransfers },
+      tokenRepository: { getGrc20BalanceReceiptByAddress: getReceipt },
       poolRepository: {},
       positionRepository: {},
     });
     (useWallet as jest.Mock).mockReturnValue({ account: { address: "g1user" } });
+    const getMessage = jest.fn().mockReturnValue({ txHash });
     const getReceiveWugnotMessage = jest.fn().mockReturnValue({ title: "Receive WuGNOT" });
+    const refetchNotifications = jest.fn();
     (useMessage as jest.Mock).mockReturnValue({
-      getMessage: jest.fn().mockReturnValue({ txHash }),
+      getMessage,
       getReceiveWugnotMessage,
       getStakePositionMessage: jest.fn(),
     });
-    (useWrap as jest.Mock).mockReturnValue({
-      fetchWugnotBalance: typeof balance === "string" ? jest.fn().mockResolvedValue(balance) : balance,
-      unwrapAll: jest.fn(),
-    });
+    (useWrap as jest.Mock).mockReturnValue({ unwrapAll: jest.fn() });
+    (useGetNotifications as jest.Mock).mockReturnValue({ refetch: refetchNotifications });
     const Probe = () => {
       const { enqueueEvent } = useTransactionEventStore();
       React.useEffect(() => {
@@ -126,190 +145,171 @@ describe("useTransactionEventStore", () => {
       }, []);
       return null;
     };
-    const { unmount } = render(<Probe />);
-    return { onEmit: eventStore.addEvent.mock.calls[0][2], getReceiveWugnotMessage, unmount };
+    const { unmount, rerender } = render(<Probe />);
+    const setAccount = (address: string | null) => {
+      (useWallet as jest.Mock).mockReturnValue({ account: address ? { address } : null });
+      rerender(<Probe />);
+    };
+    return {
+      onEmit: eventStore.addEvent.mock.calls[0][2],
+      getMessage,
+      getReceiveWugnotMessage,
+      refetchNotifications,
+      setAccount,
+      unmount,
+    };
   }
 
-  it("shows one receive badge when transfers arrive after an initially empty projection", async () => {
+  it("polls until the receipt is applied and refreshes an open receive badge", async () => {
     jest.useFakeTimers();
     try {
-      const getTransfers = jest
-        .fn()
-        .mockResolvedValueOnce({ data: [] })
-        .mockResolvedValue({ data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "20000" }] });
-      const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers);
+      const getReceipt = jest.fn().mockResolvedValueOnce(pendingReceipt).mockResolvedValue(appliedReceipt);
+      const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getReceipt, true);
+
       await onEmit({ status: "SUCCESS", data: [] });
-      expect(getTransfers).toHaveBeenCalledTimes(1);
+      await Promise.resolve();
+      expect(getReceipt).toHaveBeenCalledTimes(1);
+      expect(getReceipt).toHaveBeenCalledWith("g1user", txHash);
       await (
         jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
       ).advanceTimersByTimeAsync(1_199);
-      expect(getTransfers).toHaveBeenCalledTimes(1);
+      expect(getReceipt).toHaveBeenCalledTimes(1);
       await (
         jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
       ).advanceTimersByTimeAsync(1);
 
-      expect(getTransfers).toHaveBeenCalledTimes(2);
-      expect(getReceiveWugnotMessage).toHaveBeenCalledTimes(1);
+      expect(getReceipt).toHaveBeenCalledTimes(2);
+      expect(getReceiveWugnotMessage).toHaveBeenCalledWith(txHash, expect.any(String), expect.any(Function));
       expect(enqueue).toHaveBeenCalledWith(
         { title: "Receive WuGNOT" },
-        expect.objectContaining({ type: "receive-wugnot", timeout: 0 }),
+        expect.objectContaining({ type: "receive-wugnot", timeout: 0, accountAddress: "g1user" }),
       );
-      await (
-        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
-      ).advanceTimersByTimeAsync(8_000);
-      expect(getTransfers).toHaveBeenCalledTimes(2);
-      expect(getReceiveWugnotMessage).toHaveBeenCalledTimes(1);
     } finally {
       jest.useRealTimers();
     }
   });
 
-  it("waits for a positive balance before showing a 0.01 wGNOT receive badge", async () => {
-    jest.useFakeTimers();
-    try {
-      const getTransfers = jest.fn().mockResolvedValue({
-        data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "10000" }],
-      });
-      const fetchBalance = jest.fn().mockResolvedValueOnce("0").mockResolvedValue("10000");
-      const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, fetchBalance);
-      await onEmit({ status: "SUCCESS", data: [] });
-      await Promise.resolve();
-      expect(fetchBalance).toHaveBeenCalledTimes(1);
-      expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
-      await (
-        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
-      ).advanceTimersByTimeAsync(1_200);
-      expect(fetchBalance).toHaveBeenCalledTimes(2);
-      expect(getReceiveWugnotMessage).toHaveBeenCalledWith(txHash, "0.01", expect.any(Function));
-    } finally {
-      jest.useRealTimers();
-    }
-  });
+  it("ignores an applied receipt that resolves after the account changes", async () => {
+    const { promise: receipt, resolve } = Promise.withResolvers<IGrc20BalanceReceiptResponse>();
+    const getReceipt = jest.fn().mockReturnValue(receipt);
+    const { onEmit, getReceiveWugnotMessage, setAccount } = setupTransferEvent(getReceipt);
 
-  it("does not show a zero-balance badge if the wallet balance never catches up", async () => {
-    jest.useFakeTimers();
-    try {
-      const getTransfers = jest.fn().mockResolvedValue({
-        data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "10000" }],
-      });
-      const fetchBalance = jest.fn().mockResolvedValue("0");
-      const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, fetchBalance);
-      await onEmit({ status: "SUCCESS", data: [] });
-      await (
-        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
-      ).advanceTimersByTimeAsync(10_000);
-      expect(fetchBalance).toHaveBeenCalledTimes(7);
-      expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
-    } finally {
-      jest.useRealTimers();
-    }
-  });
-
-  it("does not round a small nonzero wallet balance down to zero", async () => {
-    const getTransfers = jest.fn().mockResolvedValue({
-      data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "10000" }],
-    });
-    const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, "1000");
     await onEmit({ status: "SUCCESS", data: [] });
-    await waitFor(() => expect(getReceiveWugnotMessage).toHaveBeenCalledWith(txHash, "0.001", expect.any(Function)));
-  });
-
-  it("refreshes the receive badge balance after a later swap while a badge is already open", async () => {
-    (useSnackbar as jest.Mock).mockReturnValue({
-      hasBadgeSnackbar: true,
-      enqueue,
-      dequeue: jest.fn(),
-      change: jest.fn(),
+    expect(getReceipt).toHaveBeenCalledWith("g1user", txHash);
+    setAccount("g1other");
+    await act(async () => {
+      resolve(appliedReceipt);
+      await receipt;
     });
-    const getTransfers = jest.fn().mockResolvedValue({
-      data: [{ fromAddress: "g1other", toAddress: "g1user", tokenAmount: "1000000" }],
-    });
-    const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers, "2000000");
-    await onEmit({ status: "SUCCESS", data: [] });
-    await waitFor(() => expect(getReceiveWugnotMessage).toHaveBeenCalledWith(txHash, "2", expect.any(Function)));
-    expect(getTransfers).toHaveBeenCalledWith(txHash, expect.any(String));
-    expect(enqueue.mock.calls.filter(([, config]) => config.type === "receive-wugnot")).toHaveLength(1);
-  });
 
-  it("stops polling permanently empty transfers without showing a receive badge", async () => {
-    jest.useFakeTimers();
-    try {
-      const getTransfers = jest.fn().mockResolvedValue({ data: [] });
-      const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers);
-      await onEmit({ status: "SUCCESS", data: [] });
-      await (
-        jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
-      ).advanceTimersByTimeAsync(10_000);
-
-      expect(getTransfers).toHaveBeenCalledTimes(7);
-      expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
-      expect(enqueue.mock.calls.filter(([, config]) => config.type === "receive-wugnot")).toHaveLength(0);
-    } finally {
-      jest.useRealTimers();
-    }
-  });
-
-  it("does not query transfers for a failed transaction", async () => {
-    const getTransfers = jest.fn();
-    const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers);
-    await onEmit({ status: "FAILED", data: [] });
-
-    expect(getTransfers).not.toHaveBeenCalled();
-    expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
-  });
-
-  it("does not retry nonempty net-negative transfers or show a receive badge", async () => {
-    const getTransfers = jest.fn().mockResolvedValue({
-      data: [
-        { fromAddress: "g1user", toAddress: "g1other", tokenAmount: "30000" },
-        { fromAddress: "g1other", toAddress: "g1user", tokenAmount: "10000" },
-      ],
-    });
-    const { onEmit, getReceiveWugnotMessage } = setupTransferEvent(getTransfers);
-    await onEmit({ status: "SUCCESS", data: [] });
-    await waitFor(() => expect(getTransfers).toHaveBeenCalledTimes(1));
-
+    expect(getReceipt).toHaveBeenCalledTimes(1);
     expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
     expect(enqueue.mock.calls.filter(([, config]) => config.type === "receive-wugnot")).toHaveLength(0);
   });
 
-  it("cancels a pending transfer retry when the hook unmounts", async () => {
+  it("keeps the committed account receipt valid when another account render is abandoned", async () => {
+    const { promise: receipt, resolve } = Promise.withResolvers<IGrc20BalanceReceiptResponse>();
+    const { promise: suspendedAccount } = Promise.withResolvers<void>();
+    const getReceipt = jest.fn().mockReturnValue(receipt);
+    const accountContext = React.createContext("g1user");
+    const attemptedOtherAccount = jest.fn();
+    (useGnoswapContext as jest.Mock).mockReturnValue({
+      eventStore,
+      tokenRepository: { getGrc20BalanceReceiptByAddress: getReceipt },
+      poolRepository: {},
+      positionRepository: {},
+    });
+    (useWallet as jest.Mock).mockImplementation(() => ({
+      account: { address: React.useContext(accountContext) },
+    }));
+    (useMessage as jest.Mock).mockReturnValue({
+      getMessage: jest.fn().mockReturnValue({ txHash }),
+      getReceiveWugnotMessage: jest.fn().mockReturnValue({ title: "Receive WUGNOT" }),
+      getStakePositionMessage: jest.fn(),
+    });
+    const Probe = () => {
+      const address = React.useContext(accountContext);
+      const { enqueueEvent } = useTransactionEventStore();
+      React.useEffect(() => {
+        enqueueEvent({ txHash, action: DexEvent.SWAP, checkWugnotTransfer: true });
+      }, []);
+      return <span>{address}</span>;
+    };
+    const SuspendOtherAccount = () => {
+      if (React.useContext(accountContext) === "g1other") {
+        attemptedOtherAccount();
+        throw suspendedAccount;
+      }
+      return null;
+    };
+    const Controls = () => {
+      const [address, setAddress] = React.useState("g1user");
+      return (
+        <>
+          <button onClick={() => React.startTransition(() => setAddress("g1other"))}>switch account</button>
+          <button onClick={() => setAddress("g1user")}>keep current account</button>
+          <accountContext.Provider value={address}>
+            <React.Suspense fallback={<span>switching account</span>}>
+              <Probe />
+              <SuspendOtherAccount />
+            </React.Suspense>
+          </accountContext.Provider>
+        </>
+      );
+    };
+    render(<Controls />);
+    const onEmit = eventStore.addEvent.mock.calls[0][2];
+    await act(async () => {
+      await onEmit({ status: "SUCCESS", data: [] });
+    });
+    expect(getReceipt).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", { name: "switch account" }));
+    expect(attemptedOtherAccount).toHaveBeenCalled();
+    expect(screen.getByText("g1user")).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: "keep current account" }));
+    await act(async () => {
+      resolve(appliedReceipt);
+      await receipt;
+    });
+    expect(enqueue).toHaveBeenCalledWith(
+      { title: "Receive WUGNOT" },
+      expect.objectContaining({ type: "receive-wugnot", accountAddress: "g1user" }),
+    );
+  });
+
+  it("does not check an old transaction receipt after switching accounts, disconnecting, and reconnecting", async () => {
+    const getReceipt = jest.fn().mockResolvedValue(appliedReceipt);
+    const { onEmit, getReceiveWugnotMessage, refetchNotifications, setAccount } = setupTransferEvent(getReceipt);
+
+    setAccount("g1other");
+    setAccount(null);
+    setAccount("g1user");
+    await onEmit({ status: "SUCCESS", data: [] });
+
+    expect(refetchNotifications).toHaveBeenCalledTimes(1);
+    expect(getReceipt).not.toHaveBeenCalled();
+    expect(getReceiveWugnotMessage).not.toHaveBeenCalled();
+    expect(enqueue.mock.calls.filter(([, config]) => config.type === "receive-wugnot")).toHaveLength(0);
+  });
+
+  it("stops receipt retries after disconnecting", async () => {
     jest.useFakeTimers();
     try {
-      const getTransfers = jest.fn().mockResolvedValue({ data: [] });
-      const { onEmit, unmount } = setupTransferEvent(getTransfers);
+      const getReceipt = jest.fn().mockResolvedValue(pendingReceipt);
+      const { onEmit, setAccount } = setupTransferEvent(getReceipt);
       await onEmit({ status: "SUCCESS", data: [] });
-      unmount();
+      await Promise.resolve();
+      expect(getReceipt).toHaveBeenCalledTimes(1);
+
+      setAccount(null);
       await (
         jest as typeof jest & { advanceTimersByTimeAsync: (ms: number) => Promise<void> }
       ).advanceTimersByTimeAsync(10_000);
 
-      expect(getTransfers).toHaveBeenCalledTimes(1);
-      expect(enqueue.mock.calls.filter(([, config]) => config.type === "receive-wugnot")).toHaveLength(0);
+      expect(getReceipt).toHaveBeenCalledTimes(1);
     } finally {
       jest.useRealTimers();
     }
-  });
-
-  it("keeps the known transaction hash on the pending snackbar", () => {
-    const Probe = () => {
-      const { enqueueEvent } = useTransactionEventStore();
-
-      React.useEffect(() => {
-        enqueueEvent({ txHash, action: DexEvent.SWAP });
-      }, [enqueueEvent]);
-
-      return null;
-    };
-
-    render(<Probe />);
-
-    expect(enqueue).toHaveBeenCalledWith(
-      { txHash },
-      expect.objectContaining({
-        type: "pending",
-      }),
-    );
   });
   it("uses confirmed event data for staking guidance even while the update callback is pending", async () => {
     const getPositionById = jest.fn().mockResolvedValue({ poolPath: "pool", tokenUri: "nft.svg" });

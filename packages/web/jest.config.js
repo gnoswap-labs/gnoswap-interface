@@ -8,11 +8,11 @@ const createJestConfig = nextJest({
   dir: "./",
 });
 
-// The gno clients and a part of their dependency tree (uuid, @scure, @noble, @cosmjs)
+// Faker, the gno clients, and a part of their dependency tree (uuid, @scure, @noble, @cosmjs)
 // are published as ESM only, so they have to go through the transformer instead of
 // being required as-is. Every enclosing scope has to be listed as well, otherwise the
 // pattern still matches on the outer `node_modules/` segment of a nested dependency.
-const ESM_ONLY_PACKAGES = ["@adena-wallet", "@gnolang", "@cosmjs", "@scure", "@noble", "uuid"];
+const ESM_ONLY_PACKAGES = ["@faker-js", "@adena-wallet", "@gnolang", "@cosmjs", "@scure", "@noble", "uuid"];
 
 // Add any custom config to be passed to Jest
 const customJestConfig = {

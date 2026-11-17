@@ -27,14 +27,8 @@
     "ongoing": "진행 중",
     "status": {
       "ended": "종료",
-      "endsInOneMinute": "1분 후 종료",
       "ongoing": "{{time}} 후 종료",
       "upcoming": "{{time}} 후 시작 예정"
-    },
-    "tierDuration": {
-      "1month": "1개월",
-      "3months": "3개월",
-      "6months": "6개월"
     },
     "time": {
       "days_other": "{{count}}일",
@@ -141,7 +135,6 @@
     "unconnect": "참여 현황을 확인하려면<br/>지갑을 연결하세요."
   },
   "participate": {
-    "balance": "잔액",
     "col": {
       "depositAmount": "예치 수량",
       "endDate": "종료 날짜",

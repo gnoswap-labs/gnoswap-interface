@@ -222,8 +222,8 @@ export const useDecreaseHandle = () => {
     const tokenAPrice = tokenPrices[checkGnotPath(tokenA.priceID)]?.usd || 0;
     const tokenBPrice = tokenPrices[checkGnotPath(tokenB.priceID)]?.usd || 0;
 
-    const tokenAAmount = Number(pooledTokenAAmount) || 0;
-    const tokenBAmount = Number(pooledTokenBAmount) || 0;
+    const tokenAAmount = makeDisplayTokenAmount(tokenA, pooledTokenAAmount) || 0;
+    const tokenBAmount = makeDisplayTokenAmount(tokenB, pooledTokenBAmount) || 0;
     const unClaimTokenAAmount = makeDisplayTokenAmount(tokenA, unClaimTokenA) || 0;
     const unClaimTokenBAmount = makeDisplayTokenAmount(tokenB, unClaimTokenB) || 0;
 

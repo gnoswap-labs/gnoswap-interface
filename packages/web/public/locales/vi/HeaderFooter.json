@@ -1,6 +1,4 @@
 {
-  "addPosi": "Thêm vị trí",
-  "copied": "Đã sao chép!",
   "developersSection": {
     "item": {
       "audit": "Kiểm toán",
@@ -23,14 +21,12 @@
     },
     "title": "Tính năng"
   },
-  "gnoBridge": "Cầu Gno",
   "governance": "Quản trị",
   "governanceSection": {
     "item": {
       "dashboard": "Khám phá",
       "forum": "Diễn đàn",
       "proposals": "Các đề xuất",
-      "vote": "Bỏ phiếu",
       "xgns": "xGNS"
     },
     "title": "Quản trị"
@@ -41,7 +37,6 @@
       "aboutUs": "Giới thiệu về chúng tôi",
       "faq": "Câu hỏi thường gặp",
       "projectOnboarding": "Quá trình tiếp nhận nhân viên mới",
-      "twitter": "Twitter (X)",
       "userGuide": "Hướng dẫn sử dụng"
     },
     "title": "Trợ giúp"
@@ -61,7 +56,6 @@
     "title": "Chính sách"
   },
   "portfolio": "Danh mục đầu tư",
-  "projectOnboarding": "Quá trình tiếp nhận dự án",
   "receive": "Nhận",
   "referralSection": {
     "banner": {
@@ -84,9 +78,7 @@
       }
     }
   },
-  "stakePosi": "Vị thế đặt cược",
   "swap": "Hoán đổi",
   "switchNetwork": "Chuyển đổi Mạng",
-  "theFastest": "hệ sinh thái phát triển nhanh nhất, với mục tiêu xây dựng nguồn thanh khoản dồi dào nhất trên Gnoland.",
   "theme": "Chủ đề"
 }

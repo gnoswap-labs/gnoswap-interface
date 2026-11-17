@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import Badge, { BADGE_TYPE } from "@components/common/badge/Badge";
 import Button, { ButtonHierarchy } from "@components/common/button/Button";
 import IconNewTab from "@components/common/icons/IconNewTab";
-import { ProposalItemInfo } from "@repositories/governance";
+import { PROPOSAL_TYPE, ProposalItemInfo } from "@repositories/governance";
 import { safeParseTime } from "@utils/time.utils";
 
 import StatusBadge from "../../status-badge/StatusBadge";
@@ -205,6 +205,11 @@ const ProposalCard: React.FC<Props> = ({
           breakpoint={breakpoint}
           status={proposalDetail.status}
           time={safeParseTime(proposalDetail.statusTime)}
+          executableTime={
+            proposalDetail.proposalType !== PROPOSAL_TYPE.PROPOSAL_TEXT
+              ? safeParseTime(proposalDetail.executableTime)
+              : null
+          }
         />
       </div>
       <VotingProgressBar

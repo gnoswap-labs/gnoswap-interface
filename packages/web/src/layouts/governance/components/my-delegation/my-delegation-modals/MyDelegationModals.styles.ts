@@ -205,6 +205,45 @@ export const MyDelegationModalWrapper = styled.div`
       }
     }
 
+    .apr-breakdown {
+      ${mixins.flexbox("column", "flex-start", "flex-start")};
+      width: 100%;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid ${({ theme }) => theme.color.border02};
+      background-color: ${({ theme }) => theme.color.background06};
+
+      .apr-breakdown-row {
+        ${mixins.flexbox("row", "flex-start", "space-between")};
+        width: 100%;
+        gap: 8px;
+      }
+
+      .apr-breakdown-label {
+        ${mixins.flexbox("column", "flex-start", "flex-start")};
+        min-width: 0;
+        gap: 2px;
+
+        .name {
+          color: ${({ theme }) => theme.color.text04};
+          ${fonts.body13}
+        }
+
+        .period {
+          color: ${({ theme }) => theme.color.text07};
+          ${fonts.body12}
+        }
+      }
+
+      .apr-breakdown-value {
+        flex-shrink: 0;
+        text-align: end;
+        color: ${({ theme }) => (theme.themeKey === "dark" ? theme.color.text05 : "#596782")};
+        ${fonts.body13}
+      }
+    }
+
     .delegatee-info-rows {
       flex-shrink: 0;
       width: 100%;

@@ -224,10 +224,14 @@ describe("error-util.improved", () => {
     });
 
     it("should handle complex error scenarios", () => {
+      type ErrorHandlerResult =
+        | { handled: true; type: string }
+        | { handled: true; message: string }
+        | { handled: true; value: string };
       const handlers = {
-        onBaseError: (e: BaseError) => ({ handled: true, type: e.getType() }),
-        onGenericError: (e: Error) => ({ handled: true, message: e.message }),
-        onUnknown: (e: unknown) => ({ handled: true, value: String(e) }),
+        onBaseError: (e: BaseError): ErrorHandlerResult => ({ handled: true, type: e.getType() }),
+        onGenericError: (e: Error): ErrorHandlerResult => ({ handled: true, message: e.message }),
+        onUnknown: (e: unknown): ErrorHandlerResult => ({ handled: true, value: String(e) }),
       };
 
       // Test BaseError

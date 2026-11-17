@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "Баланс",
     "cancel": "Отмена",
     "close": "Закрыть",
     "copy": "Копировать",
-    "earn": "Заработать",
     "swap": "Обмен"
   },
   "all": "Все",
-  "available": "Доступно",
   "balanceChange": {
     "currentBalance": "Текущий баланс",
     "defaultTitle": "3. Изменения в балансе",
@@ -22,7 +19,6 @@
     "amountTooLow": "Слишком низкая сумма",
     "enterAmount": "Введите сумму",
     "insuffiBal": "Недостаточный баланс",
-    "switchNetwork": "Переключитесь на Гноланд",
     "walletLogin": "Вход в кошелек"
   },
   "candleTooltip": {
@@ -75,7 +71,6 @@
       "title": "Как работает ставка?"
     }
   },
-  "imporNote": "Важное замечание",
   "learnMore": "Узнать больше",
   "localTimeComp": {
     "tooltip": "*По местному времени"
@@ -100,14 +95,6 @@
   "noDataFound": "Данные не найдены",
   "noProposalFound": "Предложение не найдено",
   "per": "за",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "Должность Сумма",
-      "priceRange": "Диапазон цен",
-      "quote": "Цитировать",
-      "totalAmt": "Общая сумма."
-    }
-  },
   "price": "Цена",
   "reset": "Сброс",
   "search": "Поиск",

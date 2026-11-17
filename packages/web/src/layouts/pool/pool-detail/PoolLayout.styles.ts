@@ -128,3 +128,16 @@ export const PoolLayoutWrapper = styled.div`
     }
   }
 `;
+
+export const PoolLoadingMain = styled.main`
+  ${mixins.flexbox("column", "center", "center")};
+  width: 100%;
+  min-height: calc(100dvh - 70px);
+
+  ${media.tablet} {
+    min-height: calc(100dvh - 60px);
+  }
+  ${media.mobile} {
+    min-height: calc(100dvh - 50px);
+  }
+`;
