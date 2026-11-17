@@ -135,6 +135,7 @@ export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[])
     executionFeeAmount: makeDisplayTokenAmountString(outputToken, item.executionFeeAmount) ?? null,
     poolPath: item.poolPath || null,
     marketPrice: toDisplayPrice(inputToken, outputToken, item.marketPrice),
+    isMarketPriceReported: item.marketPrice !== undefined,
     nextExecutionAt: isActive ? item.nextExecutionAt : null,
     createdAt: item.createdAt,
     closedAt: item.closedAt,

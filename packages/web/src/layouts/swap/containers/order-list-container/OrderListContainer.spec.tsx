@@ -26,7 +26,7 @@ jest.mock("@query/order", () => ({
   useGetLimitOrders: (...args: unknown[]) => mockUseGetLimitOrders(...args),
 }));
 jest.mock("@constants/order.constant", () => ({ ENABLED_SWAP_CARD_TYPES: ["swap", "dca", "limit"] }));
-jest.mock("../../components/order-list/order-card/DcaOrderItemCard", () => ({
+jest.mock("./DcaOrderItemCardContainer", () => ({
   __esModule: true,
   default: ({ order }: { order: { packagePath: string; orderId: string } }) => (
     <div data-testid="order-card">{`${order.packagePath}:${order.orderId}`}</div>

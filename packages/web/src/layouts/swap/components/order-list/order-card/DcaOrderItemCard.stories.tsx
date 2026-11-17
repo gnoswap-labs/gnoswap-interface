@@ -38,6 +38,7 @@ const ORDER: DcaOrderModel = {
   executionFeeAmount: "0.624",
   poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000",
   marketPrice: "1.0335",
+  isMarketPriceReported: true,
   nextExecutionAt: NOW + 20 * MINUTE,
   createdAt: NOW - 4 * HOUR,
   closedAt: null,
@@ -76,6 +77,7 @@ const meta = {
   component: DcaOrderItemCard,
   args: {
     order: ORDER,
+    marketPrice: ORDER.marketPrice,
     outputTokenUsdPrice: "0.42",
     txUrl: "",
     onClickStop: fn(),

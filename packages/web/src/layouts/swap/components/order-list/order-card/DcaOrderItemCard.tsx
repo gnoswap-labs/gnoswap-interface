@@ -29,6 +29,8 @@ import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "
 
 export interface DcaOrderItemCardProps {
   order: DcaOrderModel;
+  /** Current output per input of the pool the order trades on. Null while unknown. */
+  marketPrice: string | null;
   /** Current USD price of the order's output token, to value the execution fee. Null while unknown. */
   outputTokenUsdPrice?: string | null;
   txUrl: string;
@@ -89,6 +91,7 @@ function formatPriceMetric(rate: string | null, order: DcaOrderModel, full = fal
 
 const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   order,
+  marketPrice,
   outputTokenUsdPrice = null,
   txUrl,
   onClickStop,
@@ -98,7 +101,7 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage ?? i18n.language;
   const nowUnixSeconds = useOrderClock();
-  const { inputToken, outputToken, marketPrice } = order;
+  const { inputToken, outputToken } = order;
 
   const metrics: OrderMetric[] = useMemo(() => {
     const deviation = formatOrderPriceDeviation(calculatePriceDeviation(order.priceRate, marketPrice), locale);

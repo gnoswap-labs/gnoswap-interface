@@ -95,6 +95,7 @@ const dcaOrder: DcaOrderModel = {
   executionFeeAmount: null,
   poolPath: null,
   marketPrice: null,
+  isMarketPriceReported: false,
   nextExecutionAt: 3601,
   createdAt: 1,
   closedAt: null,

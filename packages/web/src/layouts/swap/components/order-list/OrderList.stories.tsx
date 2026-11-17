@@ -43,7 +43,8 @@ const PAST_DCA_ORDER: DcaOrderModel = {
   executionFeeRate: 15,
   executionFeeAmount: null,
   poolPath: null,
-  marketPrice: "1.0395",
+  marketPrice: null,
+  isMarketPriceReported: true,
   nextExecutionAt: null,
   createdAt: NOW - 3600,
   closedAt: Date.UTC(2024, 11, 25) / 1000,
@@ -83,6 +84,7 @@ const PastOrderList: React.FC = () => {
         >
           <DcaOrderItemCard
             order={PAST_DCA_ORDER}
+            marketPrice="1.0395"
             txUrl=""
             onClickStop={fn()}
             onClickClaim={fn()}
