@@ -63,6 +63,17 @@ describe("order-format-utils", () => {
     expect(formatOrderRate(null)).toBe("-");
   });
 
+  it.each([
+    ["0.0733484254607927925438", 6, "0.073348"],
+    ["0.0733484254607927925438", 18, "0.073348425460792792"],
+    ["1234.56789", 0, "1,234"],
+    ["0.5", 0, "<1"],
+    ["0.000000000123", 6, "<0.000001"],
+    ["0", 6, "0"],
+  ] as const)("bounds a full rate %s to %s token decimals", (rate, decimals, expected) => {
+    expect(formatOrderRate(rate, { decimals, isKMB: false })).toBe(expected);
+  });
+
   it("formats basis points", () => {
     expect(formatBps(15)).toBe("0.15%");
     expect(formatBps(100)).toBe("1%");

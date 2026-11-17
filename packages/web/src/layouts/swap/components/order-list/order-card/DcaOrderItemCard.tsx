@@ -75,16 +75,14 @@ const ActiveDcaOrderStatus: React.FC<{ order: DcaOrderModel }> = ({ order }) => 
   );
 };
 
-/** A rate with the output symbol; the full value has every digit and the input it is quoted for. */
+/** A rate with the output symbol; the full value uses its token decimals and names the input it is quoted for. */
 function formatPriceMetric(rate: string | null, order: DcaOrderModel, full = false): string {
   if (rate === null) return "-";
   const { inputToken, outputToken } = order;
   if (!full) return `${formatOrderRate(rate)} ${outputToken.displaySymbol}`;
 
-  const value = BigNumber(rate);
-  return `1 ${inputToken.displaySymbol} = ${formatOrderFullAmount(value, value.decimalPlaces() ?? 0)} ${
-    outputToken.displaySymbol
-  }`;
+  const value = formatOrderRate(rate, { decimals: outputToken.decimals, isKMB: false });
+  return `1 ${inputToken.displaySymbol} = ${value} ${outputToken.displaySymbol}`;
 }
 
 const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({

@@ -60,14 +60,23 @@ export function formatOrderFeeUsd(fee: string | null | undefined, usdPrice: stri
   return formatPrice(value, { usd: true, isKMB: false });
 }
 
-/** Exchange rates: six decimals rounded down with trailing zeros dropped. `-` when unknown. */
-export function formatOrderRate(rate: BigNumber.Value | null | undefined): string {
+/** Exchange rates rounded down, with six decimals and K/M/B by default. `-` when unknown. */
+export function formatOrderRate(
+  rate: BigNumber.Value | null | undefined,
+  { decimals = 6, isKMB = true }: { decimals?: number; isKMB?: boolean } = {},
+): string {
   if (rate === null || rate === undefined || rate === "") return "-";
   const value = BigNumber(rate);
   if (!value.isFinite()) return "-";
   if (value.isZero()) return "0";
 
-  return trimFractionZeros(formatTokenAmount(value.toFixed(), { decimals: 6, minLimit: 0.000001, isKMB: true }));
+  return trimFractionZeros(
+    formatTokenAmount(decimals === 0 ? value.integerValue(BigNumber.ROUND_DOWN) : value, {
+      decimals,
+      minLimit: 10 ** -decimals,
+      isKMB,
+    }),
+  );
 }
 
 /** Inverts a positive output/input rate for a Buy order's quote/base view. */

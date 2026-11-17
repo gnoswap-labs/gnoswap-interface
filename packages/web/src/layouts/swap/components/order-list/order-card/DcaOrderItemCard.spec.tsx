@@ -118,8 +118,14 @@ describe("DcaOrderItemCard metrics", () => {
     ]);
   });
 
-  it("quotes the full market price for one input token in the tooltip", async () => {
-    const { container } = renderCard(ACTIVE, "1.123456789");
+  it.each([
+    { rate: "1.123456789", decimals: 18, expected: "1.123456789" },
+    { rate: "0.0733484254607927925438", decimals: 6, expected: "0.073348" },
+    { rate: "0.0733484254607927925438", decimals: 18, expected: "0.073348425460792792" },
+    { rate: "0.000000000123", decimals: 6, expected: "<0.000001" },
+    { rate: "0.5", decimals: 0, expected: "<1" },
+  ])("quotes a full market price with $decimals output decimals", async ({ rate, decimals, expected }) => {
+    const { container } = renderCard({ ...ACTIVE, outputToken: { ...ACTIVE.outputToken, decimals } }, rate);
 
     const price = container.querySelectorAll<HTMLElement>(".metric .metric-value")[0];
     await userEvent.hover(price);
@@ -130,7 +136,7 @@ describe("DcaOrderItemCard metrics", () => {
       clientWidth: { value: 50 },
     });
     await userEvent.hover(price);
-    expect(await screen.findByRole("tooltip")).toHaveTextContent("1 GNOT = 1.123456789 GNS");
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(`1 GNOT = ${expected} GNS`);
   });
 
   it("shows no price or deviation while the market price or the fills are unknown", () => {
