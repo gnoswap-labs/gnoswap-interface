@@ -8,6 +8,7 @@ import {
   GetDcaScheduleRequest,
   GetOrderHistoryRequest,
   GetOrdersRequest,
+  LimitMarketPricePair,
 } from "./request";
 import {
   DcaConfigResponse,
@@ -17,6 +18,7 @@ import {
   DcaScheduleResponse,
   LimitConfigResponse,
   LimitFillItem,
+  LimitMarketPriceResponse,
   LimitOrderItem,
   OrderPagedResponse,
 } from "./response";
@@ -43,6 +45,7 @@ export interface OrderRepository {
   getLimitOrder(orderId: string, packagePath?: string): Promise<LimitOrderItem>;
 
   getLimitOrderFills(request: GetOrderHistoryRequest): Promise<OrderPagedResponse<LimitFillItem>>;
+  getLimitMarketPrice(request: LimitMarketPricePair): Promise<LimitMarketPriceResponse>;
 
   makeCreateDcaOrderMessages(request: CreateDcaOrderRequest): Promise<TransactionMessage[]>;
 

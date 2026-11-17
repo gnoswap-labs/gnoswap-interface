@@ -6,4 +6,5 @@ export * from "./use-get-dca-order";
 export * from "./use-get-dca-executions";
 export * from "./use-get-limit-config";
 export * from "./use-get-limit-orders";
+export * from "./use-get-limit-market-prices";
 export * from "./use-get-limit-order-fills";
