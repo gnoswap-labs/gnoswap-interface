@@ -346,6 +346,49 @@ describe("useLimitOrderHandler", () => {
     expect(result.current.limitPrice).toBe("11");
   });
 
+  it("moves the Sell quantity to Buy and back with its token when reversing direction", async () => {
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    await waitFor(() => expect(result.current.limitPrice).toBe("11"));
+    act(() => result.current.changeSellAmount("3.25"));
+
+    act(() => result.current.switchTokens());
+    expect(result.current.orderSide).toBe("buy");
+    expect(result.current.tokenA).toEqual(tokenB);
+    expect(result.current.tokenB).toEqual(tokenA);
+    expect(result.current.buyAmount).toBe("3.25");
+    expect(result.current.limitPrice).toBe("9");
+    expect(result.current.sellAmount).toBe("29.25");
+
+    act(() => result.current.changeLimitPrice("8"));
+    expect(result.current.buyAmount).toBe("3.25");
+    expect(result.current.sellAmount).toBe("26");
+
+    act(() => result.current.switchTokens());
+    expect(result.current.orderSide).toBe("sell");
+    expect(result.current.tokenA).toEqual(tokenA);
+    expect(result.current.tokenB).toEqual(tokenB);
+    expect(result.current.sellAmount).toBe("3.25");
+    expect(result.current.buyAmount).toBe("35.75");
+  });
+
+  it("moves the displayed Buy quantity rather than its funding budget when reversing direction", async () => {
+    const { result } = renderHook(() => useLimitOrderHandler(), { wrapper });
+    act(() => result.current.changeTokenA(tokenA));
+    act(() => result.current.changeTokenB(tokenB));
+    act(() => result.current.changeOrderSide("buy"));
+    act(() => result.current.changeLimitPrice("6"));
+    act(() => result.current.changeSellAmount("18"));
+    expect(result.current.buyAmount).toBe("3");
+
+    act(() => result.current.switchTokens());
+    expect(result.current.orderSide).toBe("sell");
+    expect(result.current.tokenA).toEqual(tokenA);
+    expect(result.current.sellAmount).toBe("3");
+    expect(result.current.buyAmount).toBe("33");
+  });
+
   it("inverts the pool's full-precision rate for a Buy market price, rounding only the result", async () => {
     // The pool pays 0.1234567 A per B. Inverting the rate cut to 0.123456 first would give 8.10005 B per A, not 8.1.
     mockGetPrice.mockImplementation(pair =>

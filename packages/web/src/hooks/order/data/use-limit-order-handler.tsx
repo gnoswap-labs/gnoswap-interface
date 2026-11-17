@@ -479,9 +479,22 @@ export const useLimitOrderHandler = () => {
   );
 
   const switchTokens = useCallback(() => {
-    resetPairInputs();
+    const nextSide = orderSide === "sell" ? "buy" : "sell";
+    resetPairInputs(nextSide);
+    setOrderSide(nextSide);
+    setFundingAmountInput(nextSide === "sell" ? buyAmount : "");
+    setBuyAmountInput(nextSide === "buy" ? sellAmount : "");
     setSwapValue(prev => ({ ...prev, tokenA: prev.tokenB, tokenB: prev.tokenA }));
-  }, [resetPairInputs, setSwapValue]);
+  }, [
+    buyAmount,
+    orderSide,
+    resetPairInputs,
+    sellAmount,
+    setBuyAmountInput,
+    setFundingAmountInput,
+    setOrderSide,
+    setSwapValue,
+  ]);
 
   const changeLimitPrice = useCallback(
     (value: string) => {
