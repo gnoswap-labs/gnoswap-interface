@@ -3,8 +3,6 @@
     "title": {
       "default": "ワンストップのGno.land DeFiプラットフォーム｜GnoSwap",
       "earn": "稼ぐ｜グノスワップ",
-      "earnAdd": "{{tokenASymbol}}/{{tokenBSymbol}} にポジションを追加{{feeTier}}",
-      "earnAddDefault": "GnoSwapプールへのポジション追加",
       "explore": "エクスペリエンス｜グノスワップ",
       "governance": "ガバナンス｜GnoSwap",
       "launchpad": "ランチパッド｜GnoSwap",

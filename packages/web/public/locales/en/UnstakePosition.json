@@ -3,15 +3,7 @@
     "selectPosi": "Select Position"
   },
   "confStakeModal": {
-    "btn": "Confirm Unstake Position",
     "positionLst": "Positions",
-    "stakingReward": {
-      "apr": {
-        "label": "Staking APR",
-        "tooltip": "The estimated APR range is calculated by applying a\ndynamic multiplier to your staked position, based on the\nstaking duration."
-      },
-      "title": "Staking Rewards"
-    },
     "title": "Confirm Unstake Position",
     "unstakingFee": {
       "tooltip": "The percentage of fees charged on the position’s staking reward claimed (not on the principal) that goes to the protocol."
@@ -22,10 +14,8 @@
     }
   },
   "overview": {
-    "collectAsSwitch": "Collect as WGNOT",
     "pooled": "Pooled",
-    "totalAmt": "Total Amount",
-    "unclaimed": "Unclaimed Reward"
+    "totalAmt": "Total Amount"
   },
   "positionList": {
     "item": {
@@ -34,9 +24,7 @@
       }
     }
   },
-  "rewards": "Rewards",
   "title": "Unstake Position",
-  "unclaimed": "Unclaimed",
   "unclaimedRewards": "Unclaimed Rewards",
   "warning": {
     "content": "This will completely reset your staking progress. Once you re-stake, you will have to wait 45 days to start receiving max staking rewards. Be sure to understand how the warm-up period works before unstaking.",

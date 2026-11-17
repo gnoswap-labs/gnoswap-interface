@@ -144,6 +144,37 @@ export const useMessage = () => {
             success: t("Modal:confirm.deposit.status.success", data),
             error: t("Modal:confirm.deposit.status.error", data),
           };
+        // Order
+        case DexEvent.DCA_ORDER:
+          return {
+            pending: t("Modal:confirm.dcaOrder.status.pending", data),
+            success: t("Modal:confirm.dcaOrder.status.success", data),
+            error: t("Modal:confirm.dcaOrder.status.error", data),
+          };
+        case DexEvent.DCA_STOP:
+          return {
+            pending: t("Modal:confirm.dcaStop.status.pending", data),
+            success: t("Modal:confirm.dcaStop.status.success", data),
+            error: t("Modal:confirm.dcaStop.status.error", data),
+          };
+        case DexEvent.DCA_CLAIM:
+          return {
+            pending: t("Modal:confirm.dcaClaim.status.pending", data),
+            success: t("Modal:confirm.dcaClaim.status.success", data),
+            error: t("Modal:confirm.dcaClaim.status.error", data),
+          };
+        case DexEvent.LIMIT_ORDER:
+          return {
+            pending: t("Modal:confirm.limitOrder.status.pending", data),
+            success: t("Modal:confirm.limitOrder.status.success", data),
+            error: t("Modal:confirm.limitOrder.status.error", data),
+          };
+        case DexEvent.LIMIT_CANCEL:
+          return {
+            pending: t("Modal:confirm.limitCancel.status.pending", data),
+            success: t("Modal:confirm.limitCancel.status.success", data),
+            error: t("Modal:confirm.limitCancel.status.error", data),
+          };
         default:
           return {
             pending: "Undefined task",
@@ -213,6 +244,17 @@ export const useMessage = () => {
           return t("Modal:confirm.cancelProposal.status.success");
         case DexEvent.LAUNCHPAD_DEPOSIT:
           return t("Modal:confirm.deposit.title");
+        // Order
+        case DexEvent.DCA_ORDER:
+          return t("Modal:confirm.dcaOrder.title");
+        case DexEvent.DCA_STOP:
+          return t("Modal:confirm.dcaStop.title");
+        case DexEvent.DCA_CLAIM:
+          return t("Modal:confirm.dcaClaim.title");
+        case DexEvent.LIMIT_ORDER:
+          return t("Modal:confirm.limitOrder.title");
+        case DexEvent.LIMIT_CANCEL:
+          return t("Modal:confirm.limitCancel.title");
         default:
           return "Undefined task";
       }

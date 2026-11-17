@@ -14,8 +14,7 @@
   "confStakeModal": {
     "positionLst": "Postes à pourvoir",
     "stakingReward": {
-      "title": "Récompenses pour le jalonnement",
-      "tooltip": "Montant des frais facturés pour chaque demande d'indemnisation soumise au protocole."
+      "title": "Récompenses pour le jalonnement"
     },
     "title": "Confirmer la position du piquet",
     "warning": {

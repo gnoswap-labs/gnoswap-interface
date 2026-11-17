@@ -156,14 +156,11 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     expect(max.simulated).toBe(true);
   });
 
-  it("falls back when even a hundredth of the balance cannot be simulated", async () => {
+  it("rejects when even a hundredth of the balance cannot be simulated", async () => {
     const simulateTx = jest.fn().mockRejectedValue(new Error("no route"));
     const { service } = makeService(simulateTx);
 
-    const max = await service.estimateMaxNativeAmount(request(100_000));
-
-    expect(max.simulated).toBe(false);
-    expect(max.amount).toBe("0");
+    await expect(service.estimateMaxNativeAmount(request(100_000))).rejects.toThrow("no route");
   });
 
   it("honours a caller that offers a different fee", async () => {
@@ -190,45 +187,82 @@ describe("TransactionGasServiceImpl.estimateMaxNativeAmount", () => {
     expect(max.simulated).toBe(true);
   });
 
-  it("falls back to the offered fee when no probe can be simulated", async () => {
-    const simulateTx = jest.fn().mockRejectedValue(new Error("unknown request"));
+  it("prices a small balance whose fee and storage deposit outgrow the probe near its ceiling", async () => {
+    // 4.99 GNOT, a 1 GNOT fee and a 1.1156 GNOT storage deposit: dev.gnoswap's DCA order.
+    const balance = 4_998_973;
+    const storageDeposit = 1_115_600;
+    let lastAmount = 0;
+    const makeMessages = jest.fn().mockImplementation((amount: string) => {
+      lastAmount = Number(amount);
+      return [{}];
+    });
+    const simulateTx = jest.fn().mockImplementation(async () => {
+      if (lastAmount + Number(OFFERED_GAS_FEE) + storageDeposit > balance) throw new Error("insufficient coins");
+      return result(153_000_000, storageDeposit);
+    });
     const { service } = makeService(simulateTx);
 
-    const max = await service.estimateMaxNativeAmount(request());
+    const max = await service.estimateMaxNativeAmount(request(balance, makeMessages));
 
-    expect(max.simulated).toBe(false);
-    expect(max.reserve.total).toBe(OFFERED_GAS_FEE);
-    expect(max.amount).toBe(`${BALANCE - Number(OFFERED_GAS_FEE)}`);
+    expect(max.simulated).toBe(true);
+    // The fee floor, the deposit padded by half, and the buffer are held back.
+    expect(max.amount).toBe(`${balance - Number(OFFERED_GAS_FEE) - storageDeposit * 1.5 - RESERVE_BUFFER}`);
+    expect(Number(max.amount) + Number(OFFERED_GAS_FEE) + storageDeposit).toBeLessThanOrEqual(balance);
   });
 
-  it("falls back when the action cannot build messages for the probe amount", async () => {
+  it("preserves the last failure after all initial simulation probes fail", async () => {
+    const failure = new Error("RPC unavailable");
+    const simulateTx = jest.fn().mockRejectedValueOnce(new Error("first probe failed")).mockRejectedValue(failure);
+    const { service } = makeService(simulateTx);
+
+    await expect(service.estimateMaxNativeAmount(request())).rejects.toBe(failure);
+    expect(simulateTx).toHaveBeenCalledTimes(plannedFor(BALANCE).length);
+  });
+
+  it("rejects when the action cannot build messages for the probe amount", async () => {
     const simulateTx = jest.fn();
     const { service } = makeService(simulateTx);
 
-    const max = await service.estimateMaxNativeAmount(request(BALANCE, jest.fn().mockReturnValue([])));
-
+    await expect(service.estimateMaxNativeAmount(request(BALANCE, jest.fn().mockReturnValue([])))).rejects.toThrow(
+      "action produced no messages",
+    );
     expect(simulateTx).not.toHaveBeenCalled();
-    expect(max.simulated).toBe(false);
   });
 
-  it("falls back without simulating when the fee alone exhausts the balance", async () => {
-    const simulateTx = jest.fn();
+  it("returns a measured zero when the reserve exhausts the balance", async () => {
+    const simulateTx = jest.fn().mockResolvedValue(result(660_000_000));
     const { service } = makeService(simulateTx);
 
     const max = await service.estimateMaxNativeAmount(request(1_000_000));
 
-    expect(max.simulated).toBe(false);
+    expect(max.simulated).toBe(true);
     expect(max.amount).toBe("0");
+    expect(max.reserve.total).toBe("1000000");
   });
 
-  it("falls back when no transaction service is available to build the document", async () => {
+  it("returns zero when no positive integer probe can be formed", async () => {
+    const simulateTx = jest.fn();
+    const { service } = makeService(simulateTx);
+
+    const max = await service.estimateMaxNativeAmount(request(99));
+
+    expect(max.amount).toBe("0");
+    expect(max.simulated).toBe(false);
+    expect(simulateTx).not.toHaveBeenCalled();
+  });
+
+  it("rejects when no transaction service is available to build the document", async () => {
     const simulateTx = jest.fn();
     const { service } = makeService(simulateTx, false);
 
-    const max = await service.estimateMaxNativeAmount(request());
-
+    await expect(service.estimateMaxNativeAmount(request())).rejects.toThrow("transaction service");
     expect(simulateTx).not.toHaveBeenCalled();
-    expect(max.simulated).toBe(false);
+  });
+
+  it("rejects when no Gno provider is available", async () => {
+    const service = new TransactionGasServiceImpl(null, null, null);
+
+    await expect(service.estimateMaxNativeAmount(request())).rejects.toThrow();
   });
 
   it("names the signer's key, which an account that never signed has no other source for", async () => {

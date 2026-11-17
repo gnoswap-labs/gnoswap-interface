@@ -185,9 +185,11 @@ export function makeNFTApproveMessage(
   });
 }
 
+/** Smallest raw ugnot amount wrapped by makeDepositGNOTMessage; below it no Deposit is built. */
+export const MIN_GNOT_DEPOSIT_AMOUNT = 1000;
+
 export function makeDepositGNOTMessage(amount: string | number | null, caller: string): TransactionCallMessage | null {
-  const minDepositAmount = 1000;
-  if (!amount || BigNumber(amount).isLessThan(minDepositAmount)) {
+  if (!amount || BigNumber(amount).isLessThan(MIN_GNOT_DEPOSIT_AMOUNT)) {
     return null;
   }
 

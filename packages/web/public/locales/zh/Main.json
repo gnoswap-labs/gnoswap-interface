@@ -1,9 +1,4 @@
 {
-  "allSwitch": "全部",
-  "bal": "余额",
-  "brand": {
-    "introduction": "在 GnoSwap 上<span>交换</span>并<span>赚取</span><br/>"
-  },
   "followOur": "按照我们的简单指南开始为您的项目建立流动性。",
   "highest": "最高年利率",
   "keyStatCard": {
@@ -13,13 +8,9 @@
     "toDashBoardBtnText": "前往探索",
     "totalValueLocked": "锁定总价值"
   },
-  "liquidityCol": "流动性",
   "lookingTo": "想要开始使用 GnoSwap？",
-  "newList": "新上市",
   "projectOnb": "项目入职指南",
   "search": "搜索",
-  "swapComp": "交换",
-  "swapNowBtn": "前往交易",
   "theFirst": "第一个使用 Gnolang 构建的集中流动性 AMM DEX",
   "theOne": "一站式 Gno.land DeFi 平台",
   "tokenList": {

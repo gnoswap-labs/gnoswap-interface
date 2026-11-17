@@ -27,14 +27,8 @@
     "ongoing": "Đang diễn ra",
     "status": {
       "ended": "Đã kết thúc",
-      "endsInOneMinute": "Sẽ kết thúc trong 1 phút nữa",
       "ongoing": "Kết thúc trong {{time}}",
       "upcoming": "Sắp tới trong {{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 tháng",
-      "3months": "3 tháng",
-      "6months": "6 tháng"
     },
     "time": {
       "days_other": "{{count}} ngày",
@@ -141,7 +135,6 @@
     "unconnect": "Vui lòng kết nối ví của bạn tại<br/>\nđể xem thông tin tham gia của bạn."
   },
   "participate": {
-    "balance": "Cân bằng",
     "col": {
       "depositAmount": "Số tiền đặt cọc",
       "endDate": "Ngày kết thúc",

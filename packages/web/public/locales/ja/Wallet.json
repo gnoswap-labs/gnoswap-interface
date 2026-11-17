@@ -30,7 +30,6 @@
     "enterAddr": {
       "input": "住所を入力"
     },
-    "estNetFee": "推定ネットワーク料金",
     "network": {
       "label": "ネットワーク",
       "tooltip": "送信するトークンのネットワーク。"

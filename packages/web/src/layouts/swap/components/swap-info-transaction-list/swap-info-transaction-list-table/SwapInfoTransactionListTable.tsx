@@ -42,6 +42,7 @@ interface SwapInfoTransactionListTableProps {
 interface TransactionListTableRowProps {
   breakpoint: DEVICE_TYPE;
   data: SwapHistoryItem;
+  tradeTypeLabel: string;
   isNewTransaction?: boolean;
 }
 
@@ -58,6 +59,12 @@ const TIME_THRESHOLDS = {
 
 const HIGHLIGHT_DURATION = 1_000;
 const PAGE_SIZE = 10;
+
+const TRADE_TYPE_LABEL_KEYS: Record<SwapHistoryItem["tradeType"], string> = {
+  SWAP: "Swap:tab.swap",
+  DCA: "Swap:tab.dca",
+  LIMIT: "Swap:tab.limit",
+};
 
 const getTableWidths = (breakpoint: DEVICE_TYPE) => {
   if (breakpoint === DEVICE_TYPE.MOBILE) {
@@ -166,6 +173,7 @@ const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTrans
             <TransactionListTableRow
               key={rowKeys[pageStart + idx]}
               data={item}
+              tradeTypeLabel={t(TRADE_TYPE_LABEL_KEYS[item.tradeType])}
               breakpoint={breakpoint}
               isNewTransaction={newTransactions.has(item.txHash)}
             />
@@ -188,7 +196,7 @@ const SwapInfoTransactionListTable = ({ breakpoint, swapHistory }: SwapInfoTrans
   );
 };
 
-const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: TransactionListTableRowProps) => {
+const TransactionListTableRow = ({ breakpoint, data, tradeTypeLabel, isNewTransaction }: TransactionListTableRowProps) => {
   const { getTokenImage } = useTokenImage();
   const { getTxUrl } = useGnoscanUrl();
 
@@ -238,6 +246,7 @@ const TransactionListTableRow = ({ breakpoint, data, isNewTransaction }: Transac
         <DateTimeTooltip date={txDate}>
           <span>{timeDisplay}</span>
         </DateTimeTooltip>
+        <span>({tradeTypeLabel})</span>
         <Link href={getTxUrl(data.txHash)} target={"_blank"} aria-label={`Transaction ${data.txHash} details link`}>
           <IconOpenLink size="10px" className="path-link-icon" />
         </Link>

@@ -1,5 +1,8 @@
 import { GNS_TOKEN_PATH, WRAPPED_GNOT_PATH, XGNS_TOKEN_PATH } from "@constants/environment.constant";
 import { TokenModel } from "@models/token/token-model";
+import { TokenPriceModel } from "@models/token/token-price-model";
+
+export const EMPTY_TOKEN_PRICES: Record<string, TokenPriceModel> = {};
 
 export const GNOT_UNIT_DENOM = "ugnot" as const;
 

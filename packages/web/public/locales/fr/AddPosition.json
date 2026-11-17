@@ -43,7 +43,6 @@
     "tooltip": "Prix de départ suggéré basé sur le prix actuel du pool le plus liquide de la même paire."
   },
   "fee": "Frais",
-  "feeTier": "Niveau de redevance",
   "form": {
     "amount": {
       "label": "4. Saisir le montant"
@@ -79,22 +78,9 @@
       "minPrice": "Prix minimum"
     }
   },
-  "oneClick": "Mise en jeu en un clic",
   "outR": {
     "desc": "Si vous ajoutez une position avec la fourchette actuelle, vous ne percevrez aucune commission jusqu'à ce que le prix du jeton entre dans votre fourchette.",
     "title": "Votre position n'est pas rémunérée"
-  },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "Efficacité du capital",
-      "depositR": "Ratio de dépôt",
-      "feeApr": "Frais APR"
-    },
-    "tooltip": {
-      "capitalEffi": "Le multiplicateur calculé sur la base de la concentration de votre gamme. Il indique le nombre de récompenses supplémentaires que vous pouvez obtenir par rapport à une position de gamme complète avec le même capital.",
-      "depositR": "Le ratio de dépôt des deux jetons est déterminé en fonction du prix actuel et de la fourchette de prix fixée.",
-      "feeApr": "Le TAEG estimé des frais de swap est calculé sur la base de la fourchette de prix sélectionnée pour la position."
-    }
   },
   "positionStat": {
     "label": {
@@ -113,7 +99,6 @@
     }
   },
   "rateGraph": {
-    "title": "Taux de change",
-    "tooltip": "Taux de change suggéré basé sur le pool le plus liquide de la même paire."
+    "title": "Taux de change"
   }
 }

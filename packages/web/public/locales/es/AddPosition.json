@@ -43,7 +43,6 @@
     "tooltip": "Precio de salida sugerido basado en el precio actual del pool más líquido del mismo par."
   },
   "fee": "Tarifa",
-  "feeTier": "Nivel de tarifas",
   "form": {
     "amount": {
       "label": "4. Introduzca el importe"
@@ -79,22 +78,9 @@
       "minPrice": "Precio mínimo"
     }
   },
-  "oneClick": "Apuesta con un clic",
   "outR": {
     "desc": "Si añade una posición con el rango actual, no ganará ninguna comisión hasta que el precio de la ficha se mueva a su rango.",
     "title": "Su posición no devengará comisiones"
-  },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "Eficiencia de capital",
-      "depositR": "Ratio de depósito",
-      "feeApr": "Tasa TAE"
-    },
-    "tooltip": {
-      "capitalEffi": "El multiplicador se calcula en función de la concentración de su rango. Esto indica cuántas recompensas más puedes ganar en comparación con una posición de rango completo con el mismo capital.",
-      "depositR": "El ratio de depósito de los dos tokens se determina en función del precio actual y del rango de precios establecido.",
-      "feeApr": "La APR estimada de las tarifas de swap se calcula en función del rango de precios seleccionado de la posición."
-    }
   },
   "positionStat": {
     "label": {
@@ -113,7 +99,6 @@
     }
   },
   "rateGraph": {
-    "title": "Tipo de cambio",
-    "tooltip": "Tipo de cambio sugerido basado en el pool más líquido del mismo par."
+    "title": "Tipo de cambio"
   }
 }

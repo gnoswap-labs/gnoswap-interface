@@ -1,0 +1,64 @@
+{
+  "message": "success",
+  "data": {
+    "items": [
+      {
+        "orderId": "40",
+        "owner": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+        "status": "CANCELLED",
+        "inputToken": "gno.land/r/gnoswap/gns",
+        "outputToken": "gno.land/r/gnoland/wugnot",
+        "interval": 60,
+        "slotOffset": 0,
+        "groupId": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:60:0",
+        "amountPerExecution": "100000000",
+        "executionCount": 30,
+        "depositAmount": "3000000000",
+        "executedCount": 12,
+        "remainingCount": 0,
+        "soldAmount": "1200000000",
+        "purchasedAmount": "1248000000",
+        "remainingAmount": "1800000000",
+        "claimedAmount": "1248000000",
+        "claimableAmount": "0",
+        "nextExecutionAt": null,
+        "createdAt": 1793404800,
+        "createdTxHash": "mockCreatedTx40",
+        "closedAt": 1793405520,
+        "closedTxHash": "mockClosedTx40",
+        "refundedAmount": "1800000000"
+      },
+      {
+        "orderId": "39",
+        "owner": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+        "status": "COMPLETED",
+        "inputToken": "gno.land/r/gnoswap/gns",
+        "outputToken": "gno.land/r/gnoland/wugnot",
+        "interval": 3600,
+        "slotOffset": 0,
+        "groupId": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3600:0",
+        "amountPerExecution": "50000000",
+        "executionCount": 4,
+        "depositAmount": "200000000",
+        "executedCount": 4,
+        "remainingCount": 0,
+        "soldAmount": "200000000",
+        "purchasedAmount": "204000000",
+        "remainingAmount": "0",
+        "claimedAmount": "153000000",
+        "claimableAmount": "51000000",
+        "nextExecutionAt": null,
+        "createdAt": 1792886400,
+        "createdTxHash": "mockCreatedTx39",
+        "closedAt": 1792900800,
+        "closedTxHash": "mockClosedTx39",
+        "refundedAmount": "0"
+      }
+    ],
+    "pageInfo": {
+      "currentPage": 1,
+      "totalItems": 2,
+      "totalPages": 1
+    }
+  }
+}

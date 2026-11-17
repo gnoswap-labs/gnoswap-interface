@@ -30,18 +30,6 @@
       "title": "2. Select New Range"
     }
   },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "Capital Efficiency",
-      "depositR": "Deposit Ratio",
-      "feeApr": "Fee Apr"
-    },
-    "tooltip": {
-      "capitalEffi": "The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.",
-      "depositR": "The deposit ratio of the two tokens is determined based on the current price and the set price range.",
-      "feeApr": "The estimated APR from swap fees is calculated based on the selected price range of the position."
-    }
-  },
   "repos": {
     "action": {
       "exit": "Exit",

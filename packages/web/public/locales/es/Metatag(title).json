@@ -3,8 +3,6 @@
     "title": {
       "default": "Plataforma única Gno.land DeFi | GnoSwap",
       "earn": "Gana | GnoSwap",
-      "earnAdd": "Añadir posición a {{tokenASymbol}}/{{tokenBSymbol}} {{feeTier}}",
-      "earnAddDefault": "Añadir posición a GnoSwap Pools",
       "explore": "Explorar | GnoSwap",
       "governance": "Gobernanza | GnoSwap",
       "launchpad": "Launchpad | GnoSwap",

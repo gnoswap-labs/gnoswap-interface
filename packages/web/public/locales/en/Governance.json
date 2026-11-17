@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "Already Voted",
-      "changeNetwork": "Switch to Gnoland",
-      "execute": "Execute",
       "noVoteWeight": "Insufficient Voting Weight",
       "requireSelect": "Select Voting Option",
       "tryAgain": "Try Again",
@@ -127,8 +125,7 @@
         "select": {
           "amount": "Amount"
         },
-        "title": "1. Select Your Delegate",
-        "tooltip": "Delegates are community leaders who are selected to make governance decisions on behalf of GNS holders."
+        "title": "1. Select Your Delegate"
       },
       "step2": {
         "title": "2. Enter Amount"
@@ -181,8 +178,6 @@
       "executableInMinutes_other": "Executable in {{count}} minutes",
       "executed": "Proposal Excuted {{rel_time}}",
       "expired": "Proposal Expired {{rel_time}}",
-      "h": "in {{time}}h",
-      "m": "in {{time}}m",
       "start": "Voting Starts {{rel_time}}"
     },
     "tooltip": {
@@ -222,8 +217,7 @@
       "unavailable": "Not available"
     },
     "aprHistory": {
-      "dailyApr": "Total",
-      "vs7dAvg": "vs 7D avg"
+      "dailyApr": "Total"
     },
     "apr": {
       "title": "xGNS APR (7D)"

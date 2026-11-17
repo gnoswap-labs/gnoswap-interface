@@ -9,7 +9,7 @@ export type TAB_SIZE = "MEDIUM" | "SMALL";
 interface ChartScopeSelectTabProps<T> {
   selected: T;
   onChange: (newType: T) => void;
-  list: T[];
+  list: T[] | { key: T; display: string }[];
   size: TAB_SIZE;
 }
 

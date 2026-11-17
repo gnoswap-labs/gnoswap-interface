@@ -3,11 +3,19 @@ import { CommonState } from "@states/index";
 import { useCallback, useEffect } from "react";
 import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 
-export const useSlippage = () => {
+interface UseSlippageOptions {
+  /**
+   * Resets the shared swap/liquidity setting to the default when the consumer
+   * mounts. Swap opts out so switching tabs preserves its selection.
+   */
+  resetOnMount?: boolean;
+}
+
+export const useSlippage = ({ resetOnMount = true }: UseSlippageOptions = {}) => {
   const [slippage, setSlippage] = useAtom(CommonState.slippage || 0);
 
   useEffect(() => {
-    setSlippage(DEFAULT_SLIPPAGE);
+    if (resetOnMount) setSlippage(DEFAULT_SLIPPAGE);
   }, []);
 
   const changeSlippage = useCallback(

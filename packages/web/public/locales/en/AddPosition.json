@@ -43,7 +43,6 @@
     "tooltip": "Suggested starting price based on the current price of the most liquid pool in the same pair."
   },
   "fee": "Fee",
-  "feeTier": "Fee Tier",
   "form": {
     "amount": {
       "label": "4. Enter Amount"
@@ -79,22 +78,9 @@
       "minPrice": "Min Price"
     }
   },
-  "oneClick": "One-Click Staking",
   "outR": {
     "desc": "If you add a position with the current range, you will not earn any fees until the token price moves into your range.",
     "title": "Your position will not earn any fees"
-  },
-  "overralInfo": {
-    "label": {
-      "capitalEffi": "Capital Efficiency",
-      "depositR": "Deposit Ratio",
-      "feeApr": "Fee APR"
-    },
-    "tooltip": {
-      "capitalEffi": "The multiplier calculated based on the concentration of your range. This indicates how much more rewards you can earn compared to a full range position with the same capital.",
-      "depositR": "The deposit ratio of the two tokens is determined based on the current price and the set price range.",
-      "feeApr": "The estimated APR from swap fees is calculated based on the selected price range of the position."
-    }
   },
   "positionStat": {
     "label": {
@@ -113,7 +99,6 @@
     }
   },
   "rateGraph": {
-    "title": "Exchange Rate",
-    "tooltip": "Suggested exchange rate based on the most liquid pool in the same pair."
+    "title": "Exchange Rate"
   }
 }

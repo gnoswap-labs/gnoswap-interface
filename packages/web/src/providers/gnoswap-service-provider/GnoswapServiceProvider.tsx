@@ -17,6 +17,7 @@ import { GovernanceRepository, GovernanceRepositoryImpl } from "@repositories/go
 import { LaunchpadRepository, LaunchpadRepositoryImpl } from "@repositories/launchpad";
 import { LeaderboardRepository, LeaderboardRepositoryImpl } from "@repositories/leaderboard";
 import { NotificationRepository, NotificationRepositoryImpl } from "@repositories/notification";
+import { OrderRepository, OrderRepositoryImpl } from "@repositories/order";
 import { PoolRepository, PoolRepositoryImpl } from "@repositories/pool";
 import { PositionRepository, PositionRepositoryImpl } from "@repositories/position";
 import { StatusRepository, StatusRepositoryImpl } from "@repositories/status";
@@ -51,6 +52,7 @@ interface GnoswapContextProps {
   leaderboardRepository: LeaderboardRepository;
   statusRepository: StatusRepository;
   launchpadRepository: LaunchpadRepository;
+  orderRepository: OrderRepository;
   localStorageClient: WebStorageClient;
   transactionService: TransactionService;
   transactionGasService: TransactionGasService;
@@ -271,6 +273,10 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
     return new LaunchpadRepositoryImpl(gnoswapApiClient, walletClient, rpcProvider);
   }, [gnoswapApiClient, walletClient, rpcProvider]);
 
+  const orderRepository = useMemo(() => {
+    return new OrderRepositoryImpl(gnoswapApiClient, walletClient, rpcProvider);
+  }, [gnoswapApiClient, walletClient, rpcProvider]);
+
   const transactionService = useMemo(() => {
     return new TransactionServiceImpl(rpcProvider, walletClient);
   }, [rpcProvider, walletClient]);
@@ -316,6 +322,7 @@ const GnoswapServiceProvider: React.FC<React.PropsWithChildren> = ({ children })
         leaderboardRepository,
         statusRepository,
         launchpadRepository,
+        orderRepository,
         localStorageClient,
         transactionService,
         transactionGasService,

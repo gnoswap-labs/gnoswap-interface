@@ -141,6 +141,15 @@ export const MobileActivityInfo: React.FC<ActivityInfoProps> = ({ item }) => {
 };
 export default ActivityInfo;
 
+// Actions that sell token A for token B: a swap, and an order placed or executed.
+const SELLS_FOR_ACTIONS: string[] = [
+  DexEvent.SWAP,
+  DexEvent.DCA_ORDER,
+  DexEvent.DCA_SWAP,
+  DexEvent.LIMIT_ORDER,
+  DexEvent.LIMIT_SWAP,
+];
+
 const formatActivity = (res: ActivityData, t: TFunction<"translation", undefined>, explorerUrl: string): Activity => {
   const tokenA = res.tokenA || emptyToken;
   const tokenB = res.tokenB || emptyToken;
@@ -177,6 +186,15 @@ const formatActivity = (res: ActivityData, t: TFunction<"translation", undefined
         // Swap
         case DexEvent.SWAP:
           return t("business:onchainActi.action.swap");
+        // Orders: placing one is told apart from a trade it executed.
+        case DexEvent.DCA_ORDER:
+          return t("business:onchainActi.action.dcaOrder");
+        case DexEvent.DCA_SWAP:
+          return t("business:onchainActi.action.dcaSwap");
+        case DexEvent.LIMIT_ORDER:
+          return t("business:onchainActi.action.limitOrder");
+        case DexEvent.LIMIT_SWAP:
+          return t("business:onchainActi.action.limitSwap");
         // Pool
         case DexEvent.ADD:
           return t("business:onchainActi.action.add");
@@ -236,7 +254,7 @@ const formatActivity = (res: ActivityData, t: TFunction<"translation", undefined
       let conjunction = "";
       if (relatedTokens === 2 && tokenAText && tokenBText) {
         conjunction = ` ${
-          res.actionType === DexEvent.SWAP ? t("common:conjunction.for") : t("common:conjunction.and")
+          SELLS_FOR_ACTIONS.includes(res.actionType) ? t("common:conjunction.for") : t("common:conjunction.and")
         }`;
       } else if (relatedTokens > 2) {
         conjunction = ", ";

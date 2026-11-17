@@ -1,21 +1,28 @@
 import React from "react";
 
+import { IS_ORDER_ENABLED } from "@constants/order.constant";
 import HeaderContainer from "@containers/header-container/HeaderContainer";
+import { LimitMarketPriceProvider } from "@providers/limit-market-price-provider/LimitMarketPriceProvider";
 import SwapLayout from "./SwapLayout";
+import OrderListContainer from "./containers/order-list-container/OrderListContainer";
 import SwapContainer from "./containers/swap-container/SwapContainer";
 import SwapInfoChartContainer from "./containers/swap-info-chart-container/SwapInfoChartContainer";
 import SwapInfoTransactionListContainer from "./containers/swap-info-transaction-list-container/SwapInfoTransactionListContainer";
 import Footer from "@components/common/footer/Footer";
 
 const Swap: React.FC = () => {
+  // The form and visible orders share each pair's market-price cache.
   return (
-    <SwapLayout
-      header={<HeaderContainer />}
-      swap={<SwapContainer />}
-      chart={<SwapInfoChartContainer />}
-      info={<SwapInfoTransactionListContainer />}
-      footer={<Footer />}
-    />
+    <LimitMarketPriceProvider>
+      <SwapLayout
+        header={<HeaderContainer />}
+        swap={<SwapContainer />}
+        orders={IS_ORDER_ENABLED ? <OrderListContainer /> : undefined}
+        chart={<SwapInfoChartContainer />}
+        info={<SwapInfoTransactionListContainer />}
+        footer={<Footer />}
+      />
+    </LimitMarketPriceProvider>
   );
 };
 
