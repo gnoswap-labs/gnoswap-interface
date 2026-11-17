@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { useAtomValue } from "jotai";
+import { atom, useAtomValue } from "jotai";
 import React, { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
@@ -18,6 +18,8 @@ interface LimitMarketPriceContextValue {
 }
 
 const LimitMarketPriceContext = createContext<LimitMarketPriceContextValue | null>(null);
+const tokenAAtom = atom(get => get(SwapState.swap).tokenA);
+const tokenBAtom = atom(get => get(SwapState.swap).tokenB);
 
 const useLimitMarketPriceContext = (hookName: string): LimitMarketPriceContextValue => {
   const context = useContext(LimitMarketPriceContext);
@@ -32,7 +34,8 @@ const useLimitMarketPriceContext = (hookName: string): LimitMarketPriceContextVa
 export const LimitMarketPriceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const isLimitOpen = toEnabledSwapCardType(router.query.type, ENABLED_SWAP_CARD_TYPES) === SWAP_CARD_TYPE.LIMIT;
-  const { tokenA, tokenB } = useAtomValue(SwapState.swap);
+  const tokenA = useAtomValue(tokenAAtom);
+  const tokenB = useAtomValue(tokenBAtom);
   const [registeredPairs, setRegisteredPairsState] = useState<Record<string, readonly LimitMarketPricePair[]>>({});
 
   const pairs = useMemo(() => {

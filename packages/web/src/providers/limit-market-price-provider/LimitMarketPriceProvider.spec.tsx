@@ -119,6 +119,52 @@ afterEach(() => {
 });
 
 describe("LimitMarketPriceProvider", () => {
+  it("does not broadcast unchanged prices on amount edits or parent renders, but publishes price updates", async () => {
+    client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+    const store = createStore();
+    store.set(SwapState.swap, prev => ({ ...prev, tokenA, tokenB }));
+    const providerCommits = jest.fn();
+    const consumerCommits = jest.fn();
+    const Price = React.memo(function Price() {
+      const { getPrice } = useLimitMarketPrices();
+      return (
+        <React.Profiler id="price" onRender={consumerCommits}>
+          <output aria-label="isolated market price">{getPrice(pair(tokenA, tokenB)) ?? "-"}</output>
+        </React.Profiler>
+      );
+    });
+    const child = <Price />;
+    const view = () => (
+      <QueryClientProvider client={client}>
+        <JotaiProvider store={store}>
+          <React.Profiler id="provider" onRender={providerCommits}>
+            <LimitMarketPriceProvider>{child}</LimitMarketPriceProvider>
+          </React.Profiler>
+        </JotaiProvider>
+      </QueryClientProvider>
+    );
+    const { rerender } = render(view());
+    await waitFor(() => expect(screen.getByLabelText("isolated market price")).toHaveTextContent("10"));
+    const providerCount = providerCommits.mock.calls.length;
+    const consumerCount = consumerCommits.mock.calls.length;
+
+    act(() => store.set(SwapState.swap, prev => ({ ...prev, tokenAAmount: "1000" })));
+    act(() => store.set(SwapState.swap, prev => ({ ...prev, tokenBAmount: "10000" })));
+    expect(providerCommits).toHaveBeenCalledTimes(providerCount);
+    expect(consumerCommits).toHaveBeenCalledTimes(consumerCount);
+
+    rerender(view());
+    expect(consumerCommits).toHaveBeenCalledTimes(consumerCount);
+
+    mockGetLimitMarketPrice.mockImplementation(async request => {
+      const response = answer(request);
+      return { ...response, price: response.price && { ...response.price, outputPerInput: "11" } };
+    });
+    await act(() => client.refetchQueries({ type: "active" }));
+    await waitFor(() => expect(screen.getByLabelText("isolated market price")).toHaveTextContent("11"));
+    expect(consumerCommits.mock.calls.length).toBeGreaterThan(consumerCount);
+  });
+
   it("shares the form and order prices with one request per directed pair", async () => {
     const { rerender } = setup([tokenA, tokenB]);
     await waitFor(() => expect(formPrice()).toBe("10"));
