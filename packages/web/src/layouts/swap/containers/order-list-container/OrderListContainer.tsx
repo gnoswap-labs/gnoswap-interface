@@ -18,7 +18,6 @@ import {
 import { useGetDcaOrders, useGetLimitOrders } from "@query/order";
 import { LimitMarketPricePair } from "@repositories/order/request";
 import { OrderState } from "@states/index";
-import { formatOrderRoi } from "@utils/order-format-utils";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
 
 import DcaOrderItemCard from "../../components/order-list/order-card/DcaOrderItemCard";
@@ -142,7 +141,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
         <DcaOrderItemCard
           key={`${order.packagePath}:${order.orderId}`}
           order={order}
-          roi={formatOrderRoi(order.returnRate)}
+          outputTokenUsdPrice={getUsdPrice(order.outputToken)}
           txUrl={getTxUrl(order.createdTxHash)}
           onClickStop={openStopDcaOrder}
           onClickClaim={claimDcaOrder}

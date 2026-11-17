@@ -68,9 +68,11 @@
     "claimOrder": "主张",
     "completedAt": "完成于",
     "connectWallet": "请将您的钱包连接到本平台，以便查看您的订单。",
+    "executedPriceAvg": "成交价格（平均）",
     "expiredAt": "到期时间：",
     "expiresAt": "到期时间",
     "filledPrice": "成交价",
+    "filledShare": "已成交 {{percent}}%",
     "nextTrade": "下一笔交易",
     "noOrders": "未找到任何订单。",
     "ongoing": "进行中",
@@ -91,7 +93,7 @@
     "soldAmount": "已售金额",
     "status": {
       "cancelled": "已取消",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "已被 Keeper 取消",
       "completed": "已完成",
       "expired": "已过期",
       "partiallyFilled": "部分已填入"

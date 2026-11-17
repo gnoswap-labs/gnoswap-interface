@@ -18,6 +18,7 @@ import {
   mapLimitFillToHistory,
   mapLimitOrderItemToModel,
   resolveOrderToken,
+  toDisplayPrice,
 } from "./order-mapper";
 
 const gns: TokenModel = {
@@ -112,6 +113,53 @@ describe("order-mapper", () => {
     expect(order.progress).toBe(6.5);
     // An order-api without the return leaves it unknown.
     expect(order.returnRate).toBeNull();
+  });
+
+  it("shifts a raw pool price by both tokens' decimals", () => {
+    // 1 raw GNS (6 decimals) for 50 raw BTC (8 decimals) is 1 GNS for 0.5 BTC.
+    expect(toDisplayPrice(gns, eightDecimals, "50")).toBe("0.5");
+    expect(toDisplayPrice(eightDecimals, gns, "0.02")).toBe("2");
+    expect(toDisplayPrice(gns, eightDecimals, "0")).toBeNull();
+    expect(toDisplayPrice(gns, eightDecimals, null)).toBeNull();
+    expect(toDisplayPrice(gns, eightDecimals, undefined)).toBeNull();
+  });
+
+  it("maps the DCA order's pool price and execution fee from the order-api", () => {
+    const order = mapDcaOrderItemToModel(
+      {
+        ...dcaItem,
+        executionFeeRate: 15,
+        executionFeeAmount: "15210000",
+        poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000",
+        marketPrice: "1.0335",
+      },
+      tokens,
+    );
+
+    expect(order.executionFeeRate).toBe(15);
+    expect(order.executionFeeAmount).toBe("15.21");
+    expect(order.poolPath).toBe("gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000");
+    expect(order.marketPrice).toBe("1.0335");
+  });
+
+  it("keeps an explicitly unavailable price of a known pool unknown", () => {
+    const order = mapDcaOrderItemToModel(
+      { ...dcaItem, poolPath: "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000", marketPrice: null },
+      tokens,
+    );
+
+    expect(order.poolPath).toBe("gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:3000");
+    expect(order.marketPrice).toBeNull();
+  });
+
+  it("leaves the pool price and execution fee unknown for an earlier order-api", () => {
+    const order = mapDcaOrderItemToModel(dcaItem, tokens);
+
+    expect(order.executionFeeRate).toBeNull();
+    expect(order.executionFeeAmount).toBeNull();
+    expect(order.poolPath).toBeNull();
+    expect(order.marketPrice).toBeNull();
+    expect(mapDcaOrderItemToModel({ ...dcaItem, poolPath: null, marketPrice: null }, tokens).marketPrice).toBeNull();
   });
 
   it("takes the DCA order return from the order-api", () => {

@@ -1,4 +1,3 @@
-import { cx } from "@emotion/css";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,8 +16,6 @@ export interface OrderMetric {
   fullValue?: string;
   /** Secondary context next to the value, such as price deviation or the filled share. */
   annotation?: string;
-  /** Cumulative return, shown next to the purchased amount. */
-  roi?: { text: string; isNegative: boolean } | null;
 }
 
 export const OrderMetrics: React.FC<{ metrics: OrderMetric[]; truncateFractions?: boolean }> = ({
@@ -43,7 +40,6 @@ export const OrderMetrics: React.FC<{ metrics: OrderMetric[]; truncateFractions?
                 metric.value
               )}
             </span>
-            {metric.roi && <span className={cx("roi", { negative: metric.roi.isNegative })}>{metric.roi.text}</span>}
             {metric.annotation && <span className="metric-annotation">{metric.annotation}</span>}
           </span>
         </>

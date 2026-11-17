@@ -174,10 +174,24 @@ describe("DcaOrderCard", () => {
 
     expect(screen.getByText("Swap:dca.every")).toBeInTheDocument();
     expect(screen.getByText("Swap:dca.over")).toBeInTheDocument();
-    expect(screen.getByText(/1 GNS = 1\.04 GNOT/)).toBeInTheDocument();
+    // The rate leads the collapsible details as on the Swap card, and the order sentence repeats it.
+    const header = screen.getByRole("button", { expanded: true });
+    expect(header).toHaveTextContent("1 GNS = 1.04 GNOT(≈$1.04)");
+    expect(screen.getByText(/Swap:dca.marketPrice: 1 GNS = 1\.04 GNOT/)).toBeInTheDocument();
     expect(screen.getByText("2026-11-03 20:35:36")).toBeInTheDocument();
     expect(screen.getByText("Swap:dca.executionFee")).toBeInTheDocument();
     expect(screen.getByText("0.1%")).toBeInTheDocument();
+  });
+
+  it("collapses the order details from the rate header but keeps the order sentence", () => {
+    renderCard();
+
+    const header = screen.getByRole("button", { expanded: true });
+    fireEvent.click(header);
+
+    expect(header).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("Swap:dca.executionFee")).not.toBeInTheDocument();
+    expect(screen.getByText(/Swap:dca.marketPrice: 1 GNS = 1\.04 GNOT/)).toBeInTheDocument();
   });
 
   it("places the order from the primary button", () => {

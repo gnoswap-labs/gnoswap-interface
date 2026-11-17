@@ -10,7 +10,6 @@ import {
   formatOrderRate,
   formatOrderRelativeDuration,
   formatOrderRemainingTime,
-  formatOrderRoi,
   formatOrderTimeUntil,
   trimFractionZeros,
 } from "./order-format-utils";
@@ -62,13 +61,6 @@ describe("order-format-utils", () => {
     expect(formatOrderRate("0.9213751")).toBe("0.921375");
     expect(formatOrderRate("1.04")).toBe("1.04");
     expect(formatOrderRate(null)).toBe("-");
-  });
-
-  it("formats ROI with a direction marker", () => {
-    expect(formatOrderRoi(0)).toEqual({ text: "▴ 0.00%", isNegative: false });
-    expect(formatOrderRoi(1.526)).toEqual({ text: "▴ 1.52%", isNegative: false });
-    expect(formatOrderRoi(-0.4)).toEqual({ text: "▾ 0.40%", isNegative: true });
-    expect(formatOrderRoi(null)).toBeNull();
   });
 
   it("formats basis points", () => {

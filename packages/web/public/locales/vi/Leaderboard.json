@@ -13,7 +13,6 @@
       "inRange": "{{n}} trong phạm vi",
       "points": "Điểm",
       "pointsThisRound": "Số điểm trong vòng này",
-      "position": "Vị trí",
       "provisional": "tạm tính",
       "rank": "Xếp hạng",
       "referral": "Giới thiệu",
@@ -30,8 +29,7 @@
         "swap": "<p>Số điểm tương ứng với phí hoán đổi (phí router) mà bạn thanh toán.</p><p><formula>Phí hoán đổi đã thanh toán (tính bằng GNOT) × 5, tối đa là Giới hạn hoán đổi của bạn<br/>Giới hạn hoán đổi: Điểm ủy quyền × 3 + Điểm staking × 1</formula><br/>Không staking hoặc ủy quyền = không có điểm hoán đổi. Chỉ các giao dịch hoán đổi đi qua các pool có phát hành GNS nội bộ mới được tính.</p>"
       },
       "total": "Tổng",
-      "user": "Người dùng",
-      "xGNS": "xGNS Staking"
+      "user": "Người dùng"
     },
     "hideToggleButton": "Ẩn địa chỉ hoặc tên người dùng của tôi",
     "mobile": {

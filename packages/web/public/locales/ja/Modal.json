@@ -78,8 +78,8 @@
     },
     "dcaError": {
       "amountTooLow": {
-        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
-        "title": "Amount Too Low"
+        "desc": "各注文は、このトークンの最低数量以上を売却する必要があります。<br />数量を増やすか、注文数を減らしてください。",
+        "title": "金額が少なすぎます"
       },
       "halted": {
         "desc": "DCA orders are temporarily paused.<br />Please try again later.",
@@ -90,8 +90,8 @@
         "title": "No Eligible Pool"
       },
       "pairNotSupported": {
-        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
-        "title": "Pair Not Supported"
+        "desc": "このペアについては、DCA注文はまだご利用いただけません。<br />別のペアをお選びください。",
+        "title": "この組み合わせはサポートされていません"
       }
     },
     "dcaOrder": {
@@ -381,7 +381,6 @@
       "title": "更新中..."
     }
   },
-  "tokens": "トークン",
   "tokenTradingWarn": {
     "subtitle": "このトークンはGnoSwapでは頻繁にスワップされません。<br/> 取引前に必ずご自身で調査を行ってください。",
     "title": "トークン取引に関する警告",

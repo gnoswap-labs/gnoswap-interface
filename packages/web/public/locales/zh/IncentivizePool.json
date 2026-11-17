@@ -84,7 +84,6 @@
       }
     }
   },
-  "liquidity": "流动性",
   "submitBtn": {
     "amtTooLow": "金额太低",
     "enterAmt": "输入金额",

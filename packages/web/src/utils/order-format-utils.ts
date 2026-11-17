@@ -106,16 +106,6 @@ export function formatOrderDate(unixSeconds: number | null | undefined): string 
   return dayjs(unixSeconds * 1000).format(ORDER_DATE_FORMAT);
 }
 
-/** Cumulative return with a direction marker: `▴ 1.52%`, `▾ 0.40%`. Zero counts as up. */
-export function formatOrderRoi(roi: number | null): { text: string; isNegative: boolean } | null {
-  if (roi === null || !Number.isFinite(roi)) return null;
-  const isNegative = roi < 0;
-  return {
-    text: `${isNegative ? "▾" : "▴"} ${BigNumber(Math.abs(roi)).toFixed(2, BigNumber.ROUND_DOWN)}%`,
-    isNegative,
-  };
-}
-
 /** Basis points as a percentage: `15` → `0.15%`. */
 export function formatBps(bps: number | null | undefined): string {
   if (bps === null || bps === undefined || !Number.isFinite(bps)) return "-";

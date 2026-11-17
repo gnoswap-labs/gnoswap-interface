@@ -84,7 +84,6 @@
       }
     }
   },
-  "liquidity": "Ликвидность",
   "submitBtn": {
     "amtTooLow": "Сумма слишком мала",
     "enterAmt": "Введите сумму",

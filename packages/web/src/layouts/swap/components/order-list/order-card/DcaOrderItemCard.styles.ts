@@ -2,7 +2,7 @@ import { fonts } from "@constants/font.constant";
 import styled from "@emotion/styled";
 import mixins from "@styles/mixins";
 
-import { OrderItemCardWrapper } from "./OrderItemCard.styles";
+import { OrderItemCardWrapper, priceOrderCardStyles } from "./OrderItemCard.styles";
 
 /**
  * The DCA order card. Its status sits over a second line, the time left or the time it closed, instead of
@@ -10,6 +10,8 @@ import { OrderItemCardWrapper } from "./OrderItemCard.styles";
  * pair out of the card.
  */
 export const DcaOrderItemCardWrapper = styled(OrderItemCardWrapper)`
+  ${({ theme }) => priceOrderCardStyles(theme)};
+
   .card-header {
     flex-wrap: wrap;
     row-gap: 4px;

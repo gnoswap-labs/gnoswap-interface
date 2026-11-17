@@ -78,8 +78,8 @@
     },
     "dcaError": {
       "amountTooLow": {
-        "desc": "Each order must sell at least the minimum amount for this token.<br />Increase the amount or reduce the number of orders.",
-        "title": "Amount Too Low"
+        "desc": "Chaque commande doit atteindre au moins le montant minimum requis pour ce jeton.<br />Augmentez le montant ou réduisez le nombre de commandes.",
+        "title": "Montant trop faible"
       },
       "halted": {
         "desc": "DCA orders are temporarily paused.<br />Please try again later.",
@@ -90,8 +90,8 @@
         "title": "No Eligible Pool"
       },
       "pairNotSupported": {
-        "desc": "DCA orders are not available for this pair yet.<br />Please choose another pair.",
-        "title": "Pair Not Supported"
+        "desc": "Les commandes DCA ne sont pas encore disponibles pour cette paire.<br />Veuillez choisir une autre paire.",
+        "title": "Paire non prise en charge"
       }
     },
     "dcaOrder": {
@@ -381,7 +381,6 @@
       "title": "Mise à jour..."
     }
   },
-  "tokens": "Jetons",
   "tokenTradingWarn": {
     "subtitle": "Ce jeton n'est pas fréquemment échangé sur GnoSwap.<br/> Effectuez toujours vos propres recherches avant d'effectuer des transactions.",
     "title": "Avertissement sur l'échange de jetons",

@@ -62,6 +62,18 @@ export function calculatePriceRate(
   return output.dividedBy(input).toFixed();
 }
 
+/** A raw output per raw input price in display units, so `1 input = price output`. Null when not a positive number. */
+export function toDisplayPrice(
+  inputToken: Pick<TokenModel, "decimals">,
+  outputToken: Pick<TokenModel, "decimals">,
+  rawPrice: string | null | undefined,
+): string | null {
+  const price = BigNumber(rawPrice || "");
+  if (!price.isFinite() || price.isLessThanOrEqualTo(0)) return null;
+
+  return price.shiftedBy(inputToken.decimals - outputToken.decimals).toFixed();
+}
+
 /** `part / total` as a percentage clamped to 0-100. */
 export function calculateProgress(part: BigNumber.Value, total: BigNumber.Value): number {
   const totalBN = BigNumber(total);
@@ -119,6 +131,10 @@ export function mapDcaOrderItemToModel(item: DcaOrderItem, tokens: TokenModel[])
     forceCancelled: item.status === "CANCELLED" && !!item.forceCancelled,
     priceRate: calculatePriceRate(inputToken, outputToken, item.soldAmount, item.purchasedAmount),
     returnRate: parseReturnRate(item.returnRate),
+    executionFeeRate: item.executionFeeRate ?? null,
+    executionFeeAmount: makeDisplayTokenAmountString(outputToken, item.executionFeeAmount) ?? null,
+    poolPath: item.poolPath || null,
+    marketPrice: toDisplayPrice(inputToken, outputToken, item.marketPrice),
     nextExecutionAt: isActive ? item.nextExecutionAt : null,
     createdAt: item.createdAt,
     closedAt: item.closedAt,

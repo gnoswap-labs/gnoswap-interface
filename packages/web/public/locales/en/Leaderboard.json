@@ -13,7 +13,6 @@
       "inRange": "{{n}} in range",
       "points": "Points",
       "pointsThisRound": "Points this round",
-      "position": "Position",
       "provisional": "provisional",
       "rank": "Rank",
       "referral": "Referral",
@@ -30,8 +29,7 @@
         "swap": "<p>Points for the swap fee (router fee) you pay.</p><p><formula>Swap fee paid (In GNOT) × 5, up to your Swap Cap<br/>Swap Cap: Delegation points × 3 + Staking points × 1</formula><br/>No staking or delegation = no swap points. Only swaps that go through pools with internal GNS emissions.</p>"
       },
       "total": "Total",
-      "user": "User",
-      "xGNS": "xGNS Staking"
+      "user": "User"
     },
     "hideToggleButton": "Hide my address or username",
     "mobile": {

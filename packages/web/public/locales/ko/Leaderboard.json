@@ -13,7 +13,6 @@
       "inRange": "{{n}} 범위 내",
       "points": "포인트",
       "pointsThisRound": "이번 라운드의 점수",
-      "position": "포지션",
       "provisional": "잠정",
       "rank": "순위",
       "referral": "추천",
@@ -30,8 +29,7 @@
         "swap": "<p>지불한 스왑 수수료(라우터 수수료)에 대한 포인트.</p><p><formula>지불한 스왑 수수료(GNOT 기준) × 5, 단 스왑 상한선<br/>까지. 스왑 상한선: 위임 포인트 × 3 + 스테이킹 포인트 × 1</formula><br/>. 스테이킹이나 위임이 없으면 스왑 포인트도 없습니다. 내부 GNS 발행이 있는 풀을 통해 이루어지는 스왑에만 적용됩니다.</p>"
       },
       "total": "합계",
-      "user": "사용자",
-      "xGNS": "xGNS 스테이킹"
+      "user": "사용자"
     },
     "hideToggleButton": "내 주소 또는 사용자 아이디 숨기기",
     "mobile": {

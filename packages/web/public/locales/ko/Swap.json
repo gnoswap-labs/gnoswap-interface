@@ -68,9 +68,11 @@
     "claimOrder": "주장",
     "completedAt": "완료 일시",
     "connectWallet": "주문을 확인하시려면 지갑을 연결해 주세요.",
+    "executedPriceAvg": "체결 가격 (평균)",
     "expiredAt": "만료 일시",
     "expiresAt": "만료일",
     "filledPrice": "체결가",
+    "filledShare": "{{percent}}% 체결",
     "nextTrade": "다음 거래",
     "noOrders": "주문이 없습니다.",
     "ongoing": "진행 중",
@@ -91,7 +93,7 @@
     "soldAmount": "판매 금액",
     "status": {
       "cancelled": "취소됨",
-      "cancelledByKeeper": "Cancelled by Keeper",
+      "cancelledByKeeper": "Keeper에 의해 취소됨",
       "completed": "완료됨",
       "expired": "만료됨",
       "partiallyFilled": "일부만 채워짐"

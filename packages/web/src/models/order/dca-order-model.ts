@@ -70,6 +70,14 @@ export interface DcaOrderModel {
    * order was placed, in percent. Null without a reference or before a round.
    */
   returnRate: number | null;
+  /** Execution fee rate in bps. Null when the order-api does not report it. */
+  executionFeeRate: number | null;
+  /** Execution fee on the output bought so far. Null when the order-api does not report it. */
+  executionFeeAmount: string | null;
+  /** Pool the order's rounds trade on. Null when unknown. */
+  poolPath: string | null;
+  /** Current output per input of `poolPath` in display units. Null when unknown. */
+  marketPrice: string | null;
   /** Unix seconds. */
   nextExecutionAt: number | null;
   createdAt: number;

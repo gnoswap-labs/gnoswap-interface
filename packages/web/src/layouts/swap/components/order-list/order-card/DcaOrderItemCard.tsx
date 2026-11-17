@@ -4,16 +4,23 @@ import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 import IconOutlineClock from "@components/common/icons/IconOutlineClock";
+import { ValueAnnotation } from "@components/order/common/OrderValueAnnotation.styles";
 import OrderPairLabel from "@components/order/order-pair-label/OrderPairLabel";
 import { useOrderClock } from "@hooks/order/ui/use-order-clock";
 import { DcaOrderModel, getDcaIntervalUnit } from "@models/order/dca-order-model";
 import {
   calculateDcaOrderEndAt,
+  calculatePriceDeviation,
+  formatBps,
   formatOrderAmount,
-  formatOrderFullAmount,
   formatOrderDateTime,
+  formatOrderFee,
+  formatOrderFeeUsd,
+  formatOrderFullAmount,
+  formatOrderPriceDeviation,
   formatOrderRate,
   formatOrderRemainingTime,
+  formatOrderTimeUntil,
 } from "@utils/order-format-utils";
 
 import OrderProgressBar from "../order-progress-bar/OrderProgressBar";
@@ -22,7 +29,8 @@ import { OrderHistoryToggle, OrderMetric, OrderMetrics, OrderStopButton } from "
 
 export interface DcaOrderItemCardProps {
   order: DcaOrderModel;
-  roi: { text: string; isNegative: boolean } | null;
+  /** Current USD price of the order's output token, to value the execution fee. Null while unknown. */
+  outputTokenUsdPrice?: string | null;
   txUrl: string;
   onClickStop: (order: DcaOrderModel) => void;
   /** Pays unclaimed output of an order whose rounds all executed. */
@@ -67,9 +75,21 @@ const ActiveDcaOrderStatus: React.FC<{ order: DcaOrderModel }> = ({ order }) => 
   );
 };
 
+/** A rate with the output symbol; the full value has every digit and the input it is quoted for. */
+function formatPriceMetric(rate: string | null, order: DcaOrderModel, full = false): string {
+  if (rate === null) return "-";
+  const { inputToken, outputToken } = order;
+  if (!full) return `${formatOrderRate(rate)} ${outputToken.displaySymbol}`;
+
+  const value = BigNumber(rate);
+  return `1 ${inputToken.displaySymbol} = ${formatOrderFullAmount(value, value.decimalPlaces() ?? 0)} ${
+    outputToken.displaySymbol
+  }`;
+}
+
 const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   order,
-  roi,
+  outputTokenUsdPrice = null,
   txUrl,
   onClickStop,
   onClickClaim,
@@ -77,25 +97,35 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
 }) => {
   const { t, i18n } = useTranslation();
   const locale = i18n.resolvedLanguage ?? i18n.language;
-  const { inputToken, outputToken } = order;
+  const nowUnixSeconds = useOrderClock();
+  const { inputToken, outputToken, marketPrice } = order;
 
-  const metrics: OrderMetric[] = useMemo(
-    () => [
+  const metrics: OrderMetric[] = useMemo(() => {
+    const deviation = formatOrderPriceDeviation(calculatePriceDeviation(order.priceRate, marketPrice), locale);
+    const purchased = `${formatOrderFullAmount(order.purchasedAmount, outputToken.decimals)} ${
+      outputToken.displaySymbol
+    }`;
+    const filled = `(${t("Swap:order.filledShare", {
+      defaultValue: "{{percent}}% filled",
+      percent: formatOrderAmount(order.progress),
+    })})`;
+    return [
       {
-        key: "sold",
-        label: t("Swap:order.soldAmount"),
-        value: `${formatOrderFullAmount(order.soldAmount, inputToken.decimals)} ${inputToken.displaySymbol}`,
+        key: "marketPrice",
+        label: t("Swap:dca.marketPrice"),
+        value: formatPriceMetric(marketPrice, order),
+        fullValue: formatPriceMetric(marketPrice, order, true),
       },
       {
-        key: "purchased",
-        label: t("Swap:order.purchasedAmount"),
-        value: `${formatOrderFullAmount(order.purchasedAmount, outputToken.decimals)} ${outputToken.displaySymbol}`,
-        roi,
+        key: "executedPrice",
+        label: t("Swap:order.executedPriceAvg", { defaultValue: "Executed Price (Avg)" }),
+        value: formatPriceMetric(order.priceRate, order),
+        fullValue: formatPriceMetric(order.priceRate, order, true),
+        annotation: deviation ? `(${deviation})` : undefined,
       },
-      { key: "rate", label: t("Swap:order.priceRateAvg"), value: formatOrderRate(order.priceRate) },
-    ],
-    [inputToken.decimals, inputToken.displaySymbol, order, outputToken.decimals, outputToken.displaySymbol, roi, t],
-  );
+      { key: "purchased", label: t("Swap:order.purchasedAmount"), value: purchased, annotation: filled },
+    ];
+  }, [locale, marketPrice, order, outputToken.decimals, outputToken.displaySymbol, t]);
 
   const overview = useMemo(() => {
     const inputAmount = (amount: string) =>
@@ -129,7 +159,15 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
   const every = intervalUnit
     ? t(`Swap:dca.intervalPhrase.${intervalUnit}`)
     : new Intl.NumberFormat(locale, { style: "unit", unit: "second", unitDisplay: "long" }).format(order.interval);
-  const over = `${order.executionCount.toLocaleString(locale)} ${t("Swap:dca.orders")}`;
+  const orderCount = (count: number) => `${count.toLocaleString(locale)} ${t("Swap:dca.orders")}`;
+  const nextOrderIn = order.isActive ? formatOrderRemainingTime(order.nextExecutionAt, locale, nowUnixSeconds) : null;
+  const expiresAt = order.isActive ? calculateDcaOrderEndAt(order) : null;
+  const expiresIn = formatOrderTimeUntil(expiresAt, locale, nowUnixSeconds);
+  const executionFeeUsd = formatOrderFeeUsd(order.executionFeeAmount, outputTokenUsdPrice);
+  const executionFeeLabel =
+    order.executionFeeRate === null
+      ? t("Swap:dca.executionFee")
+      : `${t("Swap:dca.executionFee")} (${formatBps(order.executionFeeRate)})`;
 
   return (
     <DcaOrderItemCardWrapper className={cx({ active: order.isActive })}>
@@ -155,16 +193,42 @@ const DcaOrderItemCard: React.FC<DcaOrderItemCardProps> = ({
         )}
       </div>
       <OrderProgressBar progress={order.progress} overview={overview} />
-      <OrderMetrics metrics={metrics} />
+      <OrderMetrics metrics={metrics} truncateFractions />
       <div className="card-order-terms">
         <div className="card-sub-info">
           <span>{t("Swap:dca.every")}</span>
           <span className="value">{every}</span>
         </div>
         <div className="card-sub-info">
-          <span>{t("Swap:dca.over")}</span>
-          <span className="value">{over}</span>
+          <span>{t("Swap:order.order")}</span>
+          <span className="value">{orderCount(order.executionCount)}</span>
         </div>
+        {order.isActive && (
+          <div className="card-sub-info">
+            <span>{t("Swap:order.nextTrade")}</span>
+            <span className="value">{nextOrderIn ?? "-"}</span>
+          </div>
+        )}
+        <div className="card-sub-info">
+          <span>{t("Swap:order.remainingTrades")}</span>
+          <span className="value">{orderCount(order.remainingCount)}</span>
+        </div>
+        <div className="card-sub-info">
+          <span>{executionFeeLabel}</span>
+          <span className="value">
+            {formatOrderFee(order.executionFeeAmount, outputToken.decimals)}
+            {order.executionFeeAmount !== null && ` ${outputToken.displaySymbol}`}
+            {executionFeeUsd && <span className="value-usd">{` (${executionFeeUsd})`}</span>}
+          </span>
+        </div>
+        {order.isActive && (
+          <div className="card-sub-info">
+            <span>{t("Swap:order.expiresAt")}</span>
+            <span className="value">
+              {formatOrderDateTime(expiresAt)} {expiresIn && <ValueAnnotation>({expiresIn})</ValueAnnotation>}
+            </span>
+          </div>
+        )}
       </div>
       {order.isActive && <OrderStopButton text={t("Swap:order.stopOrder")} onClick={() => onClickStop(order)} />}
       {/* Completion does not pay out: the output stays claimable until the owner (or a keeper) claims it. */}

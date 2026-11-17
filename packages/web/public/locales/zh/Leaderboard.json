@@ -13,7 +13,6 @@
       "inRange": "{{n}} 在范围内",
       "points": "积分",
       "pointsThisRound": "本轮积分",
-      "position": "职位",
       "provisional": "暂定",
       "rank": "等级",
       "referral": "转介",
@@ -30,8 +29,7 @@
         "swap": "<p>您支付的交换费（路由器费）所获得的积分。</p><p><formula>已支付的兑换费（以GNOT计）× 5，上限为您的兑换上限<br/>兑换上限：委托积分 × 3 + 质押积分 × 1</formula><br/>未进行质押或委托 = 无兑换积分。仅限通过具有内部GNS发行机制的池进行的兑换。</p>"
       },
       "total": "总计",
-      "user": "用户",
-      "xGNS": "xGNS 定标"
+      "user": "用户"
     },
     "hideToggleButton": "隐藏我的地址或用户名",
     "mobile": {

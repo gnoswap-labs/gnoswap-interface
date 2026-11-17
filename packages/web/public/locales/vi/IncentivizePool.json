@@ -84,7 +84,6 @@
       }
     }
   },
-  "liquidity": "Khả năng thanh khoản",
   "submitBtn": {
     "amtTooLow": "Số tiền quá thấp",
     "enterAmt": "Nhập số tiền",
