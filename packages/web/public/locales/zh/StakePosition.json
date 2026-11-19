@@ -14,8 +14,7 @@
   "confStakeModal": {
     "positionLst": "职位",
     "stakingReward": {
-      "title": "投注奖励",
-      "tooltip": "对每项提交协议的索赔收取的费用金额。"
+      "title": "投注奖励"
     },
     "title": "确认桩位",
     "warning": {

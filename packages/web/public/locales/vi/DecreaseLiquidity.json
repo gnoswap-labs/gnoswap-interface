@@ -1,23 +1,14 @@
 {
   "confModal": {
     "balanceChanges": "Thay đổi về số dư",
-    "btn": "Xác nhận việc giảm thanh khoản",
-    "currentBalance": "Số dư hiện tại",
     "decreasingAmount": "Số tiền giảm dần",
-    "fees": "Phí",
-    "newBalance": "New Balance",
-    "pooled": "Tổng hợp",
     "positionDetails": "Chi tiết về vị trí",
     "title": "Xác nhận việc giảm thanh khoản",
     "tooltip": {
       "withdrawalFee": "Tỷ lệ phần trăm phí được tính trên số phí được yêu cầu thanh toán của vị thế (không tính trên số vốn gốc) được chuyển cho giao thức."
-    },
-    "unclaimed": "Chưa có người nhận"
+    }
   },
   "form": {
-    "collectWugnot": {
-      "switch": "Thu thập dưới tên WGNOT"
-    },
     "decreaseAmount": {
       "label": "2. Số tiền giảm dần"
     },

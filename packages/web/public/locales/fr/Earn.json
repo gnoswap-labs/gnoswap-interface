@@ -52,7 +52,6 @@
     "card": {
       "claimedRewards": "Récompenses réclamées",
       "claimRewards": "Récompenses réclamables",
-      "dailyEarn": "Gains journaliers",
       "hideRange": "Cacher ma gamme",
       "value": "Valeur",
       "viewRange": "Voir ma gamme"
@@ -71,7 +70,6 @@
     "title_other": "Positions de la Commission",
     "unconnect": {
       "connect": "Veuillez connecter votre portefeuille pour consulter vos positions de liquidité.",
-      "switchgno": "Passer à Gnoland",
       "switchNetwork": "Réseau non pris en charge. Changez votre réseau pour Gnoland."
     }
   },

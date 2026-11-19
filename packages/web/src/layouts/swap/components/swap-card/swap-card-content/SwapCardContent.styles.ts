@@ -54,6 +54,9 @@ export const ContentWrapper = styled.div`
     &.amount-pending::placeholder {
       opacity: 0.5;
     }
+    &[readonly] {
+      cursor: default;
+    }
   }
 
   .token-selector {

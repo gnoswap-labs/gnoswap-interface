@@ -1,0 +1,64 @@
+{
+  "message": "success",
+  "data": {
+    "items": [
+      {
+        "orderId": "42",
+        "owner": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+        "status": "ACTIVE",
+        "inputToken": "gno.land/r/gnoswap/gns",
+        "outputToken": "gno.land/r/gnoland/wugnot",
+        "interval": 3600,
+        "slotOffset": 0,
+        "groupId": "gno.land/r/gnoswap/gns:gno.land/r/gnoland/wugnot:3600:0",
+        "amountPerExecution": "750000000",
+        "executionCount": 200,
+        "depositAmount": "150000000000",
+        "executedCount": 13,
+        "remainingCount": 187,
+        "soldAmount": "9750000000",
+        "purchasedAmount": "10140000000",
+        "remainingAmount": "140250000000",
+        "claimedAmount": "9360000000",
+        "claimableAmount": "780000000",
+        "nextExecutionAt": 1793667600,
+        "createdAt": 1793616600,
+        "createdTxHash": "mockCreatedTx42",
+        "closedAt": null,
+        "closedTxHash": null,
+        "refundedAmount": "0"
+      },
+      {
+        "orderId": "41",
+        "owner": "g1jg8mtutu9khhfwc4nxmuhcpftf0pajdhfvsqf5",
+        "status": "ACTIVE",
+        "inputToken": "gno.land/r/gnoland/wugnot",
+        "outputToken": "gno.land/r/gnoswap/gns",
+        "interval": 86400,
+        "slotOffset": 0,
+        "groupId": "gno.land/r/gnoland/wugnot:gno.land/r/gnoswap/gns:86400:0",
+        "amountPerExecution": "60000000",
+        "executionCount": 10,
+        "depositAmount": "600000000",
+        "executedCount": 2,
+        "remainingCount": 8,
+        "soldAmount": "120000000",
+        "purchasedAmount": "114000000",
+        "remainingAmount": "480000000",
+        "claimedAmount": "0",
+        "claimableAmount": "114000000",
+        "nextExecutionAt": 1793750400,
+        "createdAt": 1793491100,
+        "createdTxHash": "mockCreatedTx41",
+        "closedAt": null,
+        "closedTxHash": null,
+        "refundedAmount": "0"
+      }
+    ],
+    "pageInfo": {
+      "currentPage": 1,
+      "totalItems": 2,
+      "totalPages": 1
+    }
+  }
+}

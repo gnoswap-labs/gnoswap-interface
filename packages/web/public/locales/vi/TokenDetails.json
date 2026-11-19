@@ -1,9 +1,7 @@
 {
   "bestPool": {
     "col": {
-      "apr": "APR",
-      "pool": "Hồ bơi",
-      "tvl": "TVL"
+      "pool": "Hồ bơi"
     },
     "title": "Các Pool tốt nhất cho {{symbol}}"
   },
@@ -28,7 +26,6 @@
       "col": {
         "fee": "Phí (24h)",
         "marketCap": "Giá trị vốn hóa thị trường",
-        "tvl": "TVL",
         "volume": "Khối lượng (24 giờ)"
       },
       "title": "Thông tin thị trường"

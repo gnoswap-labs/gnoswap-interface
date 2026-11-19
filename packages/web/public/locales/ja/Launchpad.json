@@ -27,14 +27,8 @@
     "ongoing": "継続中",
     "status": {
       "ended": "終了",
-      "endsInOneMinute": "1分で終了",
       "ongoing": "終了{{time}}",
       "upcoming": "今後の予定{{time}}"
-    },
-    "tierDuration": {
-      "1month": "1ヶ月",
-      "3months": "3ヶ月",
-      "6months": "6ヶ月"
     },
     "time": {
       "days_other": "{{count}} 日",
@@ -89,7 +83,6 @@
     "claimAll": {
       "col": {
         "claimable": "請求可能",
-        "depositAmount": "預金額",
         "pool": "プール"
       },
       "title": "クレームの確認"
@@ -100,8 +93,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "預金額",
-          "endDate": "終了日",
           "poolTier": "プール層"
         },
         "title": "預金詳細"
@@ -128,9 +119,7 @@
       "apr": "APR",
       "claimable": "請求可能",
       "claimableDate": "請求可能日",
-      "claimed": "請求済み",
-      "depositAmounts": "預金額",
-      "endDate": "終了日"
+      "claimed": "請求済み"
     },
     "nodata": {
       "text1": "デポジット<span>GNS</span>",
@@ -141,7 +130,6 @@
     "unconnect": "ウォレットを<br/>に接続し、参加状況をご確認ください。"
   },
   "participate": {
-    "balance": "バランス",
     "col": {
       "depositAmount": "預金額",
       "endDate": "終了日",

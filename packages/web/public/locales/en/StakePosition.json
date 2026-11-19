@@ -14,8 +14,7 @@
   "confStakeModal": {
     "positionLst": "Positions",
     "stakingReward": {
-      "title": "Staking Rewards",
-      "tooltip": "The amount of fees charged on each claim that goes\n                            to the protocol."
+      "title": "Staking Rewards"
     },
     "title": "Confirm Stake Position",
     "warning": {

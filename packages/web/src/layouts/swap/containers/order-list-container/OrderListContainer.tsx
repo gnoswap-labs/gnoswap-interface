@@ -1,0 +1,231 @@
+import { useAtom } from "jotai";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+
+import { ENABLED_SWAP_CARD_TYPES } from "@constants/order.constant";
+import { SWAP_HISTORY_REFETCH_INTERVAL } from "@constants/swap.constant";
+import useRouter from "@hooks/common/use-custom-router";
+import { useGnoscanUrl } from "@hooks/common/use-gnoscan-url";
+import { useWindowSize } from "@hooks/common/use-window-size";
+import { useOrderTokenUsdPrice } from "@hooks/order/data/use-order-token-usd-price";
+import { useStopOrderHandler } from "@hooks/order/data/use-stop-order-handler";
+import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { LimitOrderModel } from "@models/order/limit-order-model";
+import { OrderKind, OrderListTab, SWAP_CARD_TYPE, SwapCardType, toEnabledSwapCardType } from "@models/order/order-type";
+import {
+  useLimitMarketPrices,
+  useRegisterLimitMarketPricePairs,
+} from "@providers/limit-market-price-provider/LimitMarketPriceProvider";
+import { useGetDcaOrders, useGetLimitOrders } from "@query/order";
+import { useGetTokens } from "@query/token";
+import { LimitMarketPricePair } from "@repositories/order/request";
+import { OrderState } from "@states/index";
+import { getSwapTokenPath } from "@utils/swap-route-utils";
+
+import DcaOrderItemCard from "../../components/order-list/order-card/DcaOrderItemCard";
+import LimitOrderItemCard from "../../components/order-list/order-card/LimitOrderItemCard";
+import OrderList from "../../components/order-list/OrderList";
+import { DcaOrderHistoryContainer, LimitOrderHistoryContainer } from "./OrderHistoryContainer";
+
+const ORDER_PAGE_SIZE = 10;
+
+/** The pair a Limit order is priced by, in its actual swap direction. */
+const toMarketPricePair = ({ tokenIn, tokenOut }: LimitOrderModel): LimitMarketPricePair => ({
+  tokenIn: getSwapTokenPath(tokenIn),
+  tokenOut: getSwapTokenPath(tokenOut),
+});
+
+/**
+ * Whether the account has any order of the kind, from the totals of its Active
+ * and Past lists. A positive total from either list is enough; "no orders" needs
+ * both totals, so an account without orders never flashes an empty list and a
+ * failed list never hides the orders the other one returned.
+ */
+export const hasAnyOrder = (activeTotal?: number, pastTotal?: number): boolean | undefined => {
+  if ((activeTotal ?? 0) > 0 || (pastTotal ?? 0) > 0) return true;
+  if (activeTotal === undefined || pastTotal === undefined) return undefined;
+
+  return false;
+};
+
+interface OrderListContainerProps {
+  kind: OrderKind;
+}
+
+/** The connected account's DCA or limit orders, newest first, regardless of the selected tokens. */
+const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
+  const { connected, account } = useWallet();
+  const [tab, setTab] = useAtom(OrderState.orderListTab);
+
+  const address = connected ? (account?.address ?? "") : "";
+
+  // The list only appears once the account has an order of this kind, active or past.
+  // One-item pages of both tabs give their totals whichever tab is open.
+  const totalRequest = (status: OrderListTab) => ({ address, status, page: 1, size: 1 });
+  const totalOptions = (orderKind: OrderKind, cardType: SwapCardType) => ({
+    enabled: !!address && kind === orderKind && ENABLED_SWAP_CARD_TYPES.includes(cardType),
+    keepPreviousData: false,
+  });
+  const activeDcaTotal = useGetDcaOrders(totalRequest("active"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
+  const pastDcaTotal = useGetDcaOrders(totalRequest("past"), totalOptions("dca", SWAP_CARD_TYPE.DCA));
+  const activeLimitTotal = useGetLimitOrders(totalRequest("active"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
+  const pastLimitTotal = useGetLimitOrders(totalRequest("past"), totalOptions("limit", SWAP_CARD_TYPE.LIMIT));
+  const [activeTotal, pastTotal] = kind === "dca" ? [activeDcaTotal, pastDcaTotal] : [activeLimitTotal, pastLimitTotal];
+  const hasOrders = hasAnyOrder(activeTotal.data?.pageInfo.totalItems, pastTotal.data?.pageInfo.totalItems);
+
+  // Orders wait for the token list to scale their amounts. If it or a total fails, show a retry instead of hiding the list.
+  const { isMobile } = useWindowSize();
+  const tokenQuery = useGetTokens(true);
+  const tokensFailed = tokenQuery.isError && !tokenQuery.data;
+  const totalsFailed = activeTotal.isError || pastTotal.isError;
+  const isRetrying = tokenQuery.isFetching || activeTotal.isFetching || pastTotal.isFetching;
+  const retryLoad = useCallback(() => {
+    if (tokensFailed) tokenQuery.refetch();
+    if (activeTotal.isError) activeTotal.refetch();
+    if (pastTotal.isError) pastTotal.refetch();
+  }, [activeTotal, pastTotal, tokenQuery, tokensFailed]);
+
+  const changeTab = useCallback((next: OrderListTab) => setTab(next), [setTab]);
+
+  if (!connected) return null;
+
+  if (hasOrders === undefined && (tokensFailed || totalsFailed)) {
+    return (
+      <OrderList
+        tab={tab}
+        changeTab={changeTab}
+        connectedWallet={connected}
+        isLoading={isRetrying}
+        isEmpty={false}
+        isError
+        onRetry={retryLoad}
+        currentPage={1}
+        totalPages={0}
+        changePage={() => undefined}
+        compact={isMobile}
+      />
+    );
+  }
+
+  // Show the list only for a connected account with an active or past order.
+  if (hasOrders !== true) return null;
+
+  // Remounted per kind, tab and account: the page starts at 1, and a page of the other tab is never
+  // kept on screen as the previous data while this tab's first page loads.
+  return (
+    <OrderListPages
+      key={`${kind}-${tab}-${address}`}
+      kind={kind}
+      tab={tab}
+      changeTab={changeTab}
+      connected={connected}
+      address={address}
+    />
+  );
+};
+
+interface OrderListPagesProps {
+  kind: OrderKind;
+  tab: OrderListTab;
+  changeTab: (tab: OrderListTab) => void;
+  connected: boolean;
+  address: string;
+}
+
+/** One tab's orders, a page at a time. */
+const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, connected, address }) => {
+  const { isMobile } = useWindowSize();
+  const { getTxUrl } = useGnoscanUrl();
+  const { openStopDcaOrder, openCancelLimitOrder, claimDcaOrder } = useStopOrderHandler();
+  const getUsdPrice = useOrderTokenUsdPrice();
+  const { getPrice } = useLimitMarketPrices();
+  const [page, setPage] = useState(1);
+
+  const request = { address, status: tab, page, size: ORDER_PAGE_SIZE };
+
+  // Both lists stay loaded so switching between DCA and Limit shows the cached list at once;
+  // only the visible one keeps polling, as often as the swap history. Each tab switch remounts
+  // this list, and it refetches then even when cached (the app default skips refetch on mount).
+  const dcaOrders = useGetDcaOrders(request, {
+    enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.DCA),
+    refetchOnMount: "always",
+    refetchInterval: kind === "dca" ? SWAP_HISTORY_REFETCH_INTERVAL : false,
+  });
+  const limitOrders = useGetLimitOrders(request, {
+    enabled: !!address && ENABLED_SWAP_CARD_TYPES.includes(SWAP_CARD_TYPE.LIMIT),
+    refetchOnMount: "always",
+    refetchInterval: kind === "limit" ? SWAP_HISTORY_REFETCH_INTERVAL : false,
+  });
+  const { data, isLoading, isPreviousData, isError, refetch } = kind === "dca" ? dcaOrders : limitOrders;
+
+  // Orders leaving the list can shrink it below the open page; go back to its last page.
+  const lastPage = Math.max(data?.pageInfo.totalPages ?? 1, 1);
+  const isOutOfRange = !!data && !isPreviousData && page > lastPage;
+  useEffect(() => {
+    if (isOutOfRange) setPage(lastPage);
+  }, [isOutOfRange, lastPage]);
+
+  // Only the Limit orders on screen are priced, in the query the Limit form shares.
+  const visibleLimitOrders = kind === "limit" ? limitOrders.data?.items : undefined;
+  const visibleLimitPairs = useMemo(() => (visibleLimitOrders ?? []).map(toMarketPricePair), [visibleLimitOrders]);
+  useRegisterLimitMarketPricePairs(visibleLimitPairs);
+
+  // Order IDs restart with each realm deployment, so a card is identified by its realm and ID.
+  const items = (() => {
+    if (kind === "dca") {
+      return (dcaOrders.data?.items ?? []).map(order => (
+        <DcaOrderItemCard
+          key={`${order.packagePath}:${order.orderId}`}
+          order={order}
+          outputTokenUsdPrice={getUsdPrice(order.outputToken)}
+          txUrl={getTxUrl(order.createdTxHash)}
+          onClickStop={openStopDcaOrder}
+          onClickClaim={claimDcaOrder}
+          renderHistory={item => <DcaOrderHistoryContainer order={item} />}
+        />
+      ));
+    }
+
+    return (limitOrders.data?.items ?? []).map(order => (
+      <LimitOrderItemCard
+        key={`${order.packagePath}:${order.orderId}`}
+        order={order}
+        marketPrice={getPrice(toMarketPricePair(order))}
+        tokenOutUsdPrice={getUsdPrice(order.tokenOut)}
+        txUrl={getTxUrl(order.createdTxHash)}
+        onClickCancel={openCancelLimitOrder}
+        renderHistory={item => <LimitOrderHistoryContainer order={item} />}
+      />
+    ));
+  })();
+
+  return (
+    <OrderList
+      tab={tab}
+      changeTab={changeTab}
+      connectedWallet={connected}
+      isLoading={!!address && isLoading}
+      isEmpty={items.length === 0}
+      isError={isError && !data}
+      onRetry={() => refetch()}
+      currentPage={page}
+      totalPages={data?.pageInfo.totalPages ?? 0}
+      changePage={setPage}
+      compact={isMobile}
+    >
+      {items}
+    </OrderList>
+  );
+};
+
+/** Shows the order list under the DCA and Limit cards; the Swap card has none. */
+const SwapOrderListContainer: React.FC = () => {
+  const router = useRouter();
+  // A disabled mode falls back to Swap, which has no order list.
+  const swapType = toEnabledSwapCardType(router.query.type, ENABLED_SWAP_CARD_TYPES);
+
+  if (swapType === SWAP_CARD_TYPE.SWAP) return null;
+  return <OrderListContainer kind={swapType} />;
+};
+
+export { OrderListContainer };
+export default SwapOrderListContainer;

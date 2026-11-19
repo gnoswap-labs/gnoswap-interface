@@ -39,6 +39,13 @@ function isPositiveAmount(amount: string | null): amount is string {
   return value.isFinite() && value.isGreaterThan(0);
 }
 
+/** Returns the amount as an integer string when it is a non-negative integer, otherwise null. */
+function toRawAmountString(amount: string | null | undefined): string | null {
+  if (amount === null || amount === undefined) return null;
+  const value = BigNumber(amount);
+  return value.isInteger() && value.isGreaterThanOrEqualTo(0) ? value.toFixed() : null;
+}
+
 export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) => {
   const { swapRouterRepository } = useGnoswapContext();
   const { getNextReferralAddress } = useReferral();
@@ -175,7 +182,8 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     return estimatedSwapResult.estimatedRoutes;
   }, [swapState, estimatedSwapResult, debouncedSwapAmount, isTyping, isSameToken]);
 
-  const estimatedAmount: string | null = useMemo(() => {
+  /** The quote for the current input; null while it is loading, stale or unavailable. */
+  const currentQuote = useMemo(() => {
     if (!tokenA || !tokenB) {
       return null;
     }
@@ -188,12 +196,26 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       return null;
     }
 
-    const amount = estimatedSwapResult.amount;
+    return estimatedSwapResult;
+  }, [debouncedSwapAmount, error, estimatedSwapResult, isTyping, swapState, tokenA, tokenB]);
 
+  // The quote is final: the router fee is already inside it, so nothing is deducted or added here.
+  const estimatedAmount: string | null = useMemo(() => {
+    if (!tokenA || !tokenB || !currentQuote) {
+      return null;
+    }
+
+    // EXACT_IN quotes the output token, EXACT_OUT the input token
     return direction === "EXACT_IN"
-      ? makeDisplayTokenAmountString(tokenB, amount)
-      : makeDisplayTokenAmountString(tokenA, amount);
-  }, [debouncedSwapAmount, direction, error, estimatedSwapResult, isTyping, swapState, tokenA, tokenB]);
+      ? makeDisplayTokenAmountString(tokenB, currentQuote.amount)
+      : makeDisplayTokenAmountString(tokenA, currentQuote.amount);
+  }, [currentQuote, direction, tokenA, tokenB]);
+
+  /** Router fee in raw units of the output token (tokenB) for both exact modes; null when the quote lacks it. */
+  const estimatedFeeAmountRaw: string | null = useMemo(
+    () => toRawAmountString(currentQuote?.feeAmount),
+    [currentQuote],
+  );
 
   const tokenAmountLimit = useMemo(() => {
     if (!tokenA || !tokenB || !estimatedAmount || Number.isNaN(slippage)) {
@@ -298,7 +320,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
-          originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
@@ -312,7 +333,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
           tokenAmount,
           estimatedRoutes: estimatedRoutes,
           slippage: slippage,
-          originAmount: estimatedSwapResult?.originAmount || 0,
           tokenAmountLimit: tokenAmountLimit,
           deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
           referrerAddress: currentReferralAddress,
@@ -327,7 +347,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
       isFetchedTokens,
       swapRouterRepository,
       tokenA,
-      estimatedSwapResult?.originAmount,
       slippage,
       tokenAmountLimit,
       tokenB,
@@ -375,7 +394,6 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
         tokenAmount,
         estimatedRoutes: routes.estimatedRoutes,
         slippage,
-        originAmount: routes.originAmount,
         tokenAmountLimit: calculateSlippageLimitAmount(outputAmount, slippage, "EXACT_IN", tokenB.decimals),
         deadline: Math.floor(Date.now() / 1000) + SWAP_DEADLINE_SEC,
         referrerAddress: getNextReferralAddress(),
@@ -443,6 +461,7 @@ export const useSwap = ({ tokenA, tokenB, direction, slippage }: UseSwapProps) =
     isSameToken,
     tokenAmountLimit,
     estimatedAmount,
+    estimatedFeeAmountRaw,
     estimatedRoutes,
     swapState,
     swap,

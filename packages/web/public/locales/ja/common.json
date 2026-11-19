@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "バランス",
     "cancel": "キャンセル",
     "close": "閉じる",
     "copy": "コピー",
-    "earn": "稼ぐ",
     "swap": "スワップ"
   },
   "all": "すべて",
-  "available": "利用可能",
   "balanceChange": {
     "currentBalance": "現在の残高",
     "defaultTitle": "3.バランスの変化",
@@ -22,7 +19,6 @@
     "amountTooLow": "金額が低すぎる",
     "enterAmount": "金額を入力",
     "insuffiBal": "残高不足",
-    "switchNetwork": "グノランドへ移動",
     "walletLogin": "ウォレットログイン"
   },
   "candleTooltip": {
@@ -72,7 +68,6 @@
       "title": "ステーキングの仕組み"
     }
   },
-  "imporNote": "重要なお知らせ",
   "learnMore": "さらに詳しく",
   "localTimeComp": {
     "tooltip": "*現地時間"
@@ -97,14 +92,6 @@
   "noDataFound": "データなし",
   "noProposalFound": "提案なし",
   "per": "につき",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "ポジション",
-      "priceRange": "価格帯",
-      "quote": "引用",
-      "totalAmt": "合計金額"
-    }
-  },
   "price": "価格",
   "reset": "リセット",
   "search": "検索",

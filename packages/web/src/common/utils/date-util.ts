@@ -329,17 +329,30 @@ const TIME_THRESHOLDS = {
   HOUR: 60 * 60,
   DAY: 60 * 60 * 24,
   WEEK: 60 * 60 * 24 * 7,
+  YEAR: 60 * 60 * 24 * 365,
 } as const;
 
 /**
  * Template literal type for relative time format strings
  */
-type TimeAgoFormat = `${number}${"s" | "m" | "h" | "d"} ago` | ">7d ago";
+type TimeAgoFormat = `${number}${"s" | "m" | "h" | "d"} ago` | ">7d ago" | ">1y ago";
+
+/**
+ * Options for {@link formatDisplayTime}
+ * @interface FormatDisplayTimeOptions
+ */
+interface FormatDisplayTimeOptions {
+  /** Keep counting days up to a year (`>1y ago`) instead of stopping at `>7d ago`. */
+  capAtYear?: boolean;
+  /** Never show less than one second (`1s ago`). */
+  minOneSecond?: boolean;
+}
 
 /**
  * Formats time difference as a human-readable relative time string
  *
  * @param {number} diffInSeconds - Time difference in seconds (absolute value is used)
+ * @param {FormatDisplayTimeOptions} [options] - Range options
  * @returns {TimeAgoFormat} Formatted relative time string
  *
  * @example
@@ -356,11 +369,12 @@ type TimeAgoFormat = `${number}${"s" | "m" | "h" | "d"} ago` | ">7d ago";
  *
  * @todo For i18n, consider using Intl.RelativeTimeFormat
  */
-export const formatDisplayTime = (diffInSeconds: number): TimeAgoFormat => {
+export const formatDisplayTime = (diffInSeconds: number, options: FormatDisplayTimeOptions = {}): TimeAgoFormat => {
   const absDiff = Math.abs(diffInSeconds);
 
   if (absDiff < TIME_THRESHOLDS.MINUTE) {
-    return `${Math.floor(absDiff)}s ago`;
+    const seconds = Math.floor(absDiff);
+    return `${options.minOneSecond ? Math.max(seconds, 1) : seconds}s ago`;
   }
   if (absDiff < TIME_THRESHOLDS.HOUR) {
     return `${Math.floor(absDiff / TIME_THRESHOLDS.MINUTE)}m ago`;
@@ -368,9 +382,9 @@ export const formatDisplayTime = (diffInSeconds: number): TimeAgoFormat => {
   if (absDiff < TIME_THRESHOLDS.DAY) {
     return `${Math.floor(absDiff / TIME_THRESHOLDS.HOUR)}h ago`;
   }
-  if (absDiff < TIME_THRESHOLDS.WEEK) {
+  if (absDiff < (options.capAtYear ? TIME_THRESHOLDS.YEAR : TIME_THRESHOLDS.WEEK)) {
     return `${Math.floor(absDiff / TIME_THRESHOLDS.DAY)}d ago`;
   }
 
-  return ">7d ago";
+  return options.capAtYear ? ">1y ago" : ">7d ago";
 };

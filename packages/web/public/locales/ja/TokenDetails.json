@@ -1,9 +1,7 @@
 {
   "bestPool": {
     "col": {
-      "apr": "APR",
-      "pool": "プール",
-      "tvl": "TVL"
+      "pool": "プール"
     },
     "title": "{{symbol}}のおすすめプール"
   },
@@ -28,7 +26,6 @@
       "col": {
         "fee": "手数料（24時間）",
         "marketCap": "時価総額",
-        "tvl": "TVL",
         "volume": "体積（24時間）"
       },
       "title": "マーケット情報"

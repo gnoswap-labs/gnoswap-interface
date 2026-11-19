@@ -33,8 +33,6 @@
     },
     "btn": {
       "alreadyVoted": "已投票",
-      "changeNetwork": "转到糯米地",
-      "execute": "执行",
       "noVoteWeight": "投票权重不足",
       "requireSelect": "选择投票选项",
       "tryAgain": "重试",
@@ -127,8 +125,7 @@
         "select": {
           "amount": "金额"
         },
-        "title": "1.选择您的代表",
-        "tooltip": "代表是社区领袖，他们被选中代表 GNS 持有者做出管理决策。"
+        "title": "1.选择您的代表"
       },
       "step2": {
         "title": "2.输入金额"
@@ -179,8 +176,6 @@
       "executableInMinutes_other": "可在 {{count}} 分钟内执行",
       "executed": "撤销提案{{rel_time}}",
       "expired": "提案已过期{{rel_time}}",
-      "h": "在{{time}}h",
-      "m": "在{{time}}m",
       "start": "投票开始{{rel_time}}"
     },
     "tooltip": {
@@ -220,8 +215,7 @@
       "unavailable": "暂无"
     },
     "aprHistory": {
-      "dailyApr": "总计",
-      "vs7dAvg": "较7D均值"
+      "dailyApr": "总计"
     },
     "apr": {
       "title": "xGNS APR（7天）"

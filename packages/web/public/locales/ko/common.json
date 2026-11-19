@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "잔액",
     "cancel": "취소",
     "close": "닫기",
     "copy": "복사",
-    "earn": "Earn",
     "swap": "스왑"
   },
   "all": "전체",
-  "available": "사용 가능",
   "balanceChange": {
     "currentBalance": "현재 잔액",
     "defaultTitle": "3. 잔액 변동",
@@ -22,7 +19,6 @@
     "amountTooLow": "수량이 너무 적음",
     "enterAmount": "수량 입력",
     "insuffiBal": "잔액 부족",
-    "switchNetwork": "Gnoland로 전환",
     "walletLogin": "지갑 로그인"
   },
   "candleTooltip": {
@@ -72,7 +68,6 @@
       "title": "스테이킹은 어떻게 작동하나요?"
     }
   },
-  "imporNote": "중요 참고 사항",
   "learnMore": "자세히 알아보기",
   "localTimeComp": {
     "tooltip": "*현지 시간 기준"
@@ -97,14 +92,6 @@
   "noDataFound": "데이터를 찾을 수 없습니다.",
   "noProposalFound": "제안서를 찾을 수 없습니다.",
   "per": "당",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "포지션 수량",
-      "priceRange": "가격 범위",
-      "quote": "시세",
-      "totalAmt": "총 수량"
-    }
-  },
   "price": "가격",
   "reset": "초기화",
   "search": "검색",

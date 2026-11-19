@@ -1,6 +1,4 @@
 {
-  "addPosi": "포지션 추가",
-  "copied": "복사 완료!",
   "developersSection": {
     "item": {
       "audit": "감사",
@@ -23,14 +21,12 @@
     },
     "title": "기능"
   },
-  "gnoBridge": "그노 브릿지",
   "governance": "거버넌스",
   "governanceSection": {
     "item": {
       "dashboard": "탐색",
       "forum": "포럼",
       "proposals": "제안서",
-      "vote": "투표",
       "xgns": "xGNS"
     },
     "title": "거버넌스"
@@ -41,7 +37,6 @@
       "aboutUs": "회사 소개",
       "faq": "FAQ",
       "projectOnboarding": "온보딩",
-      "twitter": "Twitter (X)",
       "userGuide": "사용자 가이드"
     },
     "title": "지원"
@@ -61,7 +56,6 @@
     "title": "정책"
   },
   "portfolio": "포트폴리오",
-  "projectOnboarding": "프로젝트 온보딩",
   "receive": "받기",
   "referralSection": {
     "banner": {
@@ -84,9 +78,7 @@
       }
     }
   },
-  "stakePosi": "포지션 스테이킹",
   "swap": "스왑",
   "switchNetwork": "네트워크 변경",
-  "theFastest": "Gnoland의 핵심 유동성 제공을 목표로 빠르게 성장하는 생태계",
   "theme": "테마"
 }

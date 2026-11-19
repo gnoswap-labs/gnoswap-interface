@@ -52,7 +52,6 @@
     "card": {
       "claimedRewards": "Phần thưởng đã nhận",
       "claimRewards": "Phần thưởng có thể yêu cầu",
-      "dailyEarn": "Thu nhập hàng ngày",
       "hideRange": "Ẩn phạm vi của tôi",
       "value": "Giá trị",
       "viewRange": "Xem các sản phẩm của tôi"
@@ -71,7 +70,6 @@
     "title_other": "Các vị trí",
     "unconnect": {
       "connect": "Vui lòng kết nối ví của bạn để xem các vị thế thanh khoản của mình.",
-      "switchgno": "Chuyển sang Gnoland",
       "switchNetwork": "Mạng không được hỗ trợ. Hãy chuyển sang mạng Gnoland."
     }
   },

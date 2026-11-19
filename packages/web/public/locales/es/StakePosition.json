@@ -14,8 +14,7 @@
   "confStakeModal": {
     "positionLst": "Puestos",
     "stakingReward": {
-      "title": "Recompensas de las apuestas",
-      "tooltip": "El importe de las tasas cobradas por cada reclamación que va al protocolo."
+      "title": "Recompensas de las apuestas"
     },
     "title": "Confirmar la posición de la estaca",
     "warning": {

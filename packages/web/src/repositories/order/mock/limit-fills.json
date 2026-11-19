@@ -1,0 +1,26 @@
+{
+  "message": "success",
+  "data": {
+    "items": [
+      {
+        "txHash": "mockFillTx2",
+        "amountIn": "40000000",
+        "userOutput": "50900000",
+        "executionFee": "76000",
+        "blockTime": 1793662800
+      },
+      {
+        "txHash": "mockFillTx1",
+        "amountIn": "60000000",
+        "userOutput": "76200000",
+        "executionFee": "114000",
+        "blockTime": 1793661600
+      }
+    ],
+    "pageInfo": {
+      "currentPage": 1,
+      "totalItems": 2,
+      "totalPages": 1
+    }
+  }
+}

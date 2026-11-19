@@ -83,6 +83,18 @@ export enum QUERY_KEY {
   launchpadProjectDetails = "launchpad_project_details",
   launchpadParticipationInfos = "launchpad_participation_infos",
 
+  // order
+  dcaConfig = "dca_config",
+  dcaPair = "dca_pair",
+  dcaSchedule = "dca_schedule",
+  dcaOrders = "dca_orders",
+  dcaOrder = "dca_order",
+  dcaExecutions = "dca_executions",
+  limitConfig = "limit_config",
+  limitOrders = "limit_orders",
+  limitMarketPrices = "limit_market_prices",
+  limitOrderFills = "limit_order_fills",
+
   // gas
   gasPrice = "gas_price",
 

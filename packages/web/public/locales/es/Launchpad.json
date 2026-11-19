@@ -27,14 +27,8 @@
     "ongoing": "En curso",
     "status": {
       "ended": "Finalizado",
-      "endsInOneMinute": "Termina en 1 minuto",
       "ongoing": "Termina en {{time}}",
       "upcoming": "Próximamente en {{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 mes",
-      "3months": "3 meses",
-      "6months": "6 meses"
     },
     "time": {
       "days_one": "{{count}} día",
@@ -94,7 +88,6 @@
     "claimAll": {
       "col": {
         "claimable": "Reclamable",
-        "depositAmount": "Importe del depósito",
         "pool": "Piscina"
       },
       "title": "Confirmar Reclamar todo"
@@ -105,8 +98,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "Importe del depósito",
-          "endDate": "Fecha final",
           "poolTier": "Nivel de piscina"
         },
         "title": "Detalle del depósito"
@@ -133,9 +124,7 @@
       "apr": "APR",
       "claimable": "Reclamable",
       "claimableDate": "Fecha reclamable",
-      "claimed": "Reclamado",
-      "depositAmounts": "Importe del depósito",
-      "endDate": "Fecha final"
+      "claimed": "Reclamado"
     },
     "nodata": {
       "text1": "Depósito <span>GNS</span>",
@@ -146,7 +135,6 @@
     "unconnect": "Conecte su monedero<br/>para ver su participación."
   },
   "participate": {
-    "balance": "Saldo",
     "col": {
       "depositAmount": "Importe del depósito",
       "endDate": "Fecha final",

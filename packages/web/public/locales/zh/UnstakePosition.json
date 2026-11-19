@@ -3,15 +3,7 @@
     "selectPosi": "选择位置"
   },
   "confStakeModal": {
-    "btn": "确认解除头寸",
     "positionLst": "职位",
-    "stakingReward": {
-      "apr": {
-        "label": "定标 APR",
-        "tooltip": "估计年利率范围的计算方法是，根据注码持续时间，对您的注码头寸应用动态乘数。"
-      },
-      "title": "投注奖励"
-    },
     "title": "确认解除头寸",
     "unstakingFee": {
       "tooltip": "根据头寸的定投奖励（而非本金）收取的费用中，协议所占的百分比。"
@@ -22,10 +14,8 @@
     }
   },
   "overview": {
-    "collectAsSwitch": "收集为 WGNOT",
     "pooled": "汇集",
-    "totalAmt": "总金额",
-    "unclaimed": "无人认领的奖励"
+    "totalAmt": "总金额"
   },
   "positionList": {
     "item": {
@@ -34,9 +24,7 @@
       }
     }
   },
-  "rewards": "奖励",
   "title": "解除立场",
-  "unclaimed": "无人认领",
   "unclaimedRewards": "未领取的奖励",
   "warning": {
     "content": "这将完全重置您的质押进度。重新质押后，您需要等待 45 天才能开始获得最高质押奖励。在解质押之前，请务必了解预热期的运作机制。",

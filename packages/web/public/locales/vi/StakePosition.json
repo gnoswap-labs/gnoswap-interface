@@ -14,8 +14,7 @@
   "confStakeModal": {
     "positionLst": "Các vị trí",
     "stakingReward": {
-      "title": "Phần thưởng từ việc staking",
-      "tooltip": "Số tiền phí được tính trên mỗi yêu cầu thanh toán được\n                            gửi đến giao thức."
+      "title": "Phần thưởng từ việc staking"
     },
     "title": "Xác nhận vị thế cổ phần",
     "warning": {

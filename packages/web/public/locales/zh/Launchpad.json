@@ -27,14 +27,8 @@
     "ongoing": "持续进行",
     "status": {
       "ended": "完工",
-      "endsInOneMinute": "1 分钟后结束",
       "ongoing": "结束于{{time}}",
       "upcoming": "即将在{{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 个月",
-      "3months": "3 个月",
-      "6months": "6 个月"
     },
     "time": {
       "days_other": "{{count}} 天数",
@@ -89,7 +83,6 @@
     "claimAll": {
       "col": {
         "claimable": "可索赔",
-        "depositAmount": "存款金额",
         "pool": "游泳池"
       },
       "title": "确认全部索赔"
@@ -100,8 +93,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "存款金额",
-          "endDate": "结束日期",
           "poolTier": "游泳池层"
         },
         "title": "存款明细"
@@ -128,9 +119,7 @@
       "apr": "年利率",
       "claimable": "可索赔",
       "claimableDate": "索赔日期",
-      "claimed": "已申请",
-      "depositAmounts": "存款金额",
-      "endDate": "结束日期"
+      "claimed": "已申请"
     },
     "nodata": {
       "text1": "存款<span>GNS</span>",
@@ -141,7 +130,6 @@
     "unconnect": "请连接您的钱包<br/>查看您的参与情况。"
   },
   "participate": {
-    "balance": "平衡",
     "col": {
       "depositAmount": "存款金额",
       "endDate": "结束日期",

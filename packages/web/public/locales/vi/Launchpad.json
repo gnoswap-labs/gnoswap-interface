@@ -27,14 +27,8 @@
     "ongoing": "Đang diễn ra",
     "status": {
       "ended": "Đã kết thúc",
-      "endsInOneMinute": "Sẽ kết thúc trong 1 phút nữa",
       "ongoing": "Kết thúc trong {{time}}",
       "upcoming": "Sắp tới trong {{time}}"
-    },
-    "tierDuration": {
-      "1month": "1 tháng",
-      "3months": "3 tháng",
-      "6months": "6 tháng"
     },
     "time": {
       "days_other": "{{count}} ngày",
@@ -89,7 +83,6 @@
     "claimAll": {
       "col": {
         "claimable": "Có thể yêu cầu bồi thường",
-        "depositAmount": "Số tiền đặt cọc",
         "pool": "Hồ bơi"
       },
       "title": "Xác nhận yêu cầu bồi thường tất cả"
@@ -100,8 +93,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "Số tiền đặt cọc",
-          "endDate": "Ngày kết thúc",
           "poolTier": "Cấp độ hồ bơi"
         },
         "title": "Chi tiết khoản tiền gửi"
@@ -128,9 +119,7 @@
       "apr": "APR",
       "claimable": "Có thể yêu cầu bồi thường",
       "claimableDate": "Ngày có thể yêu cầu bồi thường",
-      "claimed": "Được tuyên bố",
-      "depositAmounts": "Số tiền đặt cọc",
-      "endDate": "Ngày kết thúc"
+      "claimed": "Được tuyên bố"
     },
     "nodata": {
       "text1": "Nạp tiền vào <span>GNS</span>",
@@ -141,7 +130,6 @@
     "unconnect": "Vui lòng kết nối ví của bạn tại<br/>\nđể xem thông tin tham gia của bạn."
   },
   "participate": {
-    "balance": "Cân bằng",
     "col": {
       "depositAmount": "Số tiền đặt cọc",
       "endDate": "Ngày kết thúc",

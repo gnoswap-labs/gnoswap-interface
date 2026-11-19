@@ -28,12 +28,7 @@ interface ContentProps {
 
 const SkeletonLoader = () => <span css={pulseSkeletonStyle({ h: 18, w: "100px!important" })} />;
 
-const SwapCardFeeInfo: React.FC<ContentProps> = ({
-  swapSummaryInfo,
-  isLoading,
-  priceImpactStatus,
-  swapTokenInfo,
-}) => {
+const SwapCardFeeInfo: React.FC<ContentProps> = ({ swapSummaryInfo, isLoading, priceImpactStatus, swapTokenInfo }) => {
   const { t } = useTranslation();
 
   const priceImpactStr = useMemo(() => {
@@ -51,7 +46,13 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
       guaranteedTypeStr: t(swapDirectionToGuaranteedType(swapDirection)),
       guaranteedStr: `${toNumberFormat(amount || 0, guaranteedToken.decimals)} ${currency}`,
     };
-  }, [swapSummaryInfo.swapDirection, swapSummaryInfo.guaranteedAmount, swapSummaryInfo.tokenA, swapSummaryInfo.tokenB, t]);
+  }, [
+    swapSummaryInfo.swapDirection,
+    swapSummaryInfo.guaranteedAmount,
+    swapSummaryInfo.tokenA,
+    swapSummaryInfo.tokenB,
+    t,
+  ]);
 
   const slippageStr = useMemo(() => {
     return `${swapTokenInfo.slippage}%`;
@@ -78,21 +79,7 @@ const SwapCardFeeInfo: React.FC<ContentProps> = ({
     return `(${swapSummaryInfo.protocolFee})`;
   }, [swapSummaryInfo.protocolFee]);
 
-  const routerFeeStr = useMemo(() => {
-    return formatRouterFeeStr(swapSummaryInfo, swapTokenInfo);
-  }, [
-    swapSummaryInfo.routerFee,
-    swapSummaryInfo.protocolFee,
-    swapTokenInfo.direction,
-    swapTokenInfo.tokenAAmount,
-    swapTokenInfo.tokenBAmount,
-    swapTokenInfo.tokenAUSD,
-    swapTokenInfo.tokenBUSD,
-    swapTokenInfo.tokenA?.symbol,
-    swapTokenInfo.tokenB?.symbol,
-    swapTokenInfo.tokenADecimals,
-    swapTokenInfo.tokenBDecimals,
-  ]);
+  const routerFeeStr = useMemo(() => formatRouterFeeStr(swapSummaryInfo), [swapSummaryInfo]);
 
   return (
     <FeeWrapper>

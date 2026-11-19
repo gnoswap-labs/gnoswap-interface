@@ -14,8 +14,7 @@
   "confStakeModal": {
     "positionLst": "포지션",
     "stakingReward": {
-      "title": "스테이킹 보상",
-      "tooltip": "각 클레임 시 프로토콜로 귀속되는 수수료입니다."
+      "title": "스테이킹 보상"
     },
     "title": "포지션 스테이킹 확인",
     "warning": {

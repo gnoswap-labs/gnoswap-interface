@@ -1,14 +1,11 @@
 {
   "action": {
-    "balance": "Saldo",
     "cancel": "Cancelar",
     "close": "Cerrar",
     "copy": "Copia",
-    "earn": "Gane",
     "swap": "Intercambiar"
   },
   "all": "Todos",
-  "available": "Disponible",
   "balanceChange": {
     "currentBalance": "Saldo actual",
     "defaultTitle": "3. Cambios en el saldo",
@@ -22,7 +19,6 @@
     "amountTooLow": "Importe demasiado bajo",
     "enterAmount": "Introduzca el importe",
     "insuffiBal": "Saldo insuficiente",
-    "switchNetwork": "Cambiar a Gnolandia",
     "walletLogin": "Inicio de sesión en Wallet"
   },
   "candleTooltip": {
@@ -73,7 +69,6 @@
       "title": "¿Cómo funcionan las apuestas?"
     }
   },
-  "imporNote": "Nota importante",
   "learnMore": "Más información",
   "localTimeComp": {
     "tooltip": "*Basado en su hora local"
@@ -98,14 +93,6 @@
   "noDataFound": "No se han encontrado datos",
   "noProposalFound": "No se ha encontrado ninguna propuesta",
   "per": "por",
-  "poolGraph": {
-    "tooltip": {
-      "positionAmt": "Importe del puesto",
-      "priceRange": "Precios",
-      "quote": "Cita",
-      "totalAmt": "Importe total"
-    }
-  },
   "price": "Precio",
   "reset": "Restablecer",
   "search": "Buscar en",

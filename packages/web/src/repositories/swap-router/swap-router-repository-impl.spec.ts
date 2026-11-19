@@ -46,7 +46,7 @@ describe("SwapRouterRepositoryImpl", () => {
     const repository = new SwapRouterRepositoryImpl(
       null,
       null,
-      createNetworkClient(post, { estimatedRoutes: [], originAmount: 0, amount: "0", status: "SUCCESS" }),
+      createNetworkClient(post, { estimatedRoutes: [], amount: "0", feeAmount: "0", status: "SUCCESS" }),
     );
 
     await repository.getRoutes({
@@ -70,7 +70,7 @@ describe("SwapRouterRepositoryImpl", () => {
     const repository = new SwapRouterRepositoryImpl(
       null,
       null,
-      createNetworkClient(post, { estimatedRoutes: [], originAmount: 0, amount: "0", status: "SUCCESS" }),
+      createNetworkClient(post, { estimatedRoutes: [], amount: "0", feeAmount: "0", status: "SUCCESS" }),
     );
 
     await repository.getRoutes({
@@ -97,8 +97,8 @@ describe("SwapRouterRepositoryImpl", () => {
   it("uses output token decimals for exact-out route quotes", async () => {
     const response: GetRoutesResponse = {
       estimatedRoutes: [],
-      originAmount: 0,
       amount: "0",
+      feeAmount: "0",
       status: "SUCCESS",
     };
     const post = jest.fn();

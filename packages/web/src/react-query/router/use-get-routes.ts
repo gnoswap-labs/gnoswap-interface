@@ -61,8 +61,8 @@ export const useGetRoutes = (
       if (!result) {
         return {
           estimatedRoutes: [],
-          originAmount: 0,
           amount: "0",
+          feeAmount: "0",
           status: "NO_LIQUIDITY",
         };
       }

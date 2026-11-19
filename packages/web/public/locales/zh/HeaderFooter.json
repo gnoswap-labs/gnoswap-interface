@@ -1,6 +1,4 @@
 {
-  "addPosi": "增加职位",
-  "copied": "已复制！",
   "developersSection": {
     "item": {
       "audit": "审计",
@@ -23,14 +21,12 @@
     },
     "title": "特征"
   },
-  "gnoBridge": "格诺桥",
   "governance": "管理",
   "governanceSection": {
     "item": {
       "dashboard": "探索",
       "forum": "论坛",
       "proposals": "建议",
-      "vote": "投票",
       "xgns": "xGNS"
     },
     "title": "管理"
@@ -41,7 +37,6 @@
       "aboutUs": "关于我们",
       "faq": "常见问题",
       "projectOnboarding": "入职",
-      "twitter": "推特 (X)",
       "userGuide": "用户指南"
     },
     "title": "帮助"
@@ -61,7 +56,6 @@
     "title": "政策"
   },
   "portfolio": "投资组合",
-  "projectOnboarding": "项目入职",
   "receive": "接收",
   "referralSection": {
     "banner": {
@@ -84,9 +78,7 @@
       }
     }
   },
-  "stakePosi": "桩位",
   "swap": "交换",
   "switchNetwork": "切换网络",
-  "theFastest": "发展最快的生态系统，致力于在 Gnoland 上构建最深的流动性来源。",
   "theme": "主题"
 }
