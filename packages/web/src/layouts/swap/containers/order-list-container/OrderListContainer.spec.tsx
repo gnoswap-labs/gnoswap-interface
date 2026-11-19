@@ -87,6 +87,11 @@ describe("hasAnyOrder", () => {
     expect(hasAnyOrder(0, undefined)).toBeUndefined();
   });
 
+  it("is true from one positive total while the other is missing", () => {
+    expect(hasAnyOrder(1, undefined)).toBe(true);
+    expect(hasAnyOrder(undefined, 2)).toBe(true);
+  });
+
   it("is true when either tab has an order", () => {
     expect(hasAnyOrder(0, 0)).toBe(false);
     expect(hasAnyOrder(1, 0)).toBe(true);

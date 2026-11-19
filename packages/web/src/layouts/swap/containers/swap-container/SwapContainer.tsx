@@ -1,11 +1,12 @@
-import { useAtomValue } from "jotai";
-import React, { useCallback } from "react";
+import { useAtomValue, useSetAtom } from "jotai";
+import React, { useCallback, useEffect } from "react";
 
+import { DEFAULT_SLIPPAGE } from "@constants/option.constant";
 import { ENABLED_SWAP_CARD_TYPES, IS_ORDER_ENABLED } from "@constants/order.constant";
 import useRouter from "@hooks/common/use-custom-router";
 import { SWAP_CARD_TYPE, SwapCardType, toEnabledSwapCardType } from "@models/order/order-type";
 import { useGetDcaConfig, useGetLimitConfig } from "@query/order";
-import { SwapState } from "@states/index";
+import { CommonState, SwapState } from "@states/index";
 
 import DcaOrderContainer from "../dca-order-container/DcaOrderContainer";
 import LimitOrderContainer from "../limit-order-container/LimitOrderContainer";
@@ -22,6 +23,12 @@ import SwapCardContainer from "../swap-card-container/SwapCardContainer";
  * neither configured, the page renders the plain swap card as before.
  */
 const SwapContainer: React.FC = () => {
+  // Slippage is shared with the liquidity pages; reset it once on entering Swap, not per tab.
+  const setSlippage = useSetAtom(CommonState.slippage);
+  useEffect(() => {
+    setSlippage(DEFAULT_SLIPPAGE);
+  }, [setSlippage]);
+
   if (!IS_ORDER_ENABLED) return <SwapCardContainer />;
   return <SwapWithOrdersContainer />;
 };
@@ -42,7 +49,10 @@ const SwapWithOrdersContainer: React.FC = () => {
       if (type !== SWAP_CARD_TYPE.SWAP) query.type = type;
       if (swapValue.tokenA?.path) query.from = swapValue.tokenA.path;
       if (swapValue.tokenB?.path) query.to = swapValue.tokenB.path;
-      router.replace({ pathname: router.pathname, query }, undefined, { shallow: true, scroll: false });
+      router.replace({ pathname: router.pathname, query: router.getParamsWithReferrer(query) }, undefined, {
+        shallow: true,
+        scroll: false,
+      });
     },
     [router, swapType, swapValue.tokenA?.path, swapValue.tokenB?.path],
   );

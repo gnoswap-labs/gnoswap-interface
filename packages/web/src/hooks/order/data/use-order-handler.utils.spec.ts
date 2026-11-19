@@ -164,7 +164,15 @@ describe("use-order-handler.utils", () => {
   it("computes the taking amount in raw output units", () => {
     expect(calculateTakingAmount("3000000", "1.2716", { decimals: 6 }, { decimals: 6 })).toBe("3814800");
     expect(calculateTakingAmount("1000000", "0.5", { decimals: 6 }, { decimals: 8 })).toBe("50000000");
-    expect(calculateTakingAmount("1", "0.5", { decimals: 0 }, { decimals: 0 })).toBe("0");
+    expect(calculateTakingAmount("1", "0.5", { decimals: 0 }, { decimals: 0 })).toBe("1");
+  });
+
+  it("rounds the Sell output up so the signed price never falls below the limit", () => {
+    const making = "100";
+    const taking = calculateTakingAmount(making, "0.019", { decimals: 6 }, { decimals: 6 });
+    expect(taking).toBe("2");
+    expect(Number(taking) / Number(making)).toBeGreaterThanOrEqual(0.019);
+    expect(calculateTakingAmount("0", "0.019", { decimals: 6 }, { decimals: 6 })).toBe("0");
   });
 
   it("divides Buy prices before rounding, including differing decimals and fractional output", () => {

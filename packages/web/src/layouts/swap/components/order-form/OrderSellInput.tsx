@@ -64,12 +64,12 @@ const OrderSellInput: React.FC<OrderSellInputProps> = ({
 
   const onChangeAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      if (value === "") {
+      if (e.target.value === "") {
         changeAmount("");
         return;
       }
-      if (!isAmount(value)) return;
+      if (!isAmount(e.target.value)) return;
+      const value = e.target.value.replace(",", ".");
       if (token && (value.split(".")[1]?.length ?? 0) > token.decimals) return;
       changeAmount(value.replace(LEADING_ZERO_REGEX, "$1"));
     },

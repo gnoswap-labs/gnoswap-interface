@@ -35,13 +35,15 @@ const toMarketPricePair = ({ tokenIn, tokenOut }: LimitOrderModel): LimitMarketP
 
 /**
  * Whether the account has any order of the kind, from the totals of its Active
- * and Past lists. Unknown until both totals load, so an account without orders
- * never flashes an empty list.
+ * and Past lists. A positive total from either list is enough; "no orders" needs
+ * both totals, so an account without orders never flashes an empty list and a
+ * failed list never hides the orders the other one returned.
  */
 export const hasAnyOrder = (activeTotal?: number, pastTotal?: number): boolean | undefined => {
+  if ((activeTotal ?? 0) > 0 || (pastTotal ?? 0) > 0) return true;
   if (activeTotal === undefined || pastTotal === undefined) return undefined;
 
-  return activeTotal + pastTotal > 0;
+  return false;
 };
 
 interface OrderListContainerProps {

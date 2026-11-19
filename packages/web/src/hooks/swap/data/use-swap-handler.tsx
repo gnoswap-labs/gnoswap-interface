@@ -130,7 +130,12 @@ function compareAmountFn(amountA: string | number | bigint, amountB: string | nu
   return amountValueA.isGreaterThan(amountValueB) ? 1 : -1;
 }
 
-export const useSwapHandler = () => {
+interface UseSwapHandlerOptions {
+  /** The Swap page resets slippage once on entry instead, so switching its tabs keeps the selection. */
+  resetSlippageOnMount?: boolean;
+}
+
+export const useSwapHandler = ({ resetSlippageOnMount = true }: UseSwapHandlerOptions = {}) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [, setOpenedModal] = useAtom(CommonState.openedModal);
@@ -177,7 +182,7 @@ export const useSwapHandler = () => {
     refetchGrc20Balances,
     refetchSwapExtensionBalances,
   } = useTokenData(true);
-  const { slippage, changeSlippage } = useSlippage({ resetOnMount: false });
+  const { slippage, changeSlippage } = useSlippage({ resetOnMount: resetSlippageOnMount });
   const { openModal } = useConnectWalletModal();
   const { data: swapFee } = useGetSwapFee();
 
