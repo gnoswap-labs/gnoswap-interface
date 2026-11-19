@@ -98,7 +98,6 @@
     "claimAll": {
       "col": {
         "claimable": "Заявленный",
-        "depositAmount": "Сумма депозита",
         "pool": "Бассейн"
       },
       "title": "Подтвердить Утвердить все"
@@ -109,8 +108,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "Сумма депозита",
-          "endDate": "Дата окончания",
           "poolTier": "Ярус бассейна"
         },
         "title": "Детали депозита"
@@ -137,9 +134,7 @@
       "apr": "APR",
       "claimable": "Заявленный",
       "claimableDate": "Дата предъявления претензий",
-      "claimed": "Заявлено",
-      "depositAmounts": "Сумма депозита",
-      "endDate": "Дата окончания"
+      "claimed": "Заявлено"
     },
     "nodata": {
       "text1": "Депозит <span>GNS</span>",

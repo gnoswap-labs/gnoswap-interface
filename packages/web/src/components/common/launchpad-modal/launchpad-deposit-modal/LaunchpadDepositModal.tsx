@@ -80,7 +80,7 @@ const LaunchpadDepositModal = ({
             <div className="data-header">{t("Launchpad:modal.deposit.deposit.title")}</div>
             <div className="data-box">
               <div className="data-row">
-                <div className="key">{t("Launchpad:modal.deposit.deposit.col.depositAmount")}</div>
+                <div className="key">{t("Launchpad:participate.col.depositAmount")}</div>
                 <div className="value">
                   <Image src="/gns.svg" width={24} height={24} alt="GNS Token symbol" />
                   {depositAmount} {LAUNCHPAD_DEFAULT_DEPOSIT_TOKEN}
@@ -93,7 +93,7 @@ const LaunchpadDepositModal = ({
                 </div>
               </div>
               <div className="data-row">
-                <div className="key">{t("Launchpad:modal.deposit.deposit.col.endDate")}</div>
+                <div className="key">{t("Launchpad:participate.col.endDate")}</div>
                 <div className="value">{poolInfo?.endTime ? getDateUtcToLocal(poolInfo.endTime).value : ""}</div>
               </div>
             </div>

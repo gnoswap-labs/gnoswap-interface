@@ -88,7 +88,6 @@
     "claimAll": {
       "col": {
         "claimable": "Claimable",
-        "depositAmount": "Deposit Amount",
         "pool": "Pool"
       },
       "title": "Confirm Claim All"
@@ -99,8 +98,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "Deposit Amount",
-          "endDate": "End Date",
           "poolTier": "Pool Tier"
         },
         "title": "Deposit Detail"
@@ -127,9 +124,7 @@
       "apr": "APR",
       "claimable": "Claimable",
       "claimableDate": "Claimable Date",
-      "claimed": "Claimed",
-      "depositAmounts": "Deposit Amount",
-      "endDate": "End Date"
+      "claimed": "Claimed"
     },
     "nodata": {
       "text1": "Deposit <span>GNS</span>",

@@ -69,7 +69,7 @@ const SwapCardContainer: React.FC<SwapCardContainerProps> = ({ swapType, changeS
     handleResetEstimatedLiquidity,
     initializeSwapTokenInputAmount,
     makeMaxAmountMessages,
-  } = useSwapHandler();
+  } = useSwapHandler({ resetSlippageOnMount: false });
   const additionalTokenATokens = useMemo(() => {
     const extension = getSwapExtensionForTokenSelector(swapTokenInfo.tokenA?.path, swapTokenInfo.tokenB?.path);
     if (!extension) return [];

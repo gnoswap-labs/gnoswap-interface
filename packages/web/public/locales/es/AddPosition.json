@@ -42,7 +42,6 @@
     "startingPrice": "Precio inicial",
     "tooltip": "Precio de salida sugerido basado en el precio actual del pool más líquido del mismo par."
   },
-  "fee": "Tarifa",
   "form": {
     "amount": {
       "label": "4. Introduzca el importe"

@@ -82,12 +82,12 @@
         "title": "금액이 너무 적습니다"
       },
       "halted": {
-        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
-        "title": "DCA Orders Paused"
+        "desc": "DCA 주문이 일시적으로 중단되었습니다.<br />나중에 다시 시도해 주세요.",
+        "title": "DCA 주문 일시 중지됨"
       },
       "noEligiblePool": {
-        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
-        "title": "No Eligible Pool"
+        "desc": "현재 이 페어에 사용할 수 있는 허용 목록 풀이 없습니다.<br />나중에 다시 시도해 주세요.",
+        "title": "적격 풀이 없습니다"
       },
       "pairNotSupported": {
         "desc": "이 페어는 아직 DCA 주문을 지원하지 않습니다.<br />다른 페어를 선택해 주세요.",

@@ -42,7 +42,6 @@
     "startingPrice": "Prix de départ",
     "tooltip": "Prix de départ suggéré basé sur le prix actuel du pool le plus liquide de la même paire."
   },
-  "fee": "Frais",
   "form": {
     "amount": {
       "label": "4. Saisir le montant"

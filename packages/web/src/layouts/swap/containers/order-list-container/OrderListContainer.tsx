@@ -16,6 +16,7 @@ import {
   useRegisterLimitMarketPricePairs,
 } from "@providers/limit-market-price-provider/LimitMarketPriceProvider";
 import { useGetDcaOrders, useGetLimitOrders } from "@query/order";
+import { useGetTokens } from "@query/token";
 import { LimitMarketPricePair } from "@repositories/order/request";
 import { OrderState } from "@states/index";
 import { getSwapTokenPath } from "@utils/swap-route-utils";
@@ -35,13 +36,15 @@ const toMarketPricePair = ({ tokenIn, tokenOut }: LimitOrderModel): LimitMarketP
 
 /**
  * Whether the account has any order of the kind, from the totals of its Active
- * and Past lists. Unknown until both totals load, so an account without orders
- * never flashes an empty list.
+ * and Past lists. A positive total from either list is enough; "no orders" needs
+ * both totals, so an account without orders never flashes an empty list and a
+ * failed list never hides the orders the other one returned.
  */
 export const hasAnyOrder = (activeTotal?: number, pastTotal?: number): boolean | undefined => {
+  if ((activeTotal ?? 0) > 0 || (pastTotal ?? 0) > 0) return true;
   if (activeTotal === undefined || pastTotal === undefined) return undefined;
 
-  return activeTotal + pastTotal > 0;
+  return false;
 };
 
 interface OrderListContainerProps {
@@ -69,10 +72,42 @@ const OrderListContainer: React.FC<OrderListContainerProps> = ({ kind }) => {
   const [activeTotal, pastTotal] = kind === "dca" ? [activeDcaTotal, pastDcaTotal] : [activeLimitTotal, pastLimitTotal];
   const hasOrders = hasAnyOrder(activeTotal.data?.pageInfo.totalItems, pastTotal.data?.pageInfo.totalItems);
 
+  // Orders wait for the token list to scale their amounts. If it or a total fails, show a retry instead of hiding the list.
+  const { isMobile } = useWindowSize();
+  const tokenQuery = useGetTokens(true);
+  const tokensFailed = tokenQuery.isError && !tokenQuery.data;
+  const totalsFailed = activeTotal.isError || pastTotal.isError;
+  const isRetrying = tokenQuery.isFetching || activeTotal.isFetching || pastTotal.isFetching;
+  const retryLoad = useCallback(() => {
+    if (tokensFailed) tokenQuery.refetch();
+    if (activeTotal.isError) activeTotal.refetch();
+    if (pastTotal.isError) pastTotal.refetch();
+  }, [activeTotal, pastTotal, tokenQuery, tokensFailed]);
+
   const changeTab = useCallback((next: OrderListTab) => setTab(next), [setTab]);
 
+  if (!connected) return null;
+
+  if (hasOrders === undefined && (tokensFailed || totalsFailed)) {
+    return (
+      <OrderList
+        tab={tab}
+        changeTab={changeTab}
+        connectedWallet={connected}
+        isLoading={isRetrying}
+        isEmpty={false}
+        isError
+        onRetry={retryLoad}
+        currentPage={1}
+        totalPages={0}
+        changePage={() => undefined}
+        compact={isMobile}
+      />
+    );
+  }
+
   // Show the list only for a connected account with an active or past order.
-  if (!connected || hasOrders !== true) return null;
+  if (hasOrders !== true) return null;
 
   // Remounted per kind, tab and account: the page starts at 1, and a page of the other tab is never
   // kept on screen as the previous data while this tab's first page loads.
@@ -120,7 +155,7 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
     refetchOnMount: "always",
     refetchInterval: kind === "limit" ? SWAP_HISTORY_REFETCH_INTERVAL : false,
   });
-  const { data, isLoading, isPreviousData } = kind === "dca" ? dcaOrders : limitOrders;
+  const { data, isLoading, isPreviousData, isError, refetch } = kind === "dca" ? dcaOrders : limitOrders;
 
   // Orders leaving the list can shrink it below the open page; go back to its last page.
   const lastPage = Math.max(data?.pageInfo.totalPages ?? 1, 1);
@@ -170,6 +205,8 @@ const OrderListPages: React.FC<OrderListPagesProps> = ({ kind, tab, changeTab, c
       connectedWallet={connected}
       isLoading={!!address && isLoading}
       isEmpty={items.length === 0}
+      isError={isError && !data}
+      onRetry={() => refetch()}
       currentPage={page}
       totalPages={data?.pageInfo.totalPages ?? 0}
       changePage={setPage}

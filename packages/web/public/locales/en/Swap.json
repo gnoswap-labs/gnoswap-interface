@@ -73,6 +73,7 @@
     "expiresAt": "Expires At",
     "filledPrice": "Filled Price",
     "filledShare": "{{percent}}% filled",
+    "loadFailed": "Could not load your orders.",
     "nextTrade": "Next Trade",
     "noOrders": "No orders found.",
     "ongoing": "Ongoing",

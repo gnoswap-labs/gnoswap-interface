@@ -73,6 +73,7 @@
     "expiresAt": "Vence el",
     "filledPrice": "Precio de ejecución",
     "filledShare": "{{percent}}% ejecutado",
+    "loadFailed": "No se pudieron cargar tus órdenes.",
     "nextTrade": "Próxima operación",
     "noOrders": "No se han encontrado pedidos.",
     "ongoing": "En curso",

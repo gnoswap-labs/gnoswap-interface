@@ -93,7 +93,6 @@
     "claimAll": {
       "col": {
         "claimable": "Réclamable",
-        "depositAmount": "Montant du dépôt",
         "pool": "Piscine"
       },
       "title": "Confirmer Réclamer tout"
@@ -104,8 +103,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "Montant du dépôt",
-          "endDate": "Date de fin",
           "poolTier": "Niveau de la piscine"
         },
         "title": "Détail du dépôt"
@@ -132,9 +129,7 @@
       "apr": "APR",
       "claimable": "Réclamable",
       "claimableDate": "Date d'exigibilité",
-      "claimed": "Réclamé",
-      "depositAmounts": "Montant du dépôt",
-      "endDate": "Date de fin"
+      "claimed": "Réclamé"
     },
     "nodata": {
       "text1": "Dépôt <span>GNS</span>",

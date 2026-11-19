@@ -82,12 +82,12 @@
         "title": "Importe demasiado bajo"
       },
       "halted": {
-        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
-        "title": "DCA Orders Paused"
+        "desc": "Las órdenes DCA están pausadas temporalmente.<br />Inténtalo de nuevo más tarde.",
+        "title": "Órdenes DCA pausadas"
       },
       "noEligiblePool": {
-        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
-        "title": "No Eligible Pool"
+        "desc": "No hay ningún pool incluido en la lista blanca disponible para este par en este momento.<br />Inténtalo de nuevo más tarde.",
+        "title": "No hay ningún pool elegible"
       },
       "pairNotSupported": {
         "desc": "Los pedidos DCA aún no están disponibles para este par.<br />Por favor, elige otro par.",

@@ -13,12 +13,14 @@ export const useGetDcaOrder = (
   options?: UseQueryOptions<DcaOrderModel, Error>,
 ) => {
   const { orderRepository } = useGnoswapContext();
-  const { data: { tokens = [] } = {} } = useGetTokens(true);
+  // Amounts are scaled by token decimals, so wait for the token list instead of guessing them.
+  const { data: tokenData } = useGetTokens(true);
+  const tokens = tokenData?.tokens ?? [];
 
   return useQuery<DcaOrderModel, Error>({
     queryKey: [QUERY_KEY.dcaOrder, packagePath, orderId, tokens.length],
     queryFn: async () => mapDcaOrderItemToModel(await orderRepository.getDcaOrder(orderId!, packagePath), tokens),
-    enabled: !!orderId,
     ...options,
+    enabled: !!orderId && !!tokenData && (options?.enabled ?? true),
   });
 };

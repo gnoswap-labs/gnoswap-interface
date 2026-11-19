@@ -233,8 +233,8 @@ const LimitOrderCard: React.FC<LimitOrderCardProps> = ({
   // Buy: the purchased quantity is typed here, and the funding amount above follows from it.
   const typeBuyAmount = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      if (value !== "" && !isAmount(value)) return;
+      if (e.target.value !== "" && !isAmount(e.target.value)) return;
+      const value = e.target.value.replace(",", ".");
       if (tokenB && (value.split(".")[1]?.length ?? 0) > tokenB.decimals) return;
       resetMaxAmountError();
       changeBuyAmount(value.replace(LEADING_ZERO_REGEX, "$1"));

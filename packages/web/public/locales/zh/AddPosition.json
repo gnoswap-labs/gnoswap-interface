@@ -42,7 +42,6 @@
     "startingPrice": "起价",
     "tooltip": "建议起始价，基于同一货币对中流动性最高的货币池的当前价格。"
   },
-  "fee": "费用",
   "form": {
     "amount": {
       "label": "4.输入金额"

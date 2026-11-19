@@ -73,6 +73,7 @@
     "expiresAt": "到期时间",
     "filledPrice": "成交价",
     "filledShare": "已成交 {{percent}}%",
+    "loadFailed": "无法加载您的订单。",
     "nextTrade": "下一笔交易",
     "noOrders": "未找到任何订单。",
     "ongoing": "进行中",

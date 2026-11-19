@@ -83,7 +83,6 @@
     "claimAll": {
       "col": {
         "claimable": "請求可能",
-        "depositAmount": "預金額",
         "pool": "プール"
       },
       "title": "クレームの確認"
@@ -94,8 +93,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "預金額",
-          "endDate": "終了日",
           "poolTier": "プール層"
         },
         "title": "預金詳細"
@@ -122,9 +119,7 @@
       "apr": "APR",
       "claimable": "請求可能",
       "claimableDate": "請求可能日",
-      "claimed": "請求済み",
-      "depositAmounts": "預金額",
-      "endDate": "終了日"
+      "claimed": "請求済み"
     },
     "nodata": {
       "text1": "デポジット<span>GNS</span>",

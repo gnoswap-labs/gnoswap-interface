@@ -15,7 +15,9 @@ export const useGetLimitOrders = (
   options?: UseQueryOptions<OrderPagedResponse<LimitOrderModel>, Error>,
 ) => {
   const { orderRepository } = useGnoswapContext();
-  const { data: { tokens = [] } = {} } = useGetTokens(true);
+  // Amounts are scaled by token decimals, so wait for the token list instead of guessing them.
+  const { data: tokenData } = useGetTokens(true);
+  const tokens = tokenData?.tokens ?? [];
 
   return useQuery<OrderPagedResponse<LimitOrderModel>, Error>({
     queryKey: [QUERY_KEY.limitOrders, request.address, request.status, request.page, request.size, tokens.length],
@@ -26,9 +28,9 @@ export const useGetLimitOrders = (
         items: response.items.map(item => mapLimitOrderItemToModel(item, tokens)),
       };
     },
-    enabled: !!request.address,
     refetchInterval: ORDER_LIST_REFETCH_INTERVAL,
     keepPreviousData: true,
     ...options,
+    enabled: !!request.address && !!tokenData && (options?.enabled ?? true),
   });
 };

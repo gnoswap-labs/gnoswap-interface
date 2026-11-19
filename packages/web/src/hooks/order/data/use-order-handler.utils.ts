@@ -282,7 +282,11 @@ export function toLimitSlippageBps(slippagePercent: number, maxSlippageBps = MAX
   return Math.min(maxSlippageBps, Math.round(slippagePercent * 100));
 }
 
-/** Raw output at the displayed price, rounded down after applying both token decimals. */
+/**
+ * Raw output at the displayed price after applying both token decimals. Sell rounds up so the
+ * signed amounts never encode a price below the selected limit; Buy rounds down, and its funding
+ * is derived from the floored output.
+ */
 export function calculateTakingAmount(
   rawMakingAmount: string,
   limitPrice: string,
@@ -294,7 +298,7 @@ export function calculateTakingAmount(
   // Divide directly for Buy: multiplying by a rounded reciprocal can lose a raw output unit.
   const taking = side === "buy" ? making.dividedBy(limitPrice || 0) : making.multipliedBy(limitPrice || 0);
   if (!taking.isFinite() || taking.isLessThanOrEqualTo(0)) return "0";
-  return taking.toFixed(0, BigNumber.ROUND_FLOOR);
+  return taking.toFixed(0, side === "buy" ? BigNumber.ROUND_FLOOR : BigNumber.ROUND_CEIL);
 }
 
 /** Raw funding amount for an exact requested output, rounded down at input precision. */

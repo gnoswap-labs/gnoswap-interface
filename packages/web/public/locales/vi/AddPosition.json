@@ -42,7 +42,6 @@
     "startingPrice": "Giá khởi điểm",
     "tooltip": "Giá khởi điểm đề xuất dựa trên giá hiện tại của nhóm thanh khoản cao nhất trong cùng cặp tiền tệ."
   },
-  "fee": "Phí",
   "form": {
     "amount": {
       "label": "4. Nhập số tiền"

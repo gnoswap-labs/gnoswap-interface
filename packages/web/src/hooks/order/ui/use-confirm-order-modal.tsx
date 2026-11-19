@@ -1,4 +1,4 @@
-import { useAtom, useStore } from "jotai";
+import { useAtom, useSetAtom, useStore } from "jotai";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { CommonState } from "@states/index";
@@ -11,7 +11,8 @@ import { CommonState } from "@states/index";
 export const useConfirmOrderModal = (renderContent: () => JSX.Element) => {
   const store = useStore();
   const [openedModal, setOpenedModal] = useAtom(CommonState.openedModal);
-  const [, setModalContent] = useAtom(CommonState.modalContent);
+  // Setter only: subscribing to the content this hook writes would re-render the owner on every write.
+  const setModalContent = useSetAtom(CommonState.modalContent);
   const [opened, setOpened] = useState(false);
   // The content this hook last put in the shared slot, to tell it from another flow's modal.
   const ownContent = useRef<JSX.Element | null>(null);

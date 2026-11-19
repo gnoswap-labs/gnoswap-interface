@@ -83,7 +83,6 @@
     "claimAll": {
       "col": {
         "claimable": "可索赔",
-        "depositAmount": "存款金额",
         "pool": "游泳池"
       },
       "title": "确认全部索赔"
@@ -94,8 +93,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "存款金额",
-          "endDate": "结束日期",
           "poolTier": "游泳池层"
         },
         "title": "存款明细"
@@ -122,9 +119,7 @@
       "apr": "年利率",
       "claimable": "可索赔",
       "claimableDate": "索赔日期",
-      "claimed": "已申请",
-      "depositAmounts": "存款金额",
-      "endDate": "结束日期"
+      "claimed": "已申请"
     },
     "nodata": {
       "text1": "存款<span>GNS</span>",

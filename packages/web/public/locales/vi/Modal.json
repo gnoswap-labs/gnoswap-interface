@@ -82,12 +82,12 @@
         "title": "Số tiền quá thấp"
       },
       "halted": {
-        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
-        "title": "DCA Orders Paused"
+        "desc": "Các lệnh DCA hiện đang tạm dừng.<br />Vui lòng thử lại sau.",
+        "title": "Lệnh DCA đã tạm dừng"
       },
       "noEligiblePool": {
-        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
-        "title": "No Eligible Pool"
+        "desc": "Hiện không có pool nào trong danh sách cho phép khả dụng cho cặp này.<br />Vui lòng thử lại sau.",
+        "title": "Không có pool đủ điều kiện"
       },
       "pairNotSupported": {
         "desc": "Hiện tại, lệnh DCA chưa hỗ trợ cặp này.<br />Vui lòng chọn một cặp khác.",

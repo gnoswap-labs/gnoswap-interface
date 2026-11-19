@@ -16,7 +16,9 @@ export const useGetDcaOrders = (
   options?: UseQueryOptions<OrderPagedResponse<DcaOrderModel>, Error>,
 ) => {
   const { orderRepository } = useGnoswapContext();
-  const { data: { tokens = [] } = {} } = useGetTokens(true);
+  // Amounts are scaled by token decimals, so wait for the token list instead of guessing them.
+  const { data: tokenData } = useGetTokens(true);
+  const tokens = tokenData?.tokens ?? [];
 
   return useQuery<OrderPagedResponse<DcaOrderModel>, Error>({
     queryKey: [QUERY_KEY.dcaOrders, request.address, request.status, request.page, request.size, tokens.length],
@@ -27,9 +29,9 @@ export const useGetDcaOrders = (
         items: response.items.map(item => mapDcaOrderItemToModel(item, tokens)),
       };
     },
-    enabled: !!request.address,
     refetchInterval: ORDER_LIST_REFETCH_INTERVAL,
     keepPreviousData: true,
     ...options,
+    enabled: !!request.address && !!tokenData && (options?.enabled ?? true),
   });
 };
