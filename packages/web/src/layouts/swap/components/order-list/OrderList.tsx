@@ -72,7 +72,7 @@ const OrderList: React.FC<OrderListProps> = ({
           {t("Swap:order.loadFailed")}
           {onRetry && (
             <button type="button" className="retry-button" onClick={onRetry}>
-              {t("Swap:order.retry")}
+              {t("Pool:chart.retry")}
             </button>
           )}
         </div>

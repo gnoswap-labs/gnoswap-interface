@@ -133,7 +133,7 @@ describe("OrderListContainer", () => {
     renderContainer(kind, {});
 
     expect(screen.getByText("Swap:order.loadFailed")).toBeInTheDocument();
-    fireEvent.click(screen.getByText("Swap:order.retry"));
+    fireEvent.click(screen.getByText("Pool:chart.retry"));
     expect(refetch).toHaveBeenCalled();
   });
 
@@ -153,7 +153,7 @@ describe("OrderListContainer", () => {
       { wrapper: LimitMarketPriceProvider },
     );
 
-    fireEvent.click(screen.getByText("Swap:order.retry"));
+    fireEvent.click(screen.getByText("Pool:chart.retry"));
     expect(refetch).toHaveBeenCalled();
   });
 

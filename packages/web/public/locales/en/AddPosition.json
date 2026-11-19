@@ -42,7 +42,6 @@
     "startingPrice": "Starting Price",
     "tooltip": "Suggested starting price based on the current price of the most liquid pool in the same pair."
   },
-  "fee": "Fee",
   "form": {
     "amount": {
       "label": "4. Enter Amount"

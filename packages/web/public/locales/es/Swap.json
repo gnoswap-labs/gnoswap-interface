@@ -73,7 +73,7 @@
     "expiresAt": "Vence el",
     "filledPrice": "Precio de ejecución",
     "filledShare": "{{percent}}% ejecutado",
-    "loadFailed": "No se pudieron cargar tus pedidos.",
+    "loadFailed": "No se pudieron cargar tus órdenes.",
     "nextTrade": "Próxima operación",
     "noOrders": "No se han encontrado pedidos.",
     "ongoing": "En curso",
@@ -90,7 +90,6 @@
     "refundOrder": "Reembolso",
     "remainingAmount": "Importe restante",
     "remainingTrades": "Operaciones pendientes",
-    "retry": "Volver a intentarlo",
     "sold": "Vendido",
     "soldAmount": "Importe vendido",
     "status": {

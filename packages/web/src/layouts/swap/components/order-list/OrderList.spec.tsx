@@ -50,7 +50,7 @@ describe("OrderList", () => {
 
     expect(screen.getByText("Swap:order.loadFailed")).toBeInTheDocument();
     expect(screen.queryByText("Swap:order.noOrders")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByText("Swap:order.retry"));
+    fireEvent.click(screen.getByText("Pool:chart.retry"));
     expect(onRetry).toHaveBeenCalled();
   });
 

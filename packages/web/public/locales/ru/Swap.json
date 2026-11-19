@@ -73,7 +73,7 @@
     "expiresAt": "Срок действия истекает",
     "filledPrice": "Цена исполнения",
     "filledShare": "Исполнено {{percent}}%",
-    "loadFailed": "Не удалось загрузить заказы.",
+    "loadFailed": "Не удалось загрузить ваши ордера.",
     "nextTrade": "Следующая сделка",
     "noOrders": "Заказы не найдены.",
     "ongoing": "В процессе",
@@ -90,7 +90,6 @@
     "refundOrder": "Возврат средств",
     "remainingAmount": "Остаток",
     "remainingTrades": "Оставшиеся сделки",
-    "retry": "Повторить попытку",
     "sold": "Продано",
     "soldAmount": "Проданная сумма",
     "status": {
