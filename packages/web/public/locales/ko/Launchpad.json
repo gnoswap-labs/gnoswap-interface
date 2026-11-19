@@ -83,7 +83,6 @@
     "claimAll": {
       "col": {
         "claimable": "청구 가능",
-        "depositAmount": "예치 수량",
         "pool": "풀"
       },
       "title": "전체 청구 확인"
@@ -94,8 +93,6 @@
     "deposit": {
       "deposit": {
         "col": {
-          "depositAmount": "예치 수량",
-          "endDate": "종료 날짜",
           "poolTier": "풀 티어"
         },
         "title": "예치 세부 정보"
@@ -122,9 +119,7 @@
       "apr": "APR",
       "claimable": "청구 가능",
       "claimableDate": "청구 가능 날짜",
-      "claimed": "청구됨",
-      "depositAmounts": "예치 수량",
-      "endDate": "종료 날짜"
+      "claimed": "청구됨"
     },
     "nodata": {
       "text1": "지금 <span>GNS</span> 예치하면",

@@ -71,7 +71,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
 
       <div className="participation-box-data-wrapper">
         <div className="participation-box-data">
-          <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.depositAmounts")}</div>
+          <div className="participation-box-data-key">{t("Launchpad:participate.col.depositAmount")}</div>
           <div className="participation-box-data-value">
             <Image
               src={GNS_TOKEN.logoURI || "/gns.svg"}
@@ -124,7 +124,7 @@ const LaunchpadMyParticipationBox = ({ item, idx, rewardInfo, handleClickClaim }
               </div>
             </div>
             <div className="participation-box-data">
-              <div className="participation-box-data-key">{t("Launchpad:myParticipation.col.endDate")}</div>
+              <div className="participation-box-data-key">{t("Launchpad:participate.col.endDate")}</div>
               <div className="participation-box-data-value">
                 {getDateUtcToLocal(displayParticipationModel.endTime).value}
               </div>

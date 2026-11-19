@@ -82,12 +82,12 @@
         "title": "金额过低"
       },
       "halted": {
-        "desc": "DCA orders are temporarily paused.<br />Please try again later.",
-        "title": "DCA Orders Paused"
+        "desc": "DCA 订单已暂时暂停。<br />请稍后重试。",
+        "title": "DCA 订单已暂停"
       },
       "noEligiblePool": {
-        "desc": "No whitelisted pool is available for this pair right now.<br />Please try again later.",
-        "title": "No Eligible Pool"
+        "desc": "目前没有可用于此交易对的白名单池。<br />请稍后重试。",
+        "title": "没有符合条件的资金池"
       },
       "pairNotSupported": {
         "desc": "该交易对暂不支持 DCA 订单。<br />请选择其他交易对。",
