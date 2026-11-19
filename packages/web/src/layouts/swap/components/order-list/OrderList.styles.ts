@@ -50,6 +50,15 @@ export const OrderListWrapper = styled.div`
       /* Wraps after "wallet" as in the design; translations wrap by width. */
       max-width: 210px;
     }
+    .retry-button {
+      ${fonts.body10};
+      padding: 4px 8px;
+      text-decoration: underline;
+      color: ${({ theme }) => theme.color.text02};
+      &:focus-visible {
+        outline: 2px solid ${({ theme }) => theme.color.text02};
+      }
+    }
   }
 
   .order-skeleton {

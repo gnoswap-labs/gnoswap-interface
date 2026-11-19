@@ -44,6 +44,16 @@ describe("OrderList", () => {
     expect(screen.getByText("Swap:order.noOrders")).toBeInTheDocument();
   });
 
+  it("shows a load failure with a retry instead of the empty state", () => {
+    const onRetry = jest.fn();
+    renderList({ isEmpty: true, isError: true, onRetry });
+
+    expect(screen.getByText("Swap:order.loadFailed")).toBeInTheDocument();
+    expect(screen.queryByText("Swap:order.noOrders")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByText("Swap:order.retry"));
+    expect(onRetry).toHaveBeenCalled();
+  });
+
   it("switches between open and past orders", () => {
     const changeTab = jest.fn();
     renderList({ changeTab });

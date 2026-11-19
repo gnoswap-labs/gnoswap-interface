@@ -17,6 +17,9 @@ export interface OrderListProps {
   connectedWallet: boolean;
   isLoading: boolean;
   isEmpty: boolean;
+  /** True when the orders could not be loaded; shown with a retry in place of "no orders". */
+  isError?: boolean;
+  onRetry?: () => void;
   currentPage: number;
   totalPages: number;
   changePage: (page: number) => void;
@@ -31,6 +34,8 @@ const OrderList: React.FC<OrderListProps> = ({
   connectedWallet,
   isLoading,
   isEmpty,
+  isError = false,
+  onRetry,
   currentPage,
   totalPages,
   changePage,
@@ -60,6 +65,18 @@ const OrderList: React.FC<OrderListProps> = ({
       return Array.from({ length: SKELETON_COUNT }).map((_, index) => (
         <span key={index} className="order-skeleton" css={pulseSkeletonStyle({ w: "100%", h: 150 })} />
       ));
+    }
+    if (isError) {
+      return (
+        <div className="order-empty" role="alert">
+          {t("Swap:order.loadFailed")}
+          {onRetry && (
+            <button type="button" className="retry-button" onClick={onRetry}>
+              {t("Swap:order.retry")}
+            </button>
+          )}
+        </div>
+      );
     }
     if (isEmpty) {
       return <div className="order-empty">{t("Swap:order.noOrders")}</div>;

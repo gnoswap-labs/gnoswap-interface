@@ -73,6 +73,7 @@
     "expiresAt": "有効期限",
     "filledPrice": "約定価格",
     "filledShare": "{{percent}}% 約定",
+    "loadFailed": "注文を読み込めませんでした。",
     "nextTrade": "次の取引",
     "noOrders": "注文が見つかりませんでした。",
     "ongoing": "進行中",
@@ -89,6 +90,7 @@
     "refundOrder": "返金",
     "remainingAmount": "残額",
     "remainingTrades": "残りの取引",
+    "retry": "再試行",
     "sold": "販売済み",
     "soldAmount": "販売額",
     "status": {

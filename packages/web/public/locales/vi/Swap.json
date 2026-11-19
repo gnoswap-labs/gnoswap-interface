@@ -73,6 +73,7 @@
     "expiresAt": "Hết hạn vào",
     "filledPrice": "Giá khớp lệnh",
     "filledShare": "Đã khớp {{percent}}%",
+    "loadFailed": "Không thể tải đơn hàng của bạn.",
     "nextTrade": "Giao dịch tiếp theo",
     "noOrders": "Không tìm thấy đơn hàng nào.",
     "ongoing": "Đang diễn ra",
@@ -89,6 +90,7 @@
     "refundOrder": "Hoàn tiền",
     "remainingAmount": "Số tiền còn lại",
     "remainingTrades": "Các giao dịch còn lại",
+    "retry": "Thử lại",
     "sold": "Đã bán",
     "soldAmount": "Số tiền đã bán",
     "status": {

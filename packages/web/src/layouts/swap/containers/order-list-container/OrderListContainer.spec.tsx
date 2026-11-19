@@ -11,6 +11,7 @@ const mockUseWallet = jest.fn();
 const mockUseGetDcaOrders = jest.fn();
 const mockUseGetLimitOrders = jest.fn();
 const mockUseGetLimitMarketPrices = jest.fn();
+const mockUseGetTokens = jest.fn();
 
 jest.mock("@hooks/wallet/data/use-wallet", () => ({ useWallet: () => mockUseWallet() }));
 jest.mock("@hooks/common/use-window-size", () => ({
@@ -29,6 +30,7 @@ jest.mock("@query/order", () => ({
   useGetDcaOrders: (...args: unknown[]) => mockUseGetDcaOrders(...args),
   useGetLimitOrders: (...args: unknown[]) => mockUseGetLimitOrders(...args),
 }));
+jest.mock("@query/token", () => ({ useGetTokens: () => mockUseGetTokens() }));
 jest.mock("@query/order/use-get-limit-market-prices", () => ({
   useGetLimitMarketPrices: (...args: unknown[]) => mockUseGetLimitMarketPrices(...args),
 }));
@@ -53,6 +55,7 @@ jest.mock("../../components/order-list/order-card/LimitOrderItemCard", () => ({
 
 beforeEach(() => {
   mockUseGetLimitMarketPrices.mockReset().mockReturnValue({ data: undefined, isError: false });
+  mockUseGetTokens.mockReset().mockReturnValue({ data: { tokens: [] }, isError: false, isFetching: false });
 });
 
 type Totals = { active?: number; past?: number };
@@ -122,6 +125,55 @@ describe("OrderListContainer", () => {
 
     expect(screen.getByText("Swap:order.active")).toBeInTheDocument();
     expect(screen.getByText("Swap:order.past")).toBeInTheDocument();
+  });
+
+  it.each(["dca", "limit"] as const)("shows a %s retry when the token list fails to load", kind => {
+    const refetch = jest.fn();
+    mockUseGetTokens.mockReturnValue({ data: undefined, isError: true, isFetching: false, refetch });
+    renderContainer(kind, {});
+
+    expect(screen.getByText("Swap:order.loadFailed")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Swap:order.retry"));
+    expect(refetch).toHaveBeenCalled();
+  });
+
+  it("retries a failed total instead of hiding the list", () => {
+    const refetch = jest.fn();
+    mockUseWallet.mockReturnValue({ connected: true, account: { address: "g1owner" } });
+    mockUseGetDcaOrders.mockReturnValue({ data: undefined, isLoading: true });
+    mockUseGetLimitOrders.mockImplementation((request: { status: string }) =>
+      request.status === "past"
+        ? { data: undefined, isLoading: false, isError: true, refetch }
+        : { data: { items: [], pageInfo: { currentPage: 1, totalItems: 0, totalPages: 0 } }, isLoading: false },
+    );
+    render(
+      <GnoswapThemeProvider>
+        <OrderListContainer kind="limit" />
+      </GnoswapThemeProvider>,
+      { wrapper: LimitMarketPriceProvider },
+    );
+
+    fireEvent.click(screen.getByText("Swap:order.retry"));
+    expect(refetch).toHaveBeenCalled();
+  });
+
+  it("shows a load failure, not an empty list, when the open tab fails", () => {
+    mockUseWallet.mockReturnValue({ connected: true, account: { address: "g1owner" } });
+    mockUseGetDcaOrders.mockReturnValue({ data: undefined, isLoading: true });
+    mockUseGetLimitOrders.mockImplementation((request: { size: number }) =>
+      request.size === 1
+        ? { data: { items: [], pageInfo: { currentPage: 1, totalItems: 1, totalPages: 1 } }, isLoading: false }
+        : { data: undefined, isLoading: false, isError: true, refetch: jest.fn() },
+    );
+    render(
+      <GnoswapThemeProvider>
+        <OrderListContainer kind="limit" />
+      </GnoswapThemeProvider>,
+      { wrapper: LimitMarketPriceProvider },
+    );
+
+    expect(screen.getByText("Swap:order.loadFailed")).toBeInTheDocument();
+    expect(screen.queryByText("Swap:order.noOrders")).not.toBeInTheDocument();
   });
 
   it.each(["dca", "limit"] as const)("shows no %s list without a wallet", kind => {

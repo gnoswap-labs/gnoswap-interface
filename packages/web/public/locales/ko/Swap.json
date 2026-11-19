@@ -73,6 +73,7 @@
     "expiresAt": "만료일",
     "filledPrice": "체결가",
     "filledShare": "{{percent}}% 체결",
+    "loadFailed": "주문을 불러오지 못했습니다.",
     "nextTrade": "다음 거래",
     "noOrders": "주문이 없습니다.",
     "ongoing": "진행 중",
@@ -89,6 +90,7 @@
     "refundOrder": "환불",
     "remainingAmount": "잔액",
     "remainingTrades": "남은 거래",
+    "retry": "다시 시도",
     "sold": "판매 완료",
     "soldAmount": "판매 금액",
     "status": {

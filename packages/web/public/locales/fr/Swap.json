@@ -73,6 +73,7 @@
     "expiresAt": "Date d'expiration :",
     "filledPrice": "Prix d'exécution",
     "filledShare": "{{percent}} % exécuté",
+    "loadFailed": "Impossible de charger vos commandes.",
     "nextTrade": "Prochaine transaction",
     "noOrders": "Aucune commande trouvée.",
     "ongoing": "En cours",
@@ -89,6 +90,7 @@
     "refundOrder": "Remboursement",
     "remainingAmount": "Montant restant",
     "remainingTrades": "Opérations restantes",
+    "retry": "Réessayer",
     "sold": "Vendu",
     "soldAmount": "Montant de la vente",
     "status": {
