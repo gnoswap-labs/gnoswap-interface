@@ -39,7 +39,7 @@
     "crypto": "^1.0.1",
     "crypto-js": "^4.2.0",
     "d3": "^7.8.5",
-    "dayjs": "1.11.7",
+    "dayjs": "1.11.23",
     "dompurify": "^3.3.1",
     "i18next": "^23.11.5",
     "i18next-chained-backend": "^4.6.2",
