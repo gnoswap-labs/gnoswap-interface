@@ -296,6 +296,10 @@ export function getNextSqrtPriceFromOutput(
 }
 
 export function getAmountADeltaHelper(sqrtRatioAX96: bigint, sqrtRatioBX96: bigint, liquidity: bigint): bigint {
+  if (sqrtRatioAX96 <= 0n || sqrtRatioBX96 <= 0n) {
+    return 0n;
+  }
+
   let changedSqrtRatioAX96 = sqrtRatioAX96;
   let changedSqrtRatioBX96 = sqrtRatioBX96;
 
