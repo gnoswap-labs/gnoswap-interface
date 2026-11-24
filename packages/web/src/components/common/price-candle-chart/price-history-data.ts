@@ -13,6 +13,14 @@ export function mapHistoryRows<Candle extends { start: string }, Result>(
   convert: (candle: Candle, time: number) => Result,
 ): Result[] {
   if (
+    !Number.isSafeInteger(interval) ||
+    interval <= 0 ||
+    !Number.isSafeInteger(start) ||
+    !Number.isSafeInteger(end) ||
+    start < 0 ||
+    end <= start ||
+    start % interval !== 0 ||
+    end % interval !== 0 ||
     response?.interval !== interval ||
     response.start !== start ||
     response.end !== end ||

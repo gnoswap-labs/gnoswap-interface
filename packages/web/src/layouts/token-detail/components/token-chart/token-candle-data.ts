@@ -63,3 +63,12 @@ export async function getTokenCandlePage(
   });
   return decodeTokenCandles(response.data, interval, start, end);
 }
+
+export async function getAllTokenCandles(client: NetworkClient, tokenPath: string): Promise<PriceBar[]> {
+  const interval = INTERVALS.All;
+  const params = new URLSearchParams({ interval: String(interval), range: "all" });
+  const response = await client.get<TokenHistory>({
+    url: `/tokens/${encodeURIComponent(tokenPath)}/ohlcv?${params.toString()}`,
+  });
+  return decodeTokenCandles(response.data, interval, 0, response.data.end);
+}

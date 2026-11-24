@@ -46,6 +46,13 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
     },
     [client, poolPath, interval, reversed],
   );
+  const loadAll = useCallback(async () => {
+    const params = new URLSearchParams({ interval: "86400", range: "all" });
+    const response = await client.get<PoolHistory>({
+      url: `/pools/${encodeURIComponent(poolPath)}/ohlcv?${params.toString()}`,
+    });
+    return decodeHistory(response.data, reversed, 86400, 0, response.data.end);
+  }, [client, poolPath, reversed]);
   return (
     <PriceCandleChart
       identity={`${poolPath}:${range}:${reversed}`}
@@ -66,6 +73,7 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
       errorLabel={t("Pool:chart.error")}
       retryLabel={t("Pool:chart.retry")}
       loadPage={loadPage}
+      loadAll={loadAll}
     />
   );
 }
