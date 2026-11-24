@@ -2,7 +2,6 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { NetworkClient } from "@common/clients/network-client";
-import { allHistoryEnd } from "@components/common/price-candle-chart/price-history-data";
 import PriceCandleChart from "@components/common/price-candle-chart/PriceCandleChart";
 import type { TokenModel } from "@models/token/token-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -47,13 +46,6 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
     },
     [client, poolPath, interval, reversed],
   );
-  const loadAll = useCallback(async () => {
-    const params = new URLSearchParams({ interval: "86400", range: "all" });
-    const response = await client.get<PoolHistory>({
-      url: `/pools/${encodeURIComponent(poolPath)}/ohlcv?${params.toString()}`,
-    });
-    return decodeHistory(response.data, reversed, 86400, 0, allHistoryEnd(response.data));
-  }, [client, poolPath, reversed]);
   return (
     <PriceCandleChart
       identity={`${poolPath}:${range}:${reversed}`}
@@ -74,7 +66,6 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
       errorLabel={t("Pool:chart.error")}
       retryLabel={t("Pool:chart.retry")}
       loadPage={loadPage}
-      loadAll={loadAll}
     />
   );
 }

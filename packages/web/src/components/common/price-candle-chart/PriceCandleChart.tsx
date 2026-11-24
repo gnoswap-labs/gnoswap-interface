@@ -52,6 +52,7 @@ interface Props {
   errorLabel: string;
   retryLabel: string;
   loadPage: (start: number, end: number) => Promise<PriceBar[]>;
+  // Opts the All selection into full-history loading and fitting.
   loadAll?: () => Promise<PriceBar[]>;
 }
 
@@ -124,11 +125,12 @@ export default function PriceCandleChart({
   useEffect(() => {
     const element = chartElement.current;
     if (!element) return;
+    const fullHistory = all && loadAll !== undefined;
     let cancelled = false;
     let dispose: (() => void) | undefined;
     setState("loading");
     setPagingError(false);
-    setCanSearchOlder(!all);
+    setCanSearchOlder(!fullHistory);
     setHovered(null);
     setNavigationState({ canReset: false, canScrollToLatest: false, right: 0, bottom: 0 });
 
@@ -293,7 +295,7 @@ export default function PriceCandleChart({
         });
       };
       const setInitialView = () => {
-        if (all) {
+        if (fullHistory) {
           chart.timeScale().fitContent();
           window.cancelAnimationFrame(fitFrame);
           fitFrame = window.requestAnimationFrame(() => {
@@ -344,7 +346,7 @@ export default function PriceCandleChart({
       };
       const loadOlder = async () => {
         if (cancelled || exhausted || fetching || cursor <= 0) return;
-        const initialAll = all && initialWindowPending;
+        const initialAll = fullHistory && initialWindowPending;
         const end = cursor;
         const start = Math.max(0, end - windowSeconds * (initialWindowPending ? 2 : 1));
         initialWindowPending = false;
@@ -378,7 +380,7 @@ export default function PriceCandleChart({
           const older = pages.reverse().flat();
           if (older.length === 0) {
             cursor = start;
-            exhausted = all || cursor === 0 || (stopAtEmptyOlderPage && bars.length > 0);
+            exhausted = fullHistory || cursor === 0 || (stopAtEmptyOlderPage && bars.length > 0);
             setCanSearchOlder(!exhausted);
             initialLoadComplete = true;
             if (!bars.length) setState("empty");
@@ -388,7 +390,7 @@ export default function PriceCandleChart({
             throw new Error("Invalid price history response");
           }
           cursor = start;
-          exhausted = all || cursor === 0 || (stopAtEmptyOlderPage && oldestPageEmpty);
+          exhausted = fullHistory || cursor === 0 || (stopAtEmptyOlderPage && oldestPageEmpty);
           setCanSearchOlder(!exhausted);
           const visible = bars.length ? chart.timeScale().getVisibleLogicalRange() : null;
           bars = older.concat(bars);
@@ -432,7 +434,7 @@ export default function PriceCandleChart({
       };
       searchOlder.current = () => void loadOlder();
       const refreshLatest = async () => {
-        if (cancelled || (all && !initialLoadComplete) || fetching || document.hidden) return;
+        if (cancelled || (fullHistory && !initialLoadComplete) || fetching || document.hidden) return;
         const end = (Math.floor(Date.now() / 1000 / interval) + 1) * interval;
         const start = Math.max(0, end - windowSeconds, bars.length ? bars[bars.length - 1].time : 0);
         if (start >= end) return;
@@ -579,7 +581,7 @@ export default function PriceCandleChart({
           setHovered(null);
           candles.priceScale().applyOptions({ autoScale: true });
           volume.priceScale().applyOptions({ autoScale: true });
-          if (all) {
+          if (fullHistory) {
             setInitialView();
           } else {
             const to = bars.length - 1 + defaultRightOffset;

@@ -450,6 +450,47 @@ it("advances one bounded window per action across empty and sparse history witho
   expect(loadPage).toHaveBeenNthCalledWith(5, 246300, 255300);
 });
 
+it("keeps All bounded and searchable without a full-history loader", async () => {
+  jest.spyOn(Date, "now").mockReturnValue(100 * 86400 * 1000);
+  const loadPage = jest.fn().mockResolvedValue([]);
+  render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} />);
+  await screen.findByRole("button", { name: "Search older history" });
+  expect(loadPage.mock.calls).toEqual([
+    [71 * 86400, 101 * 86400],
+    [41 * 86400, 71 * 86400],
+  ]);
+  expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+  fireEvent.click(screen.getByRole("button", { name: "Search older history" }));
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(3));
+  expect(loadPage).toHaveBeenNthCalledWith(3, 11 * 86400, 41 * 86400);
+});
+
+it("keeps the existing All viewport and older paging without a full-history loader", async () => {
+  jest.spyOn(Date, "now").mockReturnValue(200 * 86400 * 1000);
+  const loadPage = jest.fn(async (start: number, end: number) =>
+    Array.from({ length: (end - start) / 86400 }, (_, index) => ({
+      ...firstPage[0],
+      time: start + index * 86400,
+    })),
+  );
+  const { container } = render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  expect(loadPage.mock.calls).toEqual([
+    [171 * 86400, 201 * 86400],
+    [141 * 86400, 171 * 86400],
+  ]);
+  expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenCalledWith({ from: 30, to: 59 });
+  expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+  act(() => {
+    mockCandles.barsInLogicalRange.mockReturnValueOnce({ barsBefore: 10 });
+    fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+    mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0]({ from: 0, to: 30 });
+  });
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(3));
+  expect(loadPage).toHaveBeenNthCalledWith(3, 111 * 86400, 141 * 86400);
+  expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+});
+
 it("fetches All once, fits the complete history, and polls only bounded recent candles", async () => {
   jest.useFakeTimers();
   jest.setSystemTime(200 * 86400 * 1000);
