@@ -308,7 +308,7 @@ export default function PriceCandleChart({
           return;
         }
         const range = {
-          from: daily ? 0 : Math.max(0, bars.length - 30),
+          from: Math.max(0, bars.length - 30),
           to: bars.length - 1 + defaultRightOffset,
         };
         defaultLogicalSpan = range.to - range.from;
@@ -346,8 +346,7 @@ export default function PriceCandleChart({
         if (cancelled || exhausted || fetching || cursor <= 0) return;
         const initialAll = all && initialWindowPending;
         const end = cursor;
-        const initialWindows = daily ? 3 : 2;
-        const start = Math.max(0, end - windowSeconds * (initialWindowPending ? initialWindows : 1));
+        const start = Math.max(0, end - windowSeconds * (initialWindowPending ? 2 : 1));
         initialWindowPending = false;
         fetching = true;
         if (bars.length) setPagingError(false);
@@ -433,7 +432,7 @@ export default function PriceCandleChart({
       };
       searchOlder.current = () => void loadOlder();
       const refreshLatest = async () => {
-        if (cancelled || !initialLoadComplete || fetching || document.hidden) return;
+        if (cancelled || (all && !initialLoadComplete) || fetching || document.hidden) return;
         const end = (Math.floor(Date.now() / 1000 / interval) + 1) * interval;
         const start = Math.max(0, end - windowSeconds, bars.length ? bars[bars.length - 1].time : 0);
         if (start >= end) return;

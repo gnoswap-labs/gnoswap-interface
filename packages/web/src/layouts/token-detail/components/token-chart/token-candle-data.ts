@@ -1,5 +1,6 @@
 import type { NetworkClient } from "@common/clients/network-client";
 import {
+  allHistoryEnd,
   DECIMAL,
   mapHistoryRows,
   type HistoryResponse,
@@ -70,5 +71,5 @@ export async function getAllTokenCandles(client: NetworkClient, tokenPath: strin
   const response = await client.get<TokenHistory>({
     url: `/tokens/${encodeURIComponent(tokenPath)}/ohlcv?${params.toString()}`,
   });
-  return decodeTokenCandles(response.data, interval, 0, response.data.end);
+  return decodeTokenCandles(response.data, interval, 0, allHistoryEnd(response.data));
 }

@@ -5,6 +5,13 @@ export interface HistoryResponse<Candle> {
   data: Candle[];
 }
 
+export function allHistoryEnd(response: HistoryResponse<unknown>): number {
+  if (response?.start !== 0 || !Number.isSafeInteger(response.end) || response.end <= 0 || response.end % 86400 !== 0) {
+    throw new Error("Invalid price history response");
+  }
+  return response.end;
+}
+
 export function mapHistoryRows<Candle extends { start: string }, Result>(
   response: HistoryResponse<Candle>,
   interval: number,
@@ -13,14 +20,6 @@ export function mapHistoryRows<Candle extends { start: string }, Result>(
   convert: (candle: Candle, time: number) => Result,
 ): Result[] {
   if (
-    !Number.isSafeInteger(interval) ||
-    interval <= 0 ||
-    !Number.isSafeInteger(start) ||
-    !Number.isSafeInteger(end) ||
-    start < 0 ||
-    end <= start ||
-    start % interval !== 0 ||
-    end % interval !== 0 ||
     response?.interval !== interval ||
     response.start !== start ||
     response.end !== end ||

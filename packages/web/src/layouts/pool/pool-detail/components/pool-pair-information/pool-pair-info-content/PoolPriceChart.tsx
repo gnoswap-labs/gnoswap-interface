@@ -2,6 +2,7 @@ import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 
 import type { NetworkClient } from "@common/clients/network-client";
+import { allHistoryEnd } from "@components/common/price-candle-chart/price-history-data";
 import PriceCandleChart from "@components/common/price-candle-chart/PriceCandleChart";
 import type { TokenModel } from "@models/token/token-model";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
@@ -51,7 +52,7 @@ export default function PoolPriceChart({ client, poolPath, tokenA, tokenB, rever
     const response = await client.get<PoolHistory>({
       url: `/pools/${encodeURIComponent(poolPath)}/ohlcv?${params.toString()}`,
     });
-    return decodeHistory(response.data, reversed, 86400, 0, response.data.end);
+    return decodeHistory(response.data, reversed, 86400, 0, allHistoryEnd(response.data));
   }, [client, poolPath, reversed]);
   return (
     <PriceCandleChart
