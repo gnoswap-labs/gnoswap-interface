@@ -8,7 +8,7 @@ import enSwap from "../../../../../../public/locales/en/Swap.json";
 import LimitPriceWarning from "./LimitPriceWarning";
 
 const i18n = createInstance();
-i18n.init({ lng: "en", initImmediate: false, resources: { en: { Swap: enSwap } } });
+i18n.init({ lng: "en", initAsync: false, resources: { en: { Swap: enSwap } } });
 
 const renderWarning = (value: string, marketPrice: string | null, orderSide: "sell" | "buy" = "sell") =>
   render(

@@ -10,7 +10,7 @@ import DcaOrderSentence from "./DcaOrderSentence";
 
 const renderSentence = (summary = STORY_DCA_ORDER_SUMMARY) => {
   const i18n = createInstance();
-  i18n.init({ lng: "en", initImmediate: false, resources: { en: { Swap: enSwap } } });
+  i18n.init({ lng: "en", initAsync: false, resources: { en: { Swap: enSwap } } });
 
   return render(
     <I18nextProvider i18n={i18n}>

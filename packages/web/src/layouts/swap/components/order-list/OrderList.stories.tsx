@@ -64,7 +64,7 @@ const HISTORY: OrderHistoryModel[] = Array.from({ length: 8 }, (_, index) => ({
 const PastOrderList: React.FC = () => {
   const i18n = useMemo(() => {
     const instance = createInstance();
-    instance.init({ lng: "en", initImmediate: false, resources: { en: { Swap: enSwap } } });
+    instance.init({ lng: "en", initAsync: false, resources: { en: { Swap: enSwap } } });
     return instance;
   }, []);
 
@@ -123,7 +123,7 @@ export const Empty: Story = {
     const [tab, setTab] = useState<"active" | "past">("active");
     const i18n = useMemo(() => {
       const instance = createInstance();
-      instance.init({ lng: "en", initImmediate: false, resources: { en: { Swap: enSwap } } });
+      instance.init({ lng: "en", initAsync: false, resources: { en: { Swap: enSwap } } });
       return instance;
     }, []);
 

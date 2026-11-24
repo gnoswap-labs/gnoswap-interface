@@ -17,7 +17,7 @@ jest.mock("react-i18next", () => {
   const i18n = createInstance();
   i18n.init({
     lng: "en",
-    initImmediate: false,
+    initAsync: false,
     resources: { en: { Governance: governance, common } },
   });
   return {
