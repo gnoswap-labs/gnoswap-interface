@@ -202,8 +202,19 @@ export default function PriceCandleChart({
         },
         handleScroll: { mouseWheel: true, pressedMouseMove: true, horzTouchDrag: true, vertTouchDrag: true },
       });
+      let bars: PriceBar[] = [];
+      const allowFullHistoryFit = (plotWidth: number) => {
+        if (!fullHistory || bars.length === 0) return;
+        const timeScale = chart.timeScale();
+        // fitContent is clamped by minBarSpacing; leave room for later scale-width changes.
+        const minimum = Math.max(plotWidth, 1) / (bars.length * 2);
+        if (minimum < timeScale.options().minBarSpacing) {
+          timeScale.applyOptions({ minBarSpacing: minimum });
+        }
+      };
       const observer = new ResizeObserver(entries => {
         const { width, height } = entries[0].contentRect;
+        if (fullHistory) allowFullHistoryFit(width - chart.priceScale("right").width());
         chart.resize(width, height);
         scheduleNavigationUpdate();
       });
@@ -244,7 +255,6 @@ export default function PriceCandleChart({
       const [pricePane, volumePane] = chart.panes();
       pricePane.setStretchFactor(1 - VOLUME_AREA_FRACTION);
       volumePane.setStretchFactor(VOLUME_AREA_FRACTION);
-      let bars: PriceBar[] = [];
       const barsByTime = new Map<number, PriceBar>();
       // The cursor is the exclusive boundary of the last requested window, not the
       // first returned candle. Sparse and empty windows must still advance it.
@@ -296,7 +306,9 @@ export default function PriceCandleChart({
       };
       const setInitialView = () => {
         if (fullHistory) {
-          chart.timeScale().fitContent();
+          const timeScale = chart.timeScale();
+          allowFullHistoryFit(timeScale.width());
+          timeScale.fitContent();
           window.cancelAnimationFrame(fitFrame);
           fitFrame = window.requestAnimationFrame(() => {
             fitFrame = 0;

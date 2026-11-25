@@ -1,4 +1,7 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render as rtlRender, screen, waitFor } from "@testing-library/react";
+import { Provider as JotaiProvider } from "jotai";
+import type { PropsWithChildren, ReactElement } from "react";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 import { formatTokenCandlePrice } from "@layouts/token-detail/components/token-chart/TokenCandles";
@@ -17,6 +20,9 @@ const mockTimeScale = {
   getVisibleLogicalRange: jest.fn().mockReturnValue({ from: -4.25, to: 9.75 }),
   setVisibleLogicalRange: jest.fn(),
   fitContent: jest.fn(),
+  width: jest.fn().mockReturnValue(300),
+  options: jest.fn().mockReturnValue({ minBarSpacing: 0.5 }),
+  applyOptions: jest.fn(),
   scrollPosition: jest.fn().mockReturnValue(5),
   scrollToPosition: jest.fn(),
   height: jest.fn().mockReturnValue(28),
@@ -25,6 +31,7 @@ const mockTimeScale = {
 };
 const mockSubscribeCrosshairMove = jest.fn();
 const mockRemove = jest.fn();
+const mockResize = jest.fn();
 const mockUnsubscribeCrosshairMove = jest.fn();
 const mockPriceScale = {
   options: jest.fn().mockReturnValue({ autoScale: true }),
@@ -42,7 +49,7 @@ const mockCreateChart = jest.fn().mockImplementation(() => ({
   panes: () => mockPanes,
   subscribeCrosshairMove: mockSubscribeCrosshairMove,
   unsubscribeCrosshairMove: mockUnsubscribeCrosshairMove,
-  resize: jest.fn(),
+  resize: mockResize,
   remove: mockRemove,
 }));
 
@@ -61,7 +68,10 @@ const mockTheme = {
     border14: "gray",
   },
 };
-jest.mock("@emotion/react", () => ({ useTheme: () => mockTheme }));
+jest.mock("@emotion/react", () => ({
+  ...jest.requireActual("@emotion/react"),
+  useTheme: () => mockTheme,
+}));
 let mockLanguage = "en";
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: mockLanguage, resolvedLanguage: mockLanguage } }),
@@ -104,8 +114,23 @@ const props = {
   retryLabel: "Retry",
 };
 
+function ChartProviders({ children }: PropsWithChildren) {
+  return (
+    <JotaiProvider>
+      <GnoswapThemeProvider>{children}</GnoswapThemeProvider>
+    </JotaiProvider>
+  );
+}
+
+const render = (ui: ReactElement) => rtlRender(ui, { wrapper: ChartProviders });
+
+let mockResizeObserverCallback: ResizeObserverCallback | null = null;
+
 beforeAll(() => {
   global.ResizeObserver = class {
+    constructor(callback: ResizeObserverCallback) {
+      mockResizeObserverCallback = callback;
+    }
     observe() {}
     disconnect() {}
     unobserve() {}
@@ -116,10 +141,15 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockLanguage = "en";
   mockCandles.barsInLogicalRange.mockReset().mockReturnValue({ barsBefore: Infinity });
+  mockResizeObserverCallback = null;
+  mockResize.mockReset();
   mockTimeScale.getVisibleLogicalRange.mockReturnValue({ from: -4.25, to: 9.75 });
   mockTimeScale.scrollPosition.mockReset().mockReturnValue(5);
   mockTimeScale.setVisibleLogicalRange.mockReset();
   mockTimeScale.fitContent.mockReset();
+  mockTimeScale.width.mockReset().mockReturnValue(300);
+  mockTimeScale.options.mockReset().mockReturnValue({ minBarSpacing: 0.5 });
+  mockTimeScale.applyOptions.mockReset();
   mockTimeScale.scrollToPosition.mockReset();
   mockPriceScale.options.mockReset().mockReturnValue({ autoScale: true });
   mockPriceScale.applyOptions.mockReset();
@@ -481,6 +511,7 @@ it("keeps the existing All viewport and older paging without a full-history load
   ]);
   expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenCalledWith({ from: 30, to: 59 });
   expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+  expect(mockTimeScale.applyOptions).not.toHaveBeenCalled();
   act(() => {
     mockCandles.barsInLogicalRange.mockReturnValueOnce({ barsBefore: 10 });
     fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
@@ -489,6 +520,63 @@ it("keeps the existing All viewport and older paging without a full-history load
   await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(3));
   expect(loadPage).toHaveBeenNthCalledWith(3, 111 * 86400, 141 * 86400);
   expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+});
+
+it.each([300, 1000])("fits all 1000 candles initially, after resize, and on reset (plot width %s)", async initialWidth => {
+  jest.spyOn(Date, "now").mockReturnValue(1000 * 86400 * 1000);
+  const history = Array.from({ length: 1000 }, (_, index) => ({ ...firstPage[0], time: index * 86400 }));
+  const loadAll = jest.fn().mockResolvedValue(history);
+  const loadPage = jest.fn();
+  let plotWidth = initialWidth;
+  let minimum = 0.5;
+  let visible = { from: 400, to: 999 };
+  mockTimeScale.width.mockImplementation(() => plotWidth);
+  mockTimeScale.options.mockImplementation(() => ({ minBarSpacing: minimum }));
+  mockTimeScale.applyOptions.mockImplementation(options => {
+    minimum = options.minBarSpacing;
+  });
+  mockTimeScale.getVisibleLogicalRange.mockImplementation(() => visible);
+  mockTimeScale.scrollPosition.mockImplementation(() => visible.to - 999);
+  mockTimeScale.fitContent.mockImplementation(() => {
+    const spacing = Math.max(minimum, plotWidth / history.length);
+    visible = { from: history.length - plotWidth / spacing, to: 999 };
+  });
+  mockResize.mockImplementation((width: number) => {
+    const nextWidth = width - mockPriceScale.width();
+    const spacing = Math.max(minimum, nextWidth / (visible.to - visible.from + 1));
+    visible = { from: visible.to - nextWidth / spacing + 1, to: visible.to };
+    plotWidth = nextWidth;
+  });
+
+  render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  await act(async () => {
+    const { promise, resolve } = Promise.withResolvers<void>();
+    requestAnimationFrame(() => resolve());
+    await promise;
+  });
+  expect(visible.from).toBeCloseTo(0);
+  expect(visible.to).toBe(999);
+
+  const resize = mockResizeObserverCallback as ResizeObserverCallback | null;
+  if (!resize) throw new Error("Missing chart resize observer");
+  act(() => {
+    resize([{ contentRect: { width: 170, height: 400 } } as ResizeObserverEntry], {} as ResizeObserver);
+  });
+  expect(visible.from).toBeCloseTo(0);
+  expect(visible.to).toBe(999);
+
+  act(() => {
+    visible = { from: 500, to: 999 };
+    mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0](visible);
+  });
+  fireEvent.click(await screen.findByRole("button", { name: "Reset chart view" }));
+  await waitFor(() => {
+    expect(visible.from).toBeCloseTo(0);
+    expect(visible.to).toBe(999);
+  });
+  expect(loadAll).toHaveBeenCalledTimes(1);
+  expect(loadPage).not.toHaveBeenCalled();
 });
 
 it("fetches All once, fits the complete history, and polls only bounded recent candles", async () => {
