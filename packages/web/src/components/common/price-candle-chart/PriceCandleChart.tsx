@@ -188,6 +188,7 @@ export default function PriceCandleChart({
             typeof time === "number" ? crosshairFormat.format(new Date(time * 1000)) : String(time),
         },
         timeScale: {
+          rightOffset: 0,
           borderColor: theme.color.border14,
           timeVisible: !daily,
           secondsVisible: false,
@@ -268,7 +269,7 @@ export default function PriceCandleChart({
       let navigationFrame = 0;
       let fitFrame = 0;
       let defaultLogicalSpan: number | null = null;
-      let defaultRightOffset = all ? 0 : 2;
+      const defaultRightOffset = all ? 0 : 2;
       // Ignore floating-point roundoff, not whether a gesture happened in the past.
       const viewTolerance = 0.01;
       const updateNavigation = () => {
@@ -316,7 +317,6 @@ export default function PriceCandleChart({
             const timeScale = chart.timeScale();
             const fitted = timeScale.getVisibleLogicalRange();
             defaultLogicalSpan = fitted ? fitted.to - fitted.from : null;
-            defaultRightOffset = timeScale.scrollPosition();
             scheduleNavigationUpdate();
           });
           return;

@@ -617,6 +617,72 @@ it("fetches All once, fits the complete history, and polls only bounded recent c
   }
 });
 
+it.each([
+  { label: "following", panned: false, pendingFit: false, refreshBeforeFit: false },
+  { label: "panned", panned: true, pendingFit: false, refreshBeforeFit: false },
+  { label: "panned before the fit frame", panned: true, pendingFit: true, refreshBeforeFit: false },
+  { label: "refreshed before the fit frame", panned: false, pendingFit: true, refreshBeforeFit: true },
+])(
+  "preserves the $label All viewport when the next UTC daily candle arrives",
+  async ({ panned, pendingFit, refreshBeforeFit }) => {
+    jest.useFakeTimers();
+    jest.setSystemTime(1000 * 86400 * 1000 - 2000);
+    const history = Array.from({ length: 1000 }, (_, index) => ({ ...firstPage[0], time: index * 86400 }));
+    const last = history[history.length - 1];
+    const updated = { ...last, high: 3, close: 3 };
+    const next = { ...last, time: 1000 * 86400 };
+    const loadAll = jest.fn().mockResolvedValue(history);
+    const loadPage = jest.fn().mockResolvedValue([updated, next]);
+    let visible = { from: 0, to: 999 };
+    let lastIndex = 999;
+    mockTimeScale.getVisibleLogicalRange.mockImplementation(() => visible);
+    mockTimeScale.scrollPosition.mockImplementation(() => visible.to - lastIndex);
+    mockTimeScale.setVisibleLogicalRange.mockImplementation(range => {
+      visible = range;
+      lastIndex = 1000;
+    });
+    const { container, unmount } = render(
+      <PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />,
+    );
+    try {
+      await act(async () => {});
+      expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+      expect(mockTimeScale.fitContent).toHaveBeenCalledTimes(1);
+      if (!pendingFit) {
+        await act(async () => {
+          jest.advanceTimersByTime(32);
+        });
+      }
+      if (panned) {
+        act(() => {
+          visible = { from: -120.25, to: 879.75 };
+          fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+          mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0](visible);
+        });
+      }
+      if (refreshBeforeFit) {
+        jest.setSystemTime(1000 * 86400 * 1000 + 1000);
+        await act(async () => {
+          fireEvent(document, new Event("visibilitychange"));
+        });
+      } else {
+        await act(async () => {
+          jest.advanceTimersByTime(5000);
+        });
+      }
+      expect(loadAll).toHaveBeenCalledTimes(1);
+      expect(loadPage).toHaveBeenCalledWith(999 * 86400, 1001 * 86400);
+      expect(mockCandles.update).toHaveBeenCalledTimes(2);
+      expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenLastCalledWith(
+        panned ? { from: -120.25, to: 879.75 } : { from: 1, to: 1000 },
+      );
+    } finally {
+      unmount();
+      jest.useRealTimers();
+    }
+  },
+);
+
 it("does not offer older paging after an empty All response", async () => {
   const loadPage = jest.fn();
   const loadAll = jest.fn().mockResolvedValue([]);
