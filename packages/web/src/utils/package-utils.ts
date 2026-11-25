@@ -1,12 +1,10 @@
+import { sha256 } from "@noble/hashes/sha256";
 import { bech32 } from "bech32";
-import crypto from "crypto";
 
 function toBech32AddressByPackagePath(prefix: string, packagePath: string): string {
-  const bytes = Buffer.from("pkgPath:" + packagePath, "utf-8");
+  const hash = sha256("pkgPath:" + packagePath);
 
-  const hash = crypto.createHash("sha256").update(bytes.toString("utf-8")).digest();
-
-  return bech32.encode(prefix, bech32.toWords(hash.slice(0, 20)));
+  return bech32.encode(prefix, bech32.toWords(hash.subarray(0, 20)));
 }
 
 export function getAddressByPackagePath(packagePath: string) {
