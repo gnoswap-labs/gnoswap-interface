@@ -1,3 +1,4 @@
+import { bech32 } from "bech32";
 import { getAddressByPackagePath } from "./package-utils";
 
 const packages = [
@@ -29,5 +30,13 @@ describe("make address from package path", () => {
       const result = getAddressByPackagePath(pacakgeInfo.path);
       expect(result).toBe(pacakgeInfo.address);
     });
+  });
+
+  it("encodes the first 20 bytes of SHA-256 over the pkgPath:-prefixed path", () => {
+    const address = getAddressByPackagePath("gno.land/r/gnoswap/protocol_fee");
+    const { prefix, words } = bech32.decode(address);
+
+    expect(prefix).toBe("g");
+    expect(Buffer.from(bech32.fromWords(words)).toString("hex")).toBe("1c6af5f1999abc23b8147f0ed53f201c255f3de7");
   });
 });
