@@ -265,17 +265,19 @@ export const useWallet = () => {
     }
   };
 
+  const resyncAdenaAccount = () => {
+    queryClient.invalidateQueries({
+      queryKey: balanceQueryKey,
+    });
+    connectAdenaClient();
+  };
+
   function updateWalletEvents(walletClient: WalletClient | null) {
     if (!walletClient) {
       return;
     }
     try {
-      walletClient.addEventChangedAccount(() => {
-        queryClient.invalidateQueries({
-          queryKey: balanceQueryKey,
-        });
-        connectAdenaClient();
-      });
+      walletClient.addEventChangedAccount(resyncAdenaAccount);
       walletClient.addEventChangedNetwork(() => {
         connectAdenaClient();
       });
@@ -321,6 +323,7 @@ export const useWallet = () => {
     initSession,
     connectAdenaClient,
     updateWalletEvents,
+    resyncAdenaAccount,
     disconnectWallet,
     switchNetwork,
     isSwitchNetwork,
