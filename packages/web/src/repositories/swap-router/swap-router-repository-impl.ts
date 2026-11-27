@@ -98,8 +98,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    return makeExactInSwapRouteMessageWithApproves({ ...request, caller: address }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makeExactInSwapRouteMessageWithApproves({ ...request, caller: address }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
   };
 
@@ -110,8 +110,8 @@ export class SwapRouterRepositoryImpl implements SwapRouterRepository {
 
     const address = await this.getAddress();
 
-    return makeExactOutSwapRouteMessageWithApproves({ ...request, caller: address }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makeExactOutSwapRouteMessageWithApproves({ ...request, caller: address }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
   };
 

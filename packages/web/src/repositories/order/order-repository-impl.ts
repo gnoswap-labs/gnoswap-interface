@@ -188,11 +188,11 @@ export class OrderRepositoryImpl implements OrderRepository {
     return makeQueryParameter({ packagePath: packagePath ? encodeURIComponent(packagePath) : undefined });
   }
 
-  private fetchAllowance = (packagePath: string, owner: string, spender: string): Promise<number> => {
+  private fetchAllowance = (tokenKey: string, owner: string, spender: string): Promise<number> => {
     if (!this.rpcProvider) {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
-    return getGRC20Allowance(this.rpcProvider, packagePath, owner, spender);
+    return getGRC20Allowance(this.rpcProvider, tokenKey, owner, spender);
   };
 
   private sendTransaction(

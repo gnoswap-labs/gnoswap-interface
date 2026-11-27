@@ -50,7 +50,7 @@ export async function makeExactInSwapRouteMessageWithApproves(
     caller,
     referrerAddress,
   }: ExactSwapRouteMessageRequest,
-  fetchAllowance?: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance?: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const targetToken = inputToken;
   const resultToken = outputToken;
@@ -112,7 +112,7 @@ export async function makeExactOutSwapRouteMessageWithApproves(
     caller,
     referrerAddress,
   }: ExactSwapRouteMessageRequest,
-  fetchAllowance?: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance?: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const targetToken = outputToken;
   const resultToken = inputToken;

@@ -164,7 +164,7 @@ export class LaunchpadRepositoryImpl implements LaunchpadRepository {
 
     const messages = await makeDepositGNSMessageWithApproves(
       { poolId, gnsToken, gnsTokenAmount, caller, referrerAddress },
-      (packagePath, owner, spender) => getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+      (tokenKey, owner, spender) => getGRC20Allowance(this.gnoProvider!, tokenKey, owner, spender),
     );
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });

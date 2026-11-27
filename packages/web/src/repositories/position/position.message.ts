@@ -39,7 +39,7 @@ export function makeClaimMessageWithApproves(
     position: PositionModel;
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
   const messages: TransactionMessage[] = [];
@@ -92,7 +92,7 @@ export function makeClaimAllMessageWithApprovesByIds(
     positionsWithStakingReward: string[];
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
@@ -133,7 +133,7 @@ export function makeClaimAllMessageWithApproves(
     positions: PositionModel[];
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
   const messages: TransactionMessage[] = positions.flatMap(position => {
@@ -214,7 +214,7 @@ export function makeUnStakePositionsMessagesWithApproves(
     positions: PoolPositionModel[];
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
@@ -260,7 +260,7 @@ export function makeIncreaseLiquidityMessagesWithApproves(
     slippage: number;
     deadline?: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || wrapNativeTokenPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || wrapNativeTokenPath(tokenB.path);
@@ -339,7 +339,7 @@ export function makeDecreaseLiquidityMessagesWithApproves(
     deadline?: string;
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
@@ -387,7 +387,7 @@ export function makeRepositionLiquidityMessagesWithApproves(
     deadline?: string;
     withStaking?: boolean;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const tokenAWrappedPath = tokenA.wrappedPath || checkGnotPath(tokenA.path);
   const tokenBWrappedPath = tokenB.wrappedPath || checkGnotPath(tokenB.path);
@@ -461,7 +461,7 @@ export function makeRemoveLiquidityMessagesWithApproves(
     caller: string;
     deadline?: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 

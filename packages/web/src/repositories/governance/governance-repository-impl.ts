@@ -412,8 +412,8 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const caller = await this.getAddress();
-    const messages = await makeDelegateMessagesWithApproves({ ...request, caller }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+    const messages = await makeDelegateMessagesWithApproves({ ...request, caller }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.gnoProvider!, tokenKey, owner, spender),
     );
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
@@ -440,8 +440,8 @@ export class GovernanceRepositoryImpl implements GovernanceRepository {
     }
 
     const caller = await this.getAddress();
-    const messages = await makeReDelegateMessagesWithApproves({ ...request, caller }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.gnoProvider!, packagePath, owner, spender),
+    const messages = await makeReDelegateMessagesWithApproves({ ...request, caller }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.gnoProvider!, tokenKey, owner, spender),
     );
 
     const sendTransactionParams = generateSendTransactionParams({ messages, gasFee: DEFAULT_GAS_FEE, memo: "" });
