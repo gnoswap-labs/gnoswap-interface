@@ -15,8 +15,10 @@ export const useAdenaAccountResync = (
   account: AccountModel | null,
   onAccountChanged: () => void,
 ) => {
+  const walletClientRef = useRef(walletClient);
   const accountRef = useRef(account);
   const onAccountChangedRef = useRef(onAccountChanged);
+  walletClientRef.current = walletClient;
   accountRef.current = account;
   onAccountChangedRef.current = onAccountChanged;
 
@@ -25,15 +27,38 @@ export const useAdenaAccountResync = (
       return;
     }
 
+    let disposed = false;
     let checking = false;
+    let recheckPending = false;
+
+    // A lookup only applies while its wallet client and account are still the active ones.
+    const isOriginActive = (origin: AccountModel) => {
+      const current = accountRef.current;
+      return (
+        !disposed &&
+        walletClientRef.current === walletClient &&
+        current !== null &&
+        current.address === origin.address &&
+        current.chainId === origin.chainId
+      );
+    };
+
     const checkAccount = async () => {
-      if (checking || document.visibilityState !== "visible" || !accountRef.current) {
+      const origin = accountRef.current;
+      if (disposed || document.visibilityState !== "visible" || !origin) {
         return;
       }
+      if (checking) {
+        recheckPending = true;
+        return;
+      }
+
       checking = true;
+      let resynced = false;
       try {
         const response = await walletClient.getAccount();
-        if (hasWalletAccountChanged(accountRef.current, response)) {
+        if (isOriginActive(origin) && hasWalletAccountChanged(origin, response)) {
+          resynced = true;
           onAccountChangedRef.current();
         }
       } catch {
@@ -41,11 +66,19 @@ export const useAdenaAccountResync = (
       } finally {
         checking = false;
       }
+
+      // The resync reads the account again, so a queued recheck is only needed otherwise.
+      const shouldRecheck = recheckPending && !resynced;
+      recheckPending = false;
+      if (shouldRecheck) {
+        void checkAccount();
+      }
     };
 
     document.addEventListener("visibilitychange", checkAccount);
     window.addEventListener("focus", checkAccount);
     return () => {
+      disposed = true;
       document.removeEventListener("visibilitychange", checkAccount);
       window.removeEventListener("focus", checkAccount);
     };
