@@ -27,7 +27,7 @@ const makeDocument = (): Document => ({
 
 const makeService = (simulateTx: jest.Mock, withTransactionService = true) => {
   const rpcProvider = {
-    getGasPrice: jest.fn().mockResolvedValue(GAS_PRICE),
+    getGasPricePerUnit: jest.fn().mockResolvedValue(GAS_PRICE),
     simulateTx,
   } as unknown as GnoProvider;
 
