@@ -81,8 +81,8 @@ export class GnoProvider extends GnoJSONRPCProvider {
   /**
    * Returns the gas the tx uses when simulated.
    *
-   * Replaces the tm2-js-client 3.0.0 version, which base64 encodes the tx on top of the
-   * RPC client's own encoding, so the node fails with "unable to decode tx".
+   * The upstream estimator double-encodes the transaction for this RPC transport.
+   * Use the raw-byte simulation path, which also reports storage deposits.
    */
   public async estimateGas(tx: Tx): Promise<bigint> {
     const { gasUsed } = await this.simulateTx(tx);
@@ -90,7 +90,7 @@ export class GnoProvider extends GnoJSONRPCProvider {
     return BigInt(gasUsed);
   }
 
-  public async getGasPrice(height?: number | undefined): Promise<number> {
+  public async getGasPricePerUnit(height?: number | undefined): Promise<number> {
     const rpcResponse = await this.client
       .abciQuery({
         path: "auth/gasprice",

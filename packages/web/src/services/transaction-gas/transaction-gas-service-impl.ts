@@ -68,7 +68,7 @@ export class TransactionGasServiceImpl implements TransactionGasService {
   public async getGasPrices(): Promise<number | null> {
     if (!this.rpcProvider) return null;
 
-    const gasPrice = await this.rpcProvider.getGasPrice();
+    const gasPrice = await this.rpcProvider.getGasPricePerUnit();
     if (!gasPrice) return null;
 
     return gasPrice;
