@@ -218,7 +218,7 @@ type SumApproveMessageType = {
 export async function makeTransactionMessagesWithApproves(
   transactionMessages: TransactionMessage[],
   approveInfos: TokenApproveMessageInfo[],
-  fetchAllowance?: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance?: (tokenKey: string, owner: string, spender: string) => Promise<number>,
   allowanceLimit: number = DEFAULT_ALLOWANCE_LIMIT,
   withReset: boolean = false,
 ): Promise<TransactionMessage[]> {
@@ -330,9 +330,9 @@ export function makeGNOTSendAmount(amount: string | number | null): string {
   return BigNumber(amount).toString() + "ugnot";
 }
 
-export async function fetchAllowance(rpcProvider: GnoProvider, packagePath: string, owner: string, spender: string) {
+export async function fetchAllowance(rpcProvider: GnoProvider, tokenKey: string, owner: string, spender: string) {
   try {
-    return await getGRC20Allowance(rpcProvider, packagePath, owner, spender);
+    return await getGRC20Allowance(rpcProvider, tokenKey, owner, spender);
   } catch (error) {
     console.error("Failed to fetch allowance", error);
     return 0;

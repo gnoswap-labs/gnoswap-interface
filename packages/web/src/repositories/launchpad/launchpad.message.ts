@@ -36,7 +36,7 @@ export function makeDepositGNSMessageWithApproves(
     caller: string;
     referrerAddress: string | null;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const depositGNSMessage = makeTransactionMessage({
     packagePath: PACKAGE_LAUNCHPAD_PATH,

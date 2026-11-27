@@ -24,7 +24,7 @@ enum OrderMessageFunctionType {
   Claim = "Claim",
 }
 
-type FetchAllowance = (packagePath: string, owner: string, spender: string) => Promise<number>;
+type FetchAllowance = (tokenKey: string, owner: string, spender: string) => Promise<number>;
 
 
 /**

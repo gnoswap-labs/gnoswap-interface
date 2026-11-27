@@ -52,7 +52,7 @@ export function makeCreatePoolMessageWithApproves(
     createPoolFee: number;
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const tokenAPath = tokenA.wrappedPath || tokenA.path;
   const tokenBPath = tokenB.wrappedPath || tokenB.path;
@@ -113,7 +113,7 @@ export function makePositionMintMessageWithApproves(
     caller: string;
     referrerAddress: string | null;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const tokenAAmountRaw = makeRawTokenAmount(tokenA, tokenAAmount) || "0";
   const tokenBAmountRaw = makeRawTokenAmount(tokenB, tokenBAmount) || "0";
@@ -208,7 +208,7 @@ export function makeCreateExternalIncentiveMessageWithApproves(
     endTime: number;
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const rewardTokenPath = checkGnotPath(rewardToken.path);
   const rewardAmountRaw = makeRawTokenAmount(rewardToken, rewardAmount) || "0";
@@ -285,7 +285,7 @@ export function makeRemoveExternalIncentiveMessageWithApproves(
     incentiveID: string;
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
@@ -313,7 +313,7 @@ export function makeCollectExternalIncentivePenaltyMessageWithApproves(
     incentiveID: string;
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const approveMessageInfos: TokenApproveMessageInfo[] = [];
 
