@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 
 import { useWallet } from "@hooks/wallet/data/use-wallet";
+import { useAdenaAccountResync } from "@hooks/wallet/data/use-adena-account-resync";
 import { CommonState, EarnState, LaunchpadState, WalletState } from "@states/index";
 import { useTokenData } from "@hooks/token/data/use-token-data";
 import useRouter from "@hooks/common/use-custom-router";
@@ -14,7 +15,13 @@ import { SocialLoginType, WalletType } from "src/types/wallet.types";
 
 export const useBackground = () => {
   const router = useRouter();
-  const { account, initSession, connectAccount: connectAdenaAccount, updateWalletEvents } = useWallet();
+  const {
+    account,
+    initSession,
+    connectAccount: connectAdenaAccount,
+    updateWalletEvents,
+    resyncAdenaAccount,
+  } = useWallet();
   const { connect: connectSocialAccount, connectingState } = useSocialWalletContext();
   const [walletClient] = useAtom(WalletState.client);
   const [sessionId] = useAtom(CommonState.sessionId);
@@ -192,6 +199,8 @@ export const useBackground = () => {
    *
    */
   useAutoDisconnect();
+
+  useAdenaAccountResync(walletClient, account, resyncAdenaAccount);
 
   useEffect(() => {
     if (account?.address && account?.chainId) {
