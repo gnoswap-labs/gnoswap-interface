@@ -6,7 +6,7 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { WalletClient } from "@common/clients/wallet-client";
 
 import { eventBus } from "./event-bus";
-import { documentToTx, estimateSocialWalletFee, withTransactionGuard } from "./transaction-utils";
+import { documentToDefaultTx, documentToTx, estimateSocialWalletFee, withTransactionGuard } from "./transaction-utils";
 
 const makeDocument = (msgs: ContractMessage[]): Document => ({
   chain_id: "dev.gnoswap",
@@ -119,6 +119,37 @@ describe("documentToTx", () => {
     expect(decoded.amount).toBe("1000ugnot");
     expect(tx.fee?.gas_wanted).toBe(5000000n);
     expect(tx.fee?.gas_fee).toBe("1000ugnot");
+  });
+});
+
+describe("documentToDefaultTx", () => {
+  const document = makeDocument([
+    {
+      type: "/vm.m_call",
+      value: {
+        caller: "g1caller",
+        send: "",
+        max_deposit: "",
+        pkg_path: "gno.land/r/demo/foo",
+        func: "Bar",
+        args: [],
+      } as MsgCall,
+    },
+  ]);
+
+  // An empty key encodes as an empty Any, which the node rejects as non-canonical.
+  it("omits the signer key when the wallet reports none", () => {
+    expect(documentToDefaultTx(document).signatures[0].pub_key).toBeUndefined();
+    expect(documentToDefaultTx(document, { typeUrl: "", value: "" }).signatures[0].pub_key).toBeUndefined();
+  });
+
+  it("carries the signer key the wallet reports", () => {
+    const value = Buffer.alloc(33, 2).toString("base64");
+
+    const pubKey = documentToDefaultTx(document, { typeUrl: "/tm.PubKeySecp256k1", value }).signatures[0].pub_key;
+
+    expect(pubKey?.type_url).toBe("/tm.PubKeySecp256k1");
+    expect(pubKey?.value).toEqual(new Uint8Array([0x0a, 33, ...Buffer.alloc(33, 2)]));
   });
 });
 
