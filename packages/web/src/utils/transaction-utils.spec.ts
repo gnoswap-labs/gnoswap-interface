@@ -6,7 +6,7 @@ import { GnoProvider } from "@common/clients/gno-provider/gno-provider";
 import { WalletClient } from "@common/clients/wallet-client";
 
 import { eventBus } from "./event-bus";
-import { documentToTx, estimateSocialWalletFee, withTransactionGuard } from "./transaction-utils";
+import { documentToDefaultTx, documentToTx, estimateSocialWalletFee, withTransactionGuard } from "./transaction-utils";
 
 const makeDocument = (msgs: ContractMessage[]): Document => ({
   chain_id: "dev.gnoswap",
@@ -122,6 +122,37 @@ describe("documentToTx", () => {
   });
 });
 
+describe("documentToDefaultTx", () => {
+  const document = makeDocument([
+    {
+      type: "/vm.m_call",
+      value: {
+        caller: "g1caller",
+        send: "",
+        max_deposit: "",
+        pkg_path: "gno.land/r/demo/foo",
+        func: "Bar",
+        args: [],
+      } as MsgCall,
+    },
+  ]);
+
+  // An empty key encodes as an empty Any, which the node rejects as non-canonical.
+  it("omits the signer key when the wallet reports none", () => {
+    expect(documentToDefaultTx(document).signatures[0].pub_key).toBeUndefined();
+    expect(documentToDefaultTx(document, { typeUrl: "", value: "" }).signatures[0].pub_key).toBeUndefined();
+  });
+
+  it("carries the signer key the wallet reports", () => {
+    const value = Buffer.alloc(33, 2).toString("base64");
+
+    const pubKey = documentToDefaultTx(document, { typeUrl: "/tm.PubKeySecp256k1", value }).signatures[0].pub_key;
+
+    expect(pubKey?.type_url).toBe("/tm.PubKeySecp256k1");
+    expect(pubKey?.value).toEqual(new Uint8Array([0x0a, 33, ...Buffer.alloc(33, 2)]));
+  });
+});
+
 describe("estimateSocialWalletFee", () => {
   const document = makeDocument([]);
   const signedTx = documentToTx(document);
@@ -130,7 +161,7 @@ describe("estimateSocialWalletFee", () => {
   it("simulates a tx signed with a fee the mempool rejects", async () => {
     const provider = {
       estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_000)),
-      getGasPrice: jest.fn().mockResolvedValue(0.001),
+      getGasPricePerUnit: jest.fn().mockResolvedValue(0.001),
     };
 
     await estimateSocialWalletFee(walletClient, document, provider);
@@ -142,7 +173,7 @@ describe("estimateSocialWalletFee", () => {
   it("covers the buffered gasWanted at the chain gas price", async () => {
     const provider = {
       estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_001)),
-      getGasPrice: jest.fn().mockResolvedValue(0.001),
+      getGasPricePerUnit: jest.fn().mockResolvedValue(0.001),
     };
 
     const { gasWanted, gasFee } = await estimateSocialWalletFee(walletClient, document, provider);
@@ -155,7 +186,7 @@ describe("estimateSocialWalletFee", () => {
   it("falls back to the minimum gas price when the chain reports none", async () => {
     const provider = {
       estimateGas: jest.fn().mockResolvedValue(BigInt(1_000_000)),
-      getGasPrice: jest.fn().mockResolvedValue(0),
+      getGasPricePerUnit: jest.fn().mockResolvedValue(0),
     };
 
     expect(await estimateSocialWalletFee(walletClient, document, provider)).toEqual({

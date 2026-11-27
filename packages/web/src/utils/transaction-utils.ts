@@ -211,14 +211,14 @@ const getSocialRpcProvider = () => {
 export const estimateSocialWalletFee = async (
   walletClient: Pick<WalletClient, "sign">,
   document: Document,
-  provider: Pick<GnoProvider, "estimateGas" | "getGasPrice"> | null = null,
+  provider: Pick<GnoProvider, "estimateGas" | "getGasPricePerUnit"> | null = null,
 ): Promise<{ gasWanted: number; gasFee: number }> => {
   const rpcProvider = provider ?? (await getSocialRpcProvider());
   const { signed } = await walletClient.sign(
     rpcProvider as GnoProvider,
     withGasFee(document, Number(document.fee.gas) || DEFAULT_GAS_WANTED, 1),
   );
-  const [gasUsed, gasPrice] = await Promise.all([rpcProvider.estimateGas(signed), rpcProvider.getGasPrice()]);
+  const [gasUsed, gasPrice] = await Promise.all([rpcProvider.estimateGas(signed), rpcProvider.getGasPricePerUnit()]);
 
   const gasWanted = Math.ceil(Number(gasUsed) * GAS_WANTED_BUFFER_SAFE_MARGIN);
   const gasFee = BigNumber(gasWanted)
@@ -441,14 +441,13 @@ export interface SignerPublicKey {
  * is ever reached.
  *
  * A key type is a byte array in amino, which encodes as one length-delimited
- * field rather than the bare bytes.
+ * field rather than the bare bytes. Without a key the field is omitted, since an empty one is non-canonical.
  */
-function encodeSignerPublicKey(publicKey?: SignerPublicKey): { type_url: string; value: Uint8Array } {
-  const empty = { type_url: "", value: new Uint8Array() };
-  if (!publicKey?.typeUrl || !publicKey.value) return empty;
+function encodeSignerPublicKey(publicKey?: SignerPublicKey): Any | undefined {
+  if (!publicKey?.typeUrl || !publicKey.value) return undefined;
 
   const raw = Buffer.from(publicKey.value, "base64");
-  if (raw.length === 0 || raw.length > 0x7f) return empty;
+  if (raw.length === 0 || raw.length > 0x7f) return undefined;
 
   return { type_url: publicKey.typeUrl, value: new Uint8Array([0x0a, raw.length, ...raw]) };
 }

@@ -1,4 +1,7 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render as rtlRender, screen, waitFor } from "@testing-library/react";
+import { Provider as JotaiProvider } from "jotai";
+import type { PropsWithChildren, ReactElement } from "react";
+import GnoswapThemeProvider from "@providers/gnoswap-theme-provider/GnoswapThemeProvider";
 import { formatTokenExchangeRate } from "@utils/stake-position-utils";
 
 import { formatTokenCandlePrice } from "@layouts/token-detail/components/token-chart/TokenCandles";
@@ -17,6 +20,9 @@ const mockTimeScale = {
   getVisibleLogicalRange: jest.fn().mockReturnValue({ from: -4.25, to: 9.75 }),
   setVisibleLogicalRange: jest.fn(),
   fitContent: jest.fn(),
+  width: jest.fn().mockReturnValue(300),
+  options: jest.fn().mockReturnValue({ minBarSpacing: 0.5 }),
+  applyOptions: jest.fn(),
   scrollPosition: jest.fn().mockReturnValue(5),
   scrollToPosition: jest.fn(),
   height: jest.fn().mockReturnValue(28),
@@ -25,6 +31,7 @@ const mockTimeScale = {
 };
 const mockSubscribeCrosshairMove = jest.fn();
 const mockRemove = jest.fn();
+const mockResize = jest.fn();
 const mockUnsubscribeCrosshairMove = jest.fn();
 const mockPriceScale = {
   options: jest.fn().mockReturnValue({ autoScale: true }),
@@ -42,7 +49,7 @@ const mockCreateChart = jest.fn().mockImplementation(() => ({
   panes: () => mockPanes,
   subscribeCrosshairMove: mockSubscribeCrosshairMove,
   unsubscribeCrosshairMove: mockUnsubscribeCrosshairMove,
-  resize: jest.fn(),
+  resize: mockResize,
   remove: mockRemove,
 }));
 
@@ -61,7 +68,10 @@ const mockTheme = {
     border14: "gray",
   },
 };
-jest.mock("@emotion/react", () => ({ useTheme: () => mockTheme }));
+jest.mock("@emotion/react", () => ({
+  ...jest.requireActual("@emotion/react"),
+  useTheme: () => mockTheme,
+}));
 let mockLanguage = "en";
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({ t: (key: string) => key, i18n: { language: mockLanguage, resolvedLanguage: mockLanguage } }),
@@ -104,8 +114,23 @@ const props = {
   retryLabel: "Retry",
 };
 
+function ChartProviders({ children }: PropsWithChildren) {
+  return (
+    <JotaiProvider>
+      <GnoswapThemeProvider>{children}</GnoswapThemeProvider>
+    </JotaiProvider>
+  );
+}
+
+const render = (ui: ReactElement) => rtlRender(ui, { wrapper: ChartProviders });
+
+let mockResizeObserverCallback: ResizeObserverCallback | null = null;
+
 beforeAll(() => {
   global.ResizeObserver = class {
+    constructor(callback: ResizeObserverCallback) {
+      mockResizeObserverCallback = callback;
+    }
     observe() {}
     disconnect() {}
     unobserve() {}
@@ -116,9 +141,15 @@ beforeEach(() => {
   jest.clearAllMocks();
   mockLanguage = "en";
   mockCandles.barsInLogicalRange.mockReset().mockReturnValue({ barsBefore: Infinity });
+  mockResizeObserverCallback = null;
+  mockResize.mockReset();
   mockTimeScale.getVisibleLogicalRange.mockReturnValue({ from: -4.25, to: 9.75 });
   mockTimeScale.scrollPosition.mockReset().mockReturnValue(5);
   mockTimeScale.setVisibleLogicalRange.mockReset();
+  mockTimeScale.fitContent.mockReset();
+  mockTimeScale.width.mockReset().mockReturnValue(300);
+  mockTimeScale.options.mockReset().mockReturnValue({ minBarSpacing: 0.5 });
+  mockTimeScale.applyOptions.mockReset();
   mockTimeScale.scrollToPosition.mockReset();
   mockPriceScale.options.mockReset().mockReturnValue({ autoScale: true });
   mockPriceScale.applyOptions.mockReset();
@@ -225,6 +256,7 @@ it.each([false, true])(
       mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0]?.[0](range);
     };
     mockTimeScale.setVisibleLogicalRange.mockImplementation(changeRange);
+    mockTimeScale.fitContent.mockImplementation(() => changeRange({ from: 0, to: 1 }));
     mockTimeScale.scrollToPosition.mockImplementation((offset: number) => {
       const to = 1 + offset;
       changeRange({ from: to - (visible.to - visible.from), to });
@@ -233,8 +265,16 @@ it.each([false, true])(
       if (options.autoScale !== undefined) mockPriceScale.options.mockReturnValue({ autoScale: options.autoScale });
     });
     const loadPage = jest.fn().mockResolvedValue(firstPage);
-    render(<PriceCandleChart {...props} all={all} loadPage={loadPage} />);
+    const loadAll = jest.fn().mockResolvedValue(firstPage);
+    render(<PriceCandleChart {...props} all={all} loadPage={loadPage} loadAll={loadAll} />);
     await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+    if (all) {
+      await act(async () => {
+        const { promise, resolve } = Promise.withResolvers<void>();
+        requestAnimationFrame(() => resolve());
+        await promise;
+      });
+    }
     const initial = { ...visible };
     const reset = () => screen.queryByRole("button", { name: "Reset chart view" });
     const latest = () => screen.queryByRole("button", { name: "Scroll to the most recent bar" });
@@ -276,7 +316,8 @@ it.each([false, true])(
     fireEvent.click(reset()!);
     await waitFor(() => expect(reset()).not.toBeInTheDocument());
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    expect(loadPage).toHaveBeenCalledTimes(1);
+    expect(loadPage).toHaveBeenCalledTimes(all ? 0 : 1);
+    expect(loadAll).toHaveBeenCalledTimes(all ? 1 : 0);
     expect(mockCandles.setData).toHaveBeenCalledTimes(1);
     expect(mockRemove).not.toHaveBeenCalled();
   },
@@ -439,19 +480,264 @@ it("advances one bounded window per action across empty and sparse history witho
   expect(loadPage).toHaveBeenNthCalledWith(5, 246300, 255300);
 });
 
-it("caps initial and subsequent All daily requests at 30 days without looping through empty history", async () => {
+it("keeps All bounded and searchable without a full-history loader", async () => {
   jest.spyOn(Date, "now").mockReturnValue(100 * 86400 * 1000);
   const loadPage = jest.fn().mockResolvedValue([]);
   render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} />);
   await screen.findByRole("button", { name: "Search older history" });
-  expect(loadPage).toHaveBeenCalledTimes(2);
-  const [start, end] = loadPage.mock.calls[0];
-  expect(end - start).toBe(30 * 86400);
-  expect(start % 86400).toBe(0);
-  expect(loadPage).toHaveBeenNthCalledWith(2, start - 30 * 86400, start);
+  expect(loadPage.mock.calls).toEqual([
+    [71 * 86400, 101 * 86400],
+    [41 * 86400, 71 * 86400],
+  ]);
+  expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
   fireEvent.click(screen.getByRole("button", { name: "Search older history" }));
   await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(3));
-  expect(loadPage).toHaveBeenNthCalledWith(3, start - 60 * 86400, start - 30 * 86400);
+  expect(loadPage).toHaveBeenNthCalledWith(3, 11 * 86400, 41 * 86400);
+});
+
+it("keeps the existing All viewport and older paging without a full-history loader", async () => {
+  jest.spyOn(Date, "now").mockReturnValue(200 * 86400 * 1000);
+  const loadPage = jest.fn(async (start: number, end: number) =>
+    Array.from({ length: (end - start) / 86400 }, (_, index) => ({
+      ...firstPage[0],
+      time: start + index * 86400,
+    })),
+  );
+  const { container } = render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  expect(loadPage.mock.calls).toEqual([
+    [171 * 86400, 201 * 86400],
+    [141 * 86400, 171 * 86400],
+  ]);
+  expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenCalledWith({ from: 30, to: 59 });
+  expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+  expect(mockTimeScale.applyOptions).not.toHaveBeenCalled();
+  act(() => {
+    mockCandles.barsInLogicalRange.mockReturnValueOnce({ barsBefore: 10 });
+    fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+    mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0]({ from: 0, to: 30 });
+  });
+  await waitFor(() => expect(loadPage).toHaveBeenCalledTimes(3));
+  expect(loadPage).toHaveBeenNthCalledWith(3, 111 * 86400, 141 * 86400);
+  expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+});
+
+it.each([300, 1000])("fits all 1000 candles initially, after resize, and on reset (plot width %s)", async initialWidth => {
+  jest.spyOn(Date, "now").mockReturnValue(1000 * 86400 * 1000);
+  const history = Array.from({ length: 1000 }, (_, index) => ({ ...firstPage[0], time: index * 86400 }));
+  const loadAll = jest.fn().mockResolvedValue(history);
+  const loadPage = jest.fn();
+  let plotWidth = initialWidth;
+  let minimum = 0.5;
+  let visible = { from: 400, to: 999 };
+  mockTimeScale.width.mockImplementation(() => plotWidth);
+  mockTimeScale.options.mockImplementation(() => ({ minBarSpacing: minimum }));
+  mockTimeScale.applyOptions.mockImplementation(options => {
+    minimum = options.minBarSpacing;
+  });
+  mockTimeScale.getVisibleLogicalRange.mockImplementation(() => visible);
+  mockTimeScale.scrollPosition.mockImplementation(() => visible.to - 999);
+  mockTimeScale.fitContent.mockImplementation(() => {
+    const spacing = Math.max(minimum, plotWidth / history.length);
+    visible = { from: history.length - plotWidth / spacing, to: 999 };
+  });
+  mockResize.mockImplementation((width: number) => {
+    const nextWidth = width - mockPriceScale.width();
+    const spacing = Math.max(minimum, nextWidth / (visible.to - visible.from + 1));
+    visible = { from: visible.to - nextWidth / spacing + 1, to: visible.to };
+    plotWidth = nextWidth;
+  });
+
+  render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  await act(async () => {
+    const { promise, resolve } = Promise.withResolvers<void>();
+    requestAnimationFrame(() => resolve());
+    await promise;
+  });
+  expect(visible.from).toBeCloseTo(0);
+  expect(visible.to).toBe(999);
+
+  const resize = mockResizeObserverCallback as ResizeObserverCallback | null;
+  if (!resize) throw new Error("Missing chart resize observer");
+  act(() => {
+    resize([{ contentRect: { width: 170, height: 400 } } as ResizeObserverEntry], {} as ResizeObserver);
+  });
+  expect(visible.from).toBeCloseTo(0);
+  expect(visible.to).toBe(999);
+
+  act(() => {
+    visible = { from: 500, to: 999 };
+    mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0](visible);
+  });
+  fireEvent.click(await screen.findByRole("button", { name: "Reset chart view" }));
+  await waitFor(() => {
+    expect(visible.from).toBeCloseTo(0);
+    expect(visible.to).toBe(999);
+  });
+  expect(loadAll).toHaveBeenCalledTimes(1);
+  expect(loadPage).not.toHaveBeenCalled();
+});
+
+it("fetches All once, fits the complete history, and polls only bounded recent candles", async () => {
+  jest.useFakeTimers();
+  jest.setSystemTime(200 * 86400 * 1000);
+  const old = { ...firstPage[0], time: 10 * 86400 };
+  const recent = { ...firstPage[1], time: 200 * 86400 };
+  const updated = { ...recent, close: 4, high: 4 };
+  const next = { ...updated, time: 201 * 86400 };
+  const loadAll = jest.fn().mockResolvedValue([old, recent]);
+  const loadPage = jest.fn().mockResolvedValue([updated, next]);
+  const { container, unmount } = render(
+    <PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />,
+  );
+  try {
+    await act(async () => {});
+    expect(loadAll).toHaveBeenCalledTimes(1);
+    expect(loadPage).not.toHaveBeenCalled();
+    expect(mockCandles.setData.mock.calls[0][0].map((bar: PriceBar) => bar.time)).toEqual([old.time, recent.time]);
+    expect(mockTimeScale.fitContent).toHaveBeenCalledTimes(1);
+    act(() => {
+      fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+      mockCandles.barsInLogicalRange.mockReturnValue({ barsBefore: -1 });
+      mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0]({ from: -10, to: 0 });
+    });
+    expect(loadPage).not.toHaveBeenCalled();
+    jest.setSystemTime(201 * 86400 * 1000);
+    await act(async () => {
+      jest.advanceTimersByTime(5_000);
+    });
+    expect(loadAll).toHaveBeenCalledTimes(1);
+    expect(loadPage).toHaveBeenCalledWith(200 * 86400, 202 * 86400);
+    expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+    expect(mockCandles.update).toHaveBeenCalledTimes(2);
+  } finally {
+    unmount();
+    jest.useRealTimers();
+  }
+});
+
+it.each([
+  { label: "following", panned: false, pendingFit: false, refreshBeforeFit: false },
+  { label: "panned", panned: true, pendingFit: false, refreshBeforeFit: false },
+  { label: "panned before the fit frame", panned: true, pendingFit: true, refreshBeforeFit: false },
+  { label: "refreshed before the fit frame", panned: false, pendingFit: true, refreshBeforeFit: true },
+])(
+  "preserves the $label All viewport when the next UTC daily candle arrives",
+  async ({ panned, pendingFit, refreshBeforeFit }) => {
+    jest.useFakeTimers();
+    jest.setSystemTime(1000 * 86400 * 1000 - 2000);
+    const history = Array.from({ length: 1000 }, (_, index) => ({ ...firstPage[0], time: index * 86400 }));
+    const last = history[history.length - 1];
+    const updated = { ...last, high: 3, close: 3 };
+    const next = { ...last, time: 1000 * 86400 };
+    const loadAll = jest.fn().mockResolvedValue(history);
+    const loadPage = jest.fn().mockResolvedValue([updated, next]);
+    let visible = { from: 0, to: 999 };
+    let lastIndex = 999;
+    mockTimeScale.getVisibleLogicalRange.mockImplementation(() => visible);
+    mockTimeScale.scrollPosition.mockImplementation(() => visible.to - lastIndex);
+    mockTimeScale.setVisibleLogicalRange.mockImplementation(range => {
+      visible = range;
+      lastIndex = 1000;
+    });
+    const { container, unmount } = render(
+      <PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />,
+    );
+    try {
+      await act(async () => {});
+      expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+      expect(mockTimeScale.fitContent).toHaveBeenCalledTimes(1);
+      if (!pendingFit) {
+        await act(async () => {
+          jest.advanceTimersByTime(32);
+        });
+      }
+      if (panned) {
+        act(() => {
+          visible = { from: -120.25, to: 879.75 };
+          fireEvent.wheel(container.querySelector(".price-chart-canvas")!);
+          mockTimeScale.subscribeVisibleLogicalRangeChange.mock.calls[0][0](visible);
+        });
+      }
+      if (refreshBeforeFit) {
+        jest.setSystemTime(1000 * 86400 * 1000 + 1000);
+        await act(async () => {
+          fireEvent(document, new Event("visibilitychange"));
+        });
+      } else {
+        await act(async () => {
+          jest.advanceTimersByTime(5000);
+        });
+      }
+      expect(loadAll).toHaveBeenCalledTimes(1);
+      expect(loadPage).toHaveBeenCalledWith(999 * 86400, 1001 * 86400);
+      expect(mockCandles.update).toHaveBeenCalledTimes(2);
+      expect(mockTimeScale.setVisibleLogicalRange).toHaveBeenLastCalledWith(
+        panned ? { from: -120.25, to: 879.75 } : { from: 1, to: 1000 },
+      );
+    } finally {
+      unmount();
+      jest.useRealTimers();
+    }
+  },
+);
+
+it("does not offer older paging after an empty All response", async () => {
+  const loadPage = jest.fn();
+  const loadAll = jest.fn().mockResolvedValue([]);
+  render(<PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />);
+  expect(await screen.findByText(props.emptyLabel)).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: props.searchOlderLabel })).not.toBeInTheDocument();
+  expect(loadAll).toHaveBeenCalledTimes(1);
+  expect(loadPage).not.toHaveBeenCalled();
+});
+
+it("retries a failed All request without replacing the error with partial polling data", async () => {
+  jest.useFakeTimers();
+  jest.setSystemTime(200 * 86400 * 1000);
+  const bar = { ...firstPage[0], time: 100 * 86400 };
+  const loadAll = jest.fn().mockRejectedValueOnce(new Error("offline")).mockResolvedValueOnce([bar]);
+  const loadPage = jest.fn().mockResolvedValue([]);
+  const { unmount } = render(
+    <PriceCandleChart {...props} interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />,
+  );
+  try {
+    await act(async () => {});
+    expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
+    await act(async () => {
+      jest.advanceTimersByTime(10_000);
+    });
+    expect(loadPage).not.toHaveBeenCalled();
+    expect(loadAll).toHaveBeenCalledTimes(1);
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Retry" })));
+    expect(loadAll).toHaveBeenCalledTimes(2);
+    expect(mockTimeScale.fitContent).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("button", { name: "Retry" })).not.toBeInTheDocument();
+  } finally {
+    unmount();
+    jest.useRealTimers();
+  }
+});
+
+it.each(["resolve", "reject"])("ignores a stale All load after switching resolution (%s)", async outcome => {
+  const pending = Promise.withResolvers<PriceBar[]>();
+  const loadAll = jest.fn().mockReturnValue(pending.promise);
+  const recent = { ...firstPage[1], time: 300000 };
+  const loadPage = jest.fn().mockResolvedValue([recent]);
+  const { rerender } = render(
+    <PriceCandleChart {...props} identity="all" interval={86400} daily all loadPage={loadPage} loadAll={loadAll} />,
+  );
+  expect(loadAll).toHaveBeenCalledTimes(1);
+  rerender(<PriceCandleChart {...props} identity="5m" loadPage={loadPage} loadAll={loadAll} />);
+  await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
+  await act(async () => {
+    if (outcome === "resolve") pending.resolve([{ ...recent, time: 86400 }]);
+    else pending.reject(new Error("stale request failed"));
+  });
+  expect(mockCandles.setData).toHaveBeenCalledTimes(1);
+  expect(mockTimeScale.fitContent).not.toHaveBeenCalled();
+  expect(screen.queryByText(props.errorLabel)).not.toBeInTheDocument();
 });
 
 it("rebuilds the chart and formats both volumes when the app language changes", async () => {
@@ -600,7 +886,16 @@ it.each([false, true])("keeps UTC day, month, and year labels for daily candles 
   const time = Date.parse("2027-01-01T00:00:00Z") / 1000;
   const bar = { ...firstPage[0], time };
   const loadPage = jest.fn().mockResolvedValueOnce([bar]).mockResolvedValue([]);
-  render(<PriceCandleChart {...props} interval={86400} daily all={all} loadPage={loadPage} />);
+  render(
+    <PriceCandleChart
+      {...props}
+      interval={86400}
+      daily
+      all={all}
+      loadPage={loadPage}
+      loadAll={jest.fn().mockResolvedValue([bar])}
+    />,
+  );
   await waitFor(() => expect(mockCandles.setData).toHaveBeenCalledTimes(1));
   const options = mockCreateChart.mock.calls[0][1];
   expect(options.timeScale.tickMarkFormatter(time, 0)).toBe("2027");

@@ -1,15 +1,16 @@
 import { GnoProvider } from "@gnolang/gno-js-client";
-import { evaluateExpressionToNumber, makeABCIParams } from "@utils/rpc-utils";
+import { PACKAGE_COMMON_PATH } from "@constants/environment.constant";
+import { evaluateExpressionToNumber } from "@utils/rpc-utils";
 
 export async function getGRC20Allowance(
   gnoProvider: GnoProvider,
-  packagePath: string,
+  tokenKey: string,
   owner: string,
   spender: string,
 ): Promise<number> {
-  const abciQueryParams = makeABCIParams("Allowance", [owner, spender]);
+  const expression = `Allowance(${JSON.stringify(tokenKey)}, ${JSON.stringify(owner)}, ${JSON.stringify(spender)})`;
   try {
-    const abciResponse = await gnoProvider.evaluateExpression(packagePath, abciQueryParams);
+    const abciResponse = await gnoProvider.evaluateExpression(PACKAGE_COMMON_PATH, expression);
     return evaluateExpressionToNumber(abciResponse);
   } catch (e) {
     console.log(e);

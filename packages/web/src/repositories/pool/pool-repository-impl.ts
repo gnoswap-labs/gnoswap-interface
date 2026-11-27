@@ -376,7 +376,7 @@ export class PoolRepositoryImpl implements PoolRepository {
      */
     const createPoolMessages = await makeCreatePoolMessageWithApproves(
       makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+      (tokenKey, owner, spender) => getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     /**
@@ -384,7 +384,7 @@ export class PoolRepositoryImpl implements PoolRepository {
      */
     const mintMessages = await makePositionMintMessageWithApproves(
       makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+      (tokenKey, owner, spender) => getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const messages = [...createPoolMessages, ...mintMessages];
@@ -408,8 +408,8 @@ export class PoolRepositoryImpl implements PoolRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    return makePositionMintMessageWithApproves(request, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makePositionMintMessageWithApproves(request, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
   };
 
@@ -454,7 +454,7 @@ export class PoolRepositoryImpl implements PoolRepository {
      */
     const messages = await makeCreateExternalIncentiveMessageWithApproves(
       makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+      (tokenKey, owner, spender) => getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
@@ -489,7 +489,7 @@ export class PoolRepositoryImpl implements PoolRepository {
      */
     const messages = await makeRemoveExternalIncentiveMessageWithApproves(
       makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+      (tokenKey, owner, spender) => getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
@@ -527,7 +527,7 @@ export class PoolRepositoryImpl implements PoolRepository {
 
     const messages = await makeCollectExternalIncentivePenaltyMessageWithApproves(
       makeTxMessageRequests,
-      (packagePath, owner, spender) => getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+      (tokenKey, owner, spender) => getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;

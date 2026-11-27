@@ -222,8 +222,8 @@ export class PositionRepositoryImpl implements PositionRepository {
       position,
     };
 
-    const messages = await makeClaimMessageWithApproves(makeTxMessageRequests, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const messages = await makeClaimMessageWithApproves(makeTxMessageRequests, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
@@ -268,8 +268,8 @@ export class PositionRepositoryImpl implements PositionRepository {
       positionsWithStakingReward,
     };
 
-    const messages = await makeClaimAllMessageWithApprovesByIds(makeTxMessageRequests, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const messages = await makeClaimAllMessageWithApprovesByIds(makeTxMessageRequests, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
@@ -322,8 +322,8 @@ export class PositionRepositoryImpl implements PositionRepository {
 
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = await makeUnStakePositionsMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const messages = await makeUnStakePositionsMessagesWithApproves({ ...requests }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
@@ -344,8 +344,8 @@ export class PositionRepositoryImpl implements PositionRepository {
       throw new CommonError("FAILED_INITIALIZE_GNO_PROVIDER");
     }
 
-    return makeIncreaseLiquidityMessagesWithApproves(request, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    return makeIncreaseLiquidityMessagesWithApproves(request, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
   };
 
@@ -386,8 +386,8 @@ export class PositionRepositoryImpl implements PositionRepository {
 
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = await makeDecreaseLiquidityMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const messages = await makeDecreaseLiquidityMessagesWithApproves({ ...requests }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
@@ -416,8 +416,8 @@ export class PositionRepositoryImpl implements PositionRepository {
 
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = await makeRepositionLiquidityMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const messages = await makeRepositionLiquidityMessagesWithApproves({ ...requests }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;
@@ -446,8 +446,8 @@ export class PositionRepositoryImpl implements PositionRepository {
 
     const { gasFee, gasUsed, ...requests } = request;
 
-    const messages = await makeRemoveLiquidityMessagesWithApproves({ ...requests }, (packagePath, owner, spender) =>
-      getGRC20Allowance(this.rpcProvider!, packagePath, owner, spender),
+    const messages = await makeRemoveLiquidityMessagesWithApproves({ ...requests }, (tokenKey, owner, spender) =>
+      getGRC20Allowance(this.rpcProvider!, tokenKey, owner, spender),
     );
 
     const gasWanted = Number(gasUsed) || DEFAULT_GAS_WANTED;

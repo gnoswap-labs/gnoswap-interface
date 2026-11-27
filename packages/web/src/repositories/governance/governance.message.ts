@@ -171,7 +171,7 @@ export function makeDelegateMessagesWithApproves(
     caller: string;
     referrerAddress: string | null;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const delegateTransactionMessage = makeTransactionMessage({
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,
@@ -229,7 +229,7 @@ export function makeReDelegateMessagesWithApproves(
     amount: string;
     caller: string;
   },
-  fetchAllowance: (packagePath: string, owner: string, spender: string) => Promise<number>,
+  fetchAllowance: (tokenKey: string, owner: string, spender: string) => Promise<number>,
 ): Promise<TransactionMessage[]> {
   const redelegateTransactionMessage = makeTransactionMessage({
     packagePath: PACKAGE_GOVERNANCE_STAKER_PATH,

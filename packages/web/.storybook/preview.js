@@ -46,7 +46,7 @@ export const decorators = [
       instance.init({
         lng: locale,
         fallbackLng: "en",
-        initImmediate: false,
+        initAsync: false,
         interpolation: { escapeValue: false },
         resources: {
           en: { Governance: enGovernance, common: enCommon, Swap: enSwap, Modal: enModal },

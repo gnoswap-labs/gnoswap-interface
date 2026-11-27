@@ -13,10 +13,11 @@ Thank you for considering contributing to the Gnoswap Interface! We value and ap
 
 **Branch Policy**
 - `develop` is the default branch and deploys to the dev environment.
-- `staging` deploys to the stg environment (`develop` → `staging` pull requests).
-- `main` is the release candidate branch (`staging` → `main` pull requests) and does not deploy.
+- `staging` is a deployment-only branch. The release workflow can replace its history; do not commit work to it or open promotion pull requests from it.
+- `main` receives release pull requests from `develop` and does not deploy on push.
 
 **Release**
+- To deploy staging, run **Actions → release**, select the source branch (normally `main`), and choose `staging` as the target. Leave the version blank and `redeploy` unchecked. The workflow replaces `staging` with the selected commit and Vercel builds it separately. Check Vercel for the deployment result. If `staging` already points to that commit, use Vercel's **Redeploy** to rebuild it.
 - testnet and mainnet are deployed only by the `release` workflow, run from `main` by maintainers. It creates a `testnet-vX.Y.Z` or `mainnet-vX.Y.Z` tag, publishes release notes since the previous tag with the same prefix, and deploys that commit to Vercel. To redeploy an existing release, run the workflow from that tag (Use workflow from: Tags → `testnet-vX.Y.Z` or `mainnet-vX.Y.Z`) with `redeploy` enabled.
 - Add the `skip-changelog` label to pull requests that should not appear in release notes.
 

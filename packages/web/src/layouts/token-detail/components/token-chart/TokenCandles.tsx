@@ -5,7 +5,7 @@ import type { NetworkClient } from "@common/clients/network-client";
 import PriceCandleChart from "@components/common/price-candle-chart/PriceCandleChart";
 import { formatPrice } from "@utils/new-number-utils";
 
-import { getTokenCandlePage, INTERVALS, type CandleResolution } from "./token-candle-data";
+import { getAllTokenCandles, getTokenCandlePage, INTERVALS, type CandleResolution } from "./token-candle-data";
 
 export const formatTokenCandlePrice = (value: number) =>
   formatPrice(value, { usd: false, isKMB: false }).replace(/(\.\d*?[1-9])0+(?=e|$)/, "$1");
@@ -26,6 +26,10 @@ export default function TokenCandles({ client, tokenPath, symbol, resolution }: 
     },
     [client, tokenPath, resolution],
   );
+  const loadAll = useCallback(() => {
+    if (!client) throw new Error("Token candle client is unavailable");
+    return getAllTokenCandles(client, tokenPath);
+  }, [client, tokenPath]);
   return (
     <PriceCandleChart
       identity={`${tokenPath}:${resolution}`}
@@ -42,6 +46,7 @@ export default function TokenCandles({ client, tokenPath, symbol, resolution }: 
       errorLabel={t("TokenDetails:chart.error")}
       retryLabel={t("TokenDetails:chart.retry")}
       loadPage={loadPage}
+      loadAll={loadAll}
     />
   );
 }

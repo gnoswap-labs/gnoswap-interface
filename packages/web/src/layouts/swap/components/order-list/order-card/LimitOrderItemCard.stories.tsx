@@ -55,7 +55,7 @@ const meta = {
     function WithOrderTranslations(Story) {
       const i18n = useMemo(() => {
         const instance = createInstance();
-        instance.init({ lng: "en", initImmediate: false, resources: { en: { Swap: enSwap } } });
+        instance.init({ lng: "en", initAsync: false, resources: { en: { Swap: enSwap } } });
         return instance;
       }, []);
       return (
