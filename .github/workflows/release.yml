@@ -4,14 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       prefix:
-        description: Tag prefix (ignored when redeploying)
+        description: Deployment target (ignored when redeploying)
         required: true
         type: choice
         options:
           - testnet
           - mainnet
+          - staging
       version:
-        description: Version (X.Y.Z)
+        description: Version (X.Y.Z; not needed for staging or redeploys)
         required: false
         type: string
       redeploy:
@@ -29,10 +30,11 @@ permissions:
 
 jobs:
   prepare:
-    name: Create tag and release notes
-    # New releases run from main or chain/*; redeploys run from a release tag
+    name: Prepare release or push staging
+    # Staging uses the selected branch; tagged releases and redeploys keep their existing source refs.
     if: >-
-      (!inputs.redeploy && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/chain/'))) ||
+      (!inputs.redeploy && inputs.prefix == 'staging' && github.ref_type == 'branch') ||
+      (!inputs.redeploy && inputs.prefix != 'staging' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/chain/'))) ||
       (inputs.redeploy && github.ref_type == 'tag')
     runs-on: ubuntu-latest
     environment: release
@@ -68,7 +70,27 @@ jobs:
           fetch-depth: 0
           token: ${{ steps.app.outputs.token }}
 
+      - name: Update staging branch
+        if: inputs.prefix == 'staging' && !inputs.redeploy
+        run: |
+          # Staging is a deployment-only ref. Only replace the tip observed by checkout.
+          staging_tip=$(git rev-parse --verify refs/remotes/origin/staging)
+          if ! result=$(git push --porcelain --force-with-lease="refs/heads/staging:${staging_tip}" \
+            origin "${GITHUB_SHA}:refs/heads/staging"); then
+            printf '%s\n' "$result"
+            exit 1
+          fi
+          printf '%s\n' "$result"
+          if grep -q $'^=\t' <<< "$result"; then
+            echo "::error::staging already points to ${GITHUB_SHA}; no deployment was triggered"
+            echo "To rebuild the same commit, redeploy its staging deployment in Vercel."
+            exit 1
+          fi
+          printf "Updated \`staging\` to \`%s\`. Check Vercel for the deployment result.\n" \
+            "$GITHUB_SHA" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Validate tag
+        if: inputs.prefix != 'staging' || inputs.redeploy
         id: tag
         env:
           PREFIX: ${{ inputs.prefix }}
@@ -128,7 +150,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Push tag
-        if: steps.tag.outputs.redeploy != 'true'
+        if: steps.tag.outputs.redeploy == 'false'
         env:
           TAG: ${{ steps.tag.outputs.tag }}
         run: |
@@ -136,7 +158,7 @@ jobs:
           git push origin "refs/tags/${TAG}"
 
       - name: Create GitHub Release
-        if: steps.tag.outputs.redeploy != 'true'
+        if: steps.tag.outputs.redeploy == 'false'
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
           TAG: ${{ steps.tag.outputs.tag }}
@@ -147,6 +169,7 @@ jobs:
           gh release create "$TAG" "${args[@]}"
 
       - name: Post to Slack
+        if: steps.tag.outputs.tag != ''
         id: slack
         env:
           GH_TOKEN: ${{ steps.app.outputs.token }}
@@ -220,6 +243,7 @@ jobs:
   deploy:
     name: Deploy to Vercel (${{ needs.prepare.outputs.prefix }})
     needs: prepare
+    if: needs.prepare.outputs.tag != ''
     runs-on: ubuntu-latest
     outputs:
       url: ${{ steps.deploy.outputs.url }}
