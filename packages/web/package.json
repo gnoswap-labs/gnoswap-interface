@@ -37,7 +37,7 @@
     "bech32": "2.0.0",
     "bignumber.js": "9.1.1",
     "d3": "^7.8.5",
-    "dayjs": "1.11.7",
+    "dayjs": "1.11.23",
     "dompurify": "^3.3.1",
     "i18next": "^26.0.0",
     "i18next-chained-backend": "^4.6.2",

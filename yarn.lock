@@ -2821,7 +2821,7 @@ __metadata:
     bech32: "npm:2.0.0"
     bignumber.js: "npm:9.1.1"
     d3: "npm:^7.8.5"
-    dayjs: "npm:1.11.7"
+    dayjs: "npm:1.11.23"
     dompurify: "npm:^3.3.1"
     dotenv-cli: "npm:^10.0.0"
     eslint-config-next: "npm:13.2.3"
@@ -11391,10 +11391,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:1.11.7":
-  version: 1.11.7
-  resolution: "dayjs@npm:1.11.7"
-  checksum: 10/341d7dc917a4ddc79c836684f7632a769ad8ae3c56506e62b97c27d7bb8a379b52b5589180b80f514eca9beb0b8789303bd32ce3107ba62055078800f9871e38
+"dayjs@npm:1.11.23":
+  version: 1.11.23
+  resolution: "dayjs@npm:1.11.23"
+  checksum: 10/61d29544ca1553369f75541b5abf9c1bb6a978991498923a2d5721c9df3eca513b2c15ff5534de6930dc553de5d6f2b8f8047149f3528df906b21f51df637463
   languageName: node
   linkType: hard
 
